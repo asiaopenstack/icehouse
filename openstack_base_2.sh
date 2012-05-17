@@ -13,7 +13,7 @@ apt-get install bridge-utils
 apt-get install rabbitmq-server memcached python-memcache
 
 # kvm
-apt-get install kvm libvirt-bin
+apt-get install kvm2 libvirt-bin
 
 echo "#################################################################################################
 You'll need a LVM for 'nova-volumes'.  This assumes you have an empty disk spinning at /dev/sdb:
