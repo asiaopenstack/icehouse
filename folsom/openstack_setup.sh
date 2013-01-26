@@ -28,7 +28,7 @@ then
 else
 	SG_MULTI_NODE=1
 fi
-echo; echo;
+echo;
 
 # quantum
 read -p "Do you want to install Quantum? " -n 2 -r
@@ -38,7 +38,7 @@ then
 else
 	SG_INSTALL_QUANTUM=0
 fi
-echo; echo;
+echo;
 
 # swift
 read -p "Do you want to install Swift? " -n 2 -r
@@ -48,7 +48,7 @@ then
 else
 	SG_INSTALL_SWIFT=0
 fi
-echo; echo;
+echo;
 
 
 # prompt for a few things we'll need for mysql

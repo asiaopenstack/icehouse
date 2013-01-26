@@ -7,7 +7,12 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # stuff canonical's repo in sources and update the system (for 12.04.1 only)
-echo 'deb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/folsom main' >> /etc/apt/sources.list
+if grep -Fxq STACKGEEK /etc/apt/sources.list
+then
+  true
+else
+  echo '#STACKGEEK ADDED THIS\r\ndeb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/folsom main' >> /etc/apt/sources.list
+
 apt-get install ubuntu-cloud-keyring -y
 aptitude update -y
 aptitude upgrade -y
