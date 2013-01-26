@@ -9,8 +9,8 @@ fi
 if [ -f ./setuprc ]
 then
 	echo "#############################################################################################################"
-	echo "Setup has already been run.  Edit the ./setuprc file in this directory to configure setup."
-	echo "You can continue the setup by doing './openstack_networking.sh'."
+	echo "Setup has already been run.  Edit or delete the ./setuprc file in this directory to reconfigure setup."
+	echo "You can also continue the setup by doing './openstack_server_test.sh'."
 	echo "#############################################################################################################"
 	exit
 fi

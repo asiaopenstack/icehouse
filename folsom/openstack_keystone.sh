@@ -40,7 +40,7 @@ export SERVICE_PASSWORD=$password
 export SERVICE_TOKEN=$token
 export SERVICE_ENDPOINT="http://127.0.0.1:35357/v2.0"
 export SERVICE_TENANT_NAME=service
-export KEYSTONE_REGION=StackGeek
+export KEYSTONE_REGION=$region
 EOF
 
 # source the stackrc file
