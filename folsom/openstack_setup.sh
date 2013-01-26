@@ -78,5 +78,5 @@ cat setuprc
 echo
 
 echo "#############################################################################################################"
-echo "Setup configuration complete.  Continue the setup by doing a './openstack_networking.sh'."
+echo "Setup configuration complete.  Continue the setup by doing a './openstack_server_test.sh'."
 echo "#############################################################################################################"

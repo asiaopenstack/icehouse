@@ -27,6 +27,7 @@ apt-get install keystone -y
 password=$SG_SERVICE_PASSWORD
 email=$SG_SERVICE_EMAIL
 token=$SG_SERVICE_TOKEN
+region=$SG_SERVICE_REGION
 
 # set up env variables for various magical things
 cat > stackrc <<EOF
@@ -39,6 +40,7 @@ export SERVICE_PASSWORD=$password
 export SERVICE_TOKEN=$token
 export SERVICE_ENDPOINT="http://127.0.0.1:35357/v2.0"
 export SERVICE_TENANT_NAME=service
+export KEYSTONE_REGION=StackGeek
 EOF
 
 # source the stackrc file
@@ -64,9 +66,6 @@ sleep 5
 ADMIN_PASSWORD=$password
 SERVICE_PASSWORD=$password
 
-export KEYSTONE_REGION=StackGeek
-export SERVICE_TOKEN=$token
-export SERVICE_ENDPOINT="http://localhost:35357/v2.0"
 
 function get_id () {
     echo `$@ | awk '/ id / { print $4 }'`

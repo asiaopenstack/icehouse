@@ -11,7 +11,7 @@ apt-get install cpu-checker -y
 if /usr/sbin/kvm-ok
 then echo "#################################################################################################
 
-Your CPU seems to support KVM extensions.  Run './openstack_setup.sh' to continue setup. 
+Your CPU seems to support KVM extensions.  Run './openstack_system_update.sh' to continue setup. 
 
 #################################################################################################
 "
