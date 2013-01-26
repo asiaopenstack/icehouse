@@ -7,6 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 echo "#################################################################################################
+
 You need to manually create a LVM for the 'nova-volumes' group.  This process requires you have
 a dedicated partition to use for the volume group, usually located on an extra drive.
 
