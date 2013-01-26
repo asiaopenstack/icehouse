@@ -9,7 +9,7 @@ fi
 # stuff canonical's repo in sources and update the system (for 12.04.1 only)
 if grep -Fxq STACKGEEK /etc/apt/sources.list
 then
-  true
+  echo "Folsom repo already added to /etc/apt/sources.list.  We're ready to rock."
 else
   echo '#STACKGEEK ADDED THIS\r\ndeb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/folsom main' >> /etc/apt/sources.list
 
@@ -20,7 +20,7 @@ aptitude dist-upgrade -y
 
 echo "#################################################################################################
 
-System updated.  Now run './openstack_server_test.sh' to see if your box supports KVM.
+System updated.  Now run './openstack_networking.sh' to get instructions for network setup.
 
 #################################################################################################
 "
