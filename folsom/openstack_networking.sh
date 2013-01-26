@@ -26,8 +26,10 @@ sed -e "
 # turn on forwarding
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
+echo;
 echo "#################################################################################################
-Go edit your /etc/network/interfaces file to look something like this:
+
+Go and edit your /etc/network/interfaces file to look something like this:
 
 auto eth0 
 iface eth0 inet static
