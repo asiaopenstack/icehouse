@@ -11,7 +11,8 @@ if grep -q STACKGEEK /etc/apt/sources.list
 then
   echo "Folsom repo already added to /etc/apt/sources.list.  We're ready to rock."
 else
-  echo '#STACKGEEK ADDED THIS\ndeb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/folsom main' >> /etc/apt/sources.list
+  echo '# STACKGEEK ADDED THIS' >> /etc/apt/sources.list
+  echo 'deb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/folsom main' >> /etc/apt/sources.list
 fi
 
 apt-get install ubuntu-cloud-keyring -y
