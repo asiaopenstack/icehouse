@@ -7,7 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # stuff canonical's repo in sources and update the system (for 12.04.1 only)
-if grep -Fxq STACKGEEK /etc/apt/sources.list
+if grep -q STACKGEEK /etc/apt/sources.list
 then
   echo "Folsom repo already added to /etc/apt/sources.list.  We're ready to rock."
 else
