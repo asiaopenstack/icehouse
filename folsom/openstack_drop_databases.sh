@@ -12,6 +12,9 @@ read -p "Hit 'd' to drop the database.  Any other key exits. " -n 1 -r
 if [[ $REPLY =~ ^[Dd]$ ]]
 then
 
+echo;
+echo;
+
 # kill them.  kill them all.
 mysql -u root -p <<EOF
 DROP DATABASE nova;
