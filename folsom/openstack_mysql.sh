@@ -12,6 +12,7 @@ fi
 apt-get install rabbitmq-server memcached python-memcache -y
 
 # now let's install MySQL
+echo;
 echo "##############################################################################################"
 echo;
 echo "Setting up MySQL now.  You will be prompted to set a MySQL root password by the setup process."
@@ -31,9 +32,10 @@ service mysql restart
 # wait for restart
 sleep 4 
 
+echo;
 echo "##############################################################################################"
 echo;
-echo "Creating OpenStack databases and users.  Use the same password you just entered when prompted."
+echo "Creating OpenStack databases and users.  Use the same password you gave the MySQL setup."
 echo;
 echo "##############################################################################################"
 echo;
@@ -57,6 +59,7 @@ GRANT ALL PRIVILEGES ON quantum.* TO 'quantum'@'%' IDENTIFIED BY '$service_pass'
 GRANT ALL PRIVILEGES ON quantum.* TO 'quantum'@'localhost' IDENTIFIED BY '$service_pass';
 EOF
 
+echo;
 echo "#######################################################################################"
 echo;
 echo "Run './openstack_keystone.sh' now."
