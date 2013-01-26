@@ -6,6 +6,8 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
+. ./setuprc
+
 # throw in a few other services we need installed
 apt-get install rabbitmq-server memcached python-memcache -y
 
@@ -28,11 +30,15 @@ service mysql restart
 sleep 4 
 
 echo "#######################################################################################"
-echo "Creating OpenStack databases and users.  Use your database password when prompted."
-echo ""
-echo "Run './openstack_keystone.sh' when the script exits."
+echo;
+echo "Creating OpenStack databases and users.  Use the same admin password when prompted."
+echo;
 echo "#######################################################################################"
 
+# load service pass from config env
+service_pass=$SG_SERVICE_PASSWORD
+
+# we create a quantum db irregardless of whether the user wants to install quantum
 mysql -u root -p <<EOF
 CREATE DATABASE nova;
 GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' IDENTIFIED BY '$service_pass';
@@ -48,4 +54,8 @@ GRANT ALL PRIVILEGES ON quantum.* TO 'quantum'@'%' IDENTIFIED BY '$service_pass'
 GRANT ALL PRIVILEGES ON quantum.* TO 'quantum'@'localhost' IDENTIFIED BY '$service_pass';
 EOF
 
-echo "Done creating users and databases!"
+echo "#######################################################################################"
+echo ;
+echo "Run './openstack_keystone.sh' now."
+echo ;
+echo "#######################################################################################"
