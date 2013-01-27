@@ -8,10 +8,10 @@ Start your OpenStack setup by installing Ubuntu Server 12.04LTS on the servers y
 
 Login to your box via ssh and install *git* with *aptitude*. We'll become root and do an update first:
 
-   aptitude update
-   apt-get install git
+    aptitude update
+    apt-get install git
 
 Now checkout the StackGeek OpenStack setup scripts from Github:
 
-   git clone git://github.com/StackGeek/openstackgeek.git
-   cd openstackgeek/folsom
+    git clone git://github.com/StackGeek/openstackgeek.git
+    cd openstackgeek/folsom
