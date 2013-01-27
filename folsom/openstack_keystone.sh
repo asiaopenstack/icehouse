@@ -86,15 +86,17 @@ KEYSTONEADMIN_ROLE=$(get_id keystone role-create --name=KeystoneAdmin)
 KEYSTONESERVICE_ROLE=$(get_id keystone role-create --name=KeystoneServiceAdmin)
 
 # Add Roles to Users in Tenants
-keystone user-role-add --user $ADMIN_USER --role $ADMIN_ROLE --tenant_id $ADMIN_TENANT
-keystone user-role-add --user $ADMIN_USER --role $KEYSTONEADMIN_ROLE --tenant_id $ADMIN_TENANT
-keystone user-role-add --user $ADMIN_USER --role $KEYSTONESERVICE_ROLE --tenant_id $ADMIN_TENANT
+keystone user-role-add --user-id $ADMIN_USER --role $ADMIN_ROLE --tenant-id $ADMIN_TENANT
+keystone user-role-add --user-id $ADMIN_USER --role $KEYSTONEADMIN_ROLE --tenant-id $ADMIN_TENANT
+keystone user-role-add --user-id $ADMIN_USER --role $KEYSTONESERVICE_ROLE --tenant-id $ADMIN_TENANT
 
 # nova
-NOVA_USER=$(get_id keystone user-create --name=nova --pass="$SERVICE_PASSWORD" --tenant_id $SERVICE_TENANT --email=$email)
+NOVA_USER=$(get_id keystone user-create --name=nova --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
 keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $NOVA_USER --role-id $ADMIN_ROLE
 keystone service-create --name nova --type compute --description 'OpenStack Compute Service'
-keystone endpoint-create --region $KEYSTONE_REGION --service-id compute --publicurl 'http://'"$HOST_IP"':8774/v2/$(tenant_id)s' --adminurl 'http://'"$HOST_IP"':8774/v2/$(tenant_id)s' --internalurl 'http://'"$HOST_IP"':8774/v2/$(tenant_id)s'
+keystone endpoint-create --region $KEYSTONE_REGION --service-id compute --publicurl 'http://'"$HOST_IP"':8774/v2/'"$NOVA_USER"'' --adminurl 'http://'"$HOST_IP"':8774/v2/'"$NOVA_USER"'' --internalurl 'http://'"$HOST_IP"':8774/v2/'"$NOVA_USER"''
+
+exit
 
 # glance
 GLANCE_USER=$(get_id keystone user-create --name=glance --pass="$SERVICE_PASSWORD" --tenant_id $SERVICE_TENANT --email=$email)
