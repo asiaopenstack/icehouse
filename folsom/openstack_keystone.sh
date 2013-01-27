@@ -14,10 +14,11 @@ fi
 HOST_IP=$(/sbin/ifconfig eth0| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 #HOST_IP=10.0.10.100
 
+echo;
 echo "#############################################################################################################"
-echo "The main IP address for this machine is probably $HOST_IP.  If that's wrong, ctrl-c and edit me."
+echo "The main IP address for this machine is probably $HOST_IP.  If that's wrong, ctrl-c and edit this script."
 echo "#############################################################################################################"
-echo
+echo;
 
 read -p "Hit enter to start Keystone setup. " -n 1 -r
 
