@@ -48,15 +48,9 @@ EOF
 # source the stackrc file we just created
 . ./stackrc
 
-exit
-
 # edit keystone conf file to use templates and mysql
 cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.orig
 sed -e "
-/^admin_token = ADMIN/s/^.*$/admin_token = $token/
-/^driver = keystone.catalog.backends.sql.Catalog/d
-/^\[catalog\]/a driver = keystone.catalog.backends.templated.TemplatedCatalog 
-/^\[catalog\]/a template_file = /etc/keystone/default_catalog.templates
 /^connection =.*$/s/^.*$/connection = mysql:\/\/keystone:$password@127.0.0.1\/keystone/
 " -i /etc/keystone/keystone.conf
 
@@ -66,10 +60,6 @@ service keystone restart
 
 # sleep a bit before we whack on it
 sleep 5
-
-ADMIN_PASSWORD=$password
-SERVICE_PASSWORD=$password
-
 
 function get_id () {
     echo `$@ | awk '/ id / { print $4 }'`
