@@ -48,8 +48,6 @@ EOF
 # source the stackrc file we just created
 . ./stackrc
 
-exit
-
 # edit keystone conf file to use templates and mysql
 cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.orig
 sed -e "
