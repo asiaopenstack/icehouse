@@ -13,6 +13,7 @@ fi
 # comment out the following line and uncomment the one after if you have a different IP in mind
 HOST_IP=$(/sbin/ifconfig eth0| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 #HOST_IP=10.0.10.100
+
 echo "#############################################################################################################"
 echo "The main IP address for this machine is probably $HOST_IP.  If that's wrong, ctrl-c and edit me."
 echo "#############################################################################################################"
@@ -29,7 +30,7 @@ email=$SG_SERVICE_EMAIL
 token=$SG_SERVICE_TOKEN
 region=$SG_SERVICE_REGION
 
-# set up env variables for various magical things
+# set up env variables for various things - you'll need this later to run keystone and nova-manage commands 
 cat > stackrc <<EOF
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
@@ -43,8 +44,10 @@ export SERVICE_TENANT_NAME=service
 export KEYSTONE_REGION=$region
 EOF
 
-# source the stackrc file
+# source the stackrc file we just created
 . ./stackrc
+
+exit
 
 # edit keystone conf file to use templates and mysql
 cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.orig
@@ -103,10 +106,12 @@ keystone service-create --name glance --type image --description 'OpenStack Imag
 keystone endpoint-create --region $KEYSTONE_REGION --service-id glance --publicurl 'http://'"$HOST_IP"':9292/v2' --adminurl 'http://'"$HOST_IP"':9292/v2' --internalurl 'http://'"$HOST_IP"':9292/v2'
 
 # quantum
-QUANTUM_USER=$(get_id keystone user-create --name=quantum --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
-keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $QUANTUM_USER --role-id $ADMIN_ROLE
-keystone service-create --name quantum --type network --description 'OpenStack Networking service'
-keystone endpoint-create --region $KEYSTONE_REGION --service-id quantum --publicurl 'http://'"$HOST_IP"':9696/' --adminurl 'http://'"$HOST_IP"':9696/' --internalurl 'http://'"$HOST_IP"':9696/'
+if $SG_QUANTUM; then
+	QUANTUM_USER=$(get_id keystone user-create --name=quantum --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
+	keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $QUANTUM_USER --role-id $ADMIN_ROLE
+	keystone service-create --name quantum --type network --description 'OpenStack Networking service'
+	keystone endpoint-create --region $KEYSTONE_REGION --service-id quantum --publicurl 'http://'"$HOST_IP"':9696/' --adminurl 'http://'"$HOST_IP"':9696/' --internalurl 'http://'"$HOST_IP"':9696/'
+fi
 
 # cinder
 CINDER_USER=$(get_id keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)

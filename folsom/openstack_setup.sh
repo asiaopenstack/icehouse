@@ -9,8 +9,10 @@ fi
 if [ -f ./setuprc ]
 then
 	echo "#############################################################################################################"
+	echo;
 	echo "Setup has already been run.  Edit or delete the ./setuprc file in this directory to reconfigure setup."
 	echo "You can also continue the setup by doing './openstack_server_test.sh'."
+	echo;
 	echo "#############################################################################################################"
 	exit
 fi
@@ -78,5 +80,7 @@ cat setuprc
 echo
 
 echo "#############################################################################################################"
+echo;
 echo "Setup configuration complete.  Continue the setup by doing a './openstack_server_test.sh'."
+echo;
 echo "#############################################################################################################"

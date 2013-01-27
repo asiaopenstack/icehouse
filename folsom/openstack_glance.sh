@@ -16,7 +16,9 @@ password=$SERVICE_PASSWORD
 if [ -f /etc/glance/glance-api-paste.ini.orig ]
 then
    echo "#################################################################################################"
-   echo "Not changing config files.  If you want to edit, they are in /etc/glance/" 
+   echo;
+   echo "Not changing config files.  If you want to edit, they are in /etc/glance/"
+   echo; 
    echo "#################################################################################################"
 else 
    # copy before editing
@@ -52,7 +54,9 @@ flavor = keystone
 " >> /etc/glance/glance-registry.conf
 
    echo "#################################################################################################"
-   echo "Backups of configs for glance are in /etc/glance/" 
+   echo;
+   echo "Backups of configs for glance are in /etc/glance/"
+   echo; 
    echo "#################################################################################################"
 fi
 
@@ -78,5 +82,7 @@ sleep 4
 glance index
 
 echo "#################################################################################################"
+echo;
 echo "You can now run './openstack_nova.sh' to set up Nova." 
+echo;
 echo "#################################################################################################"
