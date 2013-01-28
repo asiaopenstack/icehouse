@@ -13,7 +13,7 @@ apt-get install glance -y
 password=$SERVICE_PASSWORD
 
 # edit glance api conf files 
-if [ -f /etc/glance/glance-api-paste.ini.orig ]
+if [ -f /etc/glance/glance-api.conf.orig ]
 then
    echo "#################################################################################################"
    echo;
@@ -22,8 +22,8 @@ then
    echo "#################################################################################################"
 else 
    # copy to backups before editing
-   cp /etc/glance/glance-api-paste.ini /etc/glance/glance-api-paste.ini.orig
-   cp /etc/glance/glance-registry-paste.ini /etc/glance/glance-registry-paste.ini.orig
+   cp /etc/glance/glance-api.conf /etc/glance/glance-api.conf.orig
+   cp /etc/glance/glance-cache.conf /etc/glance/glance-cache.conf.orig
    cp /etc/glance/glance-registry.conf /etc/glance/glance-registry.conf.orig
 
    # we sed out the mysql connection here, but then tack on the flavor info later on...
@@ -38,14 +38,15 @@ else
    s,%SERVICE_TENANT_NAME%,admin,g;
    s,%SERVICE_USER%,admin,g;
    s,%SERVICE_PASSWORD%,$password,g;
-   " -i /etc/glance/glance-registry-paste.ini
+   " -i /etc/glance/glance-cache.conf
    
    sed -e "
    s,%SERVICE_TENANT_NAME%,admin,g;
    s,%SERVICE_USER%,admin,g;
    s,%SERVICE_PASSWORD%,$password,g;
-   " -i /etc/glance/glance-api-paste.ini
-   
+   " -i /etc/glance/glance-api.conf
+
+# lazy way of tossing a few things we need onto the end of the conf files  
 # do not unindent!
 echo "
 [paste_deploy]
