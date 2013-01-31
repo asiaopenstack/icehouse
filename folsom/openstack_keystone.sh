@@ -69,14 +69,18 @@ service keystone restart
 # sleep a bit before we whack on it
 sleep 5
 
+# The following portions of this script were inspired by works by Hastexo and the OpenStack wiki scripts.
+# Where possible, I've clarified or cleaned up logic flow to 'group' linear commands to each other.
+
 function get_id () {
     echo `$@ | awk '/ id / { print $4 }'`
 }
 
 # Tenants
-SERVICE_TENANT_NAME="service"
 ADMIN_TENANT=$(get_id keystone tenant-create --name=admin)
-SERVICE_TENANT=$(get_id keystone tenant-create --name=$SERVICE_TENANT_NAME)
+SERVICE_TENANT=$(get_id keystone tenant-create --name=service)
+DEMO_TENANT=$(get_id keystone tenant-create --name=demo)
+INVIS_TENANT=$(get_id keystone tenant-create --name=invisible_to_admin)
 
 # Users
 ADMIN_USER=$(get_id keystone user-create --name=admin --pass="$ADMIN_PASSWORD" --email=$email)
@@ -89,8 +93,14 @@ KEYSTONESERVICE_ROLE=$(get_id keystone role-create --name=KeystoneServiceAdmin)
 
 # Add Roles to Users in Tenants
 keystone user-role-add --user-id $ADMIN_USER --role-id $ADMIN_ROLE --tenant-id $ADMIN_TENANT
+keystone user-role-add --user-id $ADMIN_USER --role-id $ADMIN_ROLE --tenant-id $DEMO_TENANT
 keystone user-role-add --user-id $ADMIN_USER --role-id $KEYSTONEADMIN_ROLE --tenant-id $ADMIN_TENANT
 keystone user-role-add --user-id $ADMIN_USER --role-id $KEYSTONESERVICE_ROLE --tenant-id $ADMIN_TENANT
+
+# The Member role is used by Horizon and Swift
+MEMBER_ROLE=$(get_id keystone role-create --name=Member)
+keystone user-role-add --user-id $DEMO_USER --role-id $MEMBER_ROLE --tenant-id $DEMO_TENANT
+keystone user-role-add --user-id $DEMO_USER --role-id $MEMBER_ROLE --tenant-id $INVIS_TENANT
 
 # the following commands use an interesting pattern due to keystone's asinine way of doing asset association.
 # we run a keystone command through the get_id function (defined above) and then use the resulting md5 hash  
@@ -107,7 +117,7 @@ keystone endpoint-create --region $KEYSTONE_REGION --service-id $NOVA_ENDPOINT -
 # glance
 GLANCE_USER=$(get_id keystone user-create --name=glance --pass="$SERVICE_PASSWORD" --tenant_id $SERVICE_TENANT --email=$email)
 keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $GLANCE_USER --role-id $ADMIN_ROLE
-GLANCE_ENDPOINT=$(get_id keystone service-create --name glance --type image)
+GLANCE_ENDPOINT=$(get_id :-create --name glance --type image)
 keystone endpoint-create --region $KEYSTONE_REGION --service-id $GLANCE_ENDPOINT --publicurl 'http://'"$HOST_IP"':9292/v2' --adminurl 'http://'"$HOST_IP"':9292/v2' --internalurl 'http://'"$HOST_IP"':9292/v2';
 
 # quantum
