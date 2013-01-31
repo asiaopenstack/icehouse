@@ -1,4 +1,5 @@
 #!/bin/bash
+# The end of this script is somewhat cobbled together from all sorts of places.  Thanks to those people, whoever you are.
 
 # Make sure only root can run our script
 if [ "$(id -u)" != "0" ]; then
@@ -12,7 +13,7 @@ fi
 # grab our IP 
 # comment out the following line and uncomment the one after if you have a different IP in mind
 HOST_IP=$(/sbin/ifconfig eth0| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
-#HOST_IP=10.0.10.100
+# HOST_IP=10.0.10.100
 
 echo;
 echo "#############################################################################################################"
@@ -27,13 +28,14 @@ read -p "Hit enter to start Keystone setup. " -n 1 -r
 # get keystone
 apt-get install keystone -y
 
-# some vars from the SG setup file
+# some vars from the SG setup file getting locally reassigned 
 password=$SG_SERVICE_PASSWORD
 email=$SG_SERVICE_EMAIL
 token=$SG_SERVICE_TOKEN
 region=$SG_SERVICE_REGION
 
 # set up env variables for various things - you'll need this later to run keystone and nova-manage commands 
+# some of these variables are used by this script, so don't get confused if you seem them listed below again
 cat > stackrc <<EOF
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
@@ -76,6 +78,12 @@ function get_id () {
     echo `$@ | awk '/ id / { print $4 }'`
 }
 
+# the following commands use an interesting pattern due to keystone's asinine way of doing asset association.
+# we run a keystone command through the get_id function (defined above) and then use the resulting md5 hash  
+# to set a variable which we then use on the next command, effectively tying the two resources together inside
+# keystone.  later on we do this twice for each role.  why on earth keystone itself doesn't do this is anyone's 
+# guess. consider me disgruntled.  Kord Campbell
+
 # Tenants
 ADMIN_TENANT=$(get_id keystone tenant-create --name=admin)
 SERVICE_TENANT=$(get_id keystone tenant-create --name=service)
@@ -102,45 +110,39 @@ MEMBER_ROLE=$(get_id keystone role-create --name=Member)
 keystone user-role-add --user-id $DEMO_USER --role-id $MEMBER_ROLE --tenant-id $DEMO_TENANT
 keystone user-role-add --user-id $DEMO_USER --role-id $MEMBER_ROLE --tenant-id $INVIS_TENANT
 
-# the following commands use an interesting pattern due to keystone's asinine way of doing asset association.
-# we run a keystone command through the get_id function (defined above) and then use the resulting md5 hash  
-# to set a variable which we then use on the next command, effectively tying the two resources together inside
-# keystone.  we do this twice for each role.  why on earth keystone itself doesn't do this is anyone's guess.
-# consider me disgruntled.  - kord
-
 # nova
 NOVA_USER=$(get_id keystone user-create --name=nova --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
 keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $NOVA_USER --role-id $ADMIN_ROLE
-NOVA_ENDPOINT=$(get_id keystone service-create --name nova --type compute)
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $NOVA_ENDPOINT --publicurl 'http://'"$HOST_IP"':8774/v2/%(tenant-id)s' --adminurl 'http://'"$HOST_IP"':8774/v2/%(tenant_id)s' --internalurl 'http://'"$HOST_IP"':8774/v2/%(tenant_id)s'
+NOVA=$(get_id keystone service-create --name nova --type compute --description Compute )
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $NOVA --publicurl 'http://'"$HOST_IP"':8774/v2/$(tenant_id)s' --adminurl 'http://'"$HOST_IP"':8774/v2/$(tenant_id)s' --internalurl 'http://'"$HOST_IP"':8774/v2/$(tenant_id)s'
 
 # glance
 GLANCE_USER=$(get_id keystone user-create --name=glance --pass="$SERVICE_PASSWORD" --tenant_id $SERVICE_TENANT --email=$email)
 keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $GLANCE_USER --role-id $ADMIN_ROLE
-GLANCE_ENDPOINT=$(get_id :-create --name glance --type image)
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $GLANCE_ENDPOINT --publicurl 'http://'"$HOST_IP"':9292/v2' --adminurl 'http://'"$HOST_IP"':9292/v2' --internalurl 'http://'"$HOST_IP"':9292/v2';
+GLANCE=$(get_id keystone service-create --name glance --type image --description Image)
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $GLANCE --publicurl 'http://'"$HOST_IP"':9292/v2' --adminurl 'http://'"$HOST_IP"':9292/v2' --internalurl 'http://'"$HOST_IP"':9292/v2'
 
 # quantum
 if [ "$SG_QUANTUM" != "0" ]; then
   QUANTUM_USER=$(get_id keystone user-create --name=quantum --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
   keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $QUANTUM_USER --role-id $ADMIN_ROLE
-  QUANTUM_ENDPOINT=$(get_id keystone service-create --name quantum --type network)
-  keystone endpoint-create --region $KEYSTONE_REGION --service-id $QUANTUM_ENDPOINT --publicurl 'http://'"$HOST_IP"':9696/' --adminurl 'http://'"$HOST_IP"':9696/' --internalurl 'http://'"$HOST_IP"':9696/'
+  QUANTUM=$(get_id keystone service-create --name quantum --type network --description Networking )
+  keystone endpoint-create --region $KEYSTONE_REGION --service-id $QUANTUM --publicurl 'http://'"$HOST_IP"':9696/' --adminurl 'http://'"$HOST_IP"':9696/' --internalurl 'http://'"$HOST_IP"':9696/'
 fi
 
 # cinder
 CINDER_USER=$(get_id keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
 keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $CINDER_USER --role-id $ADMIN_ROLE
-CINDER_ENDPOINT=$(get_id keystone service-create --name cinder --type volume)
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $CINDER_ENDPOINT --publicurl 'http://'"$HOST_IP"':8776/v1/$(tenant_id)s' --adminurl 'http://'"$HOST_IP"':8776/v1/$(tenant_id)s' --internalurl 'http://'"$HOST_IP"':8776/v1/$(tenant_id)s'
+CINDER=$(get_id keystone service-create --name cinder --type volume --description Volume )
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $CINDER --publicurl 'http://'"$HOST_IP"':8776/v1/$(tenant_id)s' --adminurl 'http://'"$HOST_IP"':8776/v1/$(tenant_id)s' --internalurl 'http://'"$HOST_IP"':8776/v1/$(tenant_id)s'
 
 # keystone 
-KEYSTONE_ENDPOINT=$(get_id keystone service-create --name keystone --type identity) 
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $KEYSTONE_ENDPOINT --publicurl 'http://'"$HOST_IP"':5000/v2.0' --adminurl 'http://'"$HOST_IP"':35357/v2.0' --internalurl 'http://'"$HOST_IP"':5000/v2.0'
+KEYSTONE=$(get_id keystone service-create --name keystone --type identity --description Identity )
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $KEYSTONE --publicurl 'http://'"$HOST_IP"':5000/v2.0' --adminurl 'http://'"$HOST_IP"':35357/v2.0' --internalurl 'http://'"$HOST_IP"':5000/v2.0'
 
 # ec2 compatability
-EC2_ENDPOINT=$(get_id keystone service-create --name ec2 --type ec2)
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $EC2_ENDPOINT --publicurl 'http://'"$HOST_IP"':8773/services/Cloud' --adminurl 'http://'"$HOST_IP"':8773/services/Admin' --internalurl 'http://'"$HOST_IP"':8773/services/Cloud'
+EC2=$(get_id keystone service-create --name ec2 --type ec2 --description EC2 )
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $EC2 --publicurl 'http://'"$HOST_IP"':8773/services/Cloud' --adminurl 'http://'"$HOST_IP"':8773/services/Admin' --internalurl 'http://'"$HOST_IP"':8773/services/Cloud'
 
 # create ec2 creds and parse the secret and access key returned
 RESULT=$(keystone ec2-credentials-create --tenant-id=$ADMIN_TENANT --user-id=$ADMIN_USER)

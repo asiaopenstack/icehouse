@@ -77,15 +77,12 @@ sleep 4
 # add ubuntu image
 if [ -f images/ubuntu-12.04-server-cloudimg-amd64-disk1.img ]
 then
-  glance add name="Ubuntu 12.04 LTS" disk_format=qcow2 container_format=ovf < images/ubuntu-12.04-server-cloudimg-amd64-disk1.img
+  glance image-create --name "Ubuntu 12.04 LTS" --is-public true --container-format ovf --disk-format qcow2 --file images/ubuntu-12.04-server-cloudimg-amd64-disk1.img 
 else
   wget http://stackgeek.s3.amazonaws.com/ubuntu-12.04-server-cloudimg-amd64-disk1.img
   mv ubuntu-12.04-server-cloudimg-amd64-disk1.img images
-  glance add name="Ubuntu 12.04 LTS" disk_format=qcow2 container_format=ovf < images/ubuntu-12.04-server-cloudimg-amd64-disk1.img
+  glance image-create --name "Ubuntu 12.04 LTS" --is-public true --container-format ovf --disk-format qcow2 --file images/ubuntu-12.04-server-cloudimg-amd64-disk1.img 
 fi
-
-sleep 4
-glance index
 
 echo "#################################################################################################"
 echo;

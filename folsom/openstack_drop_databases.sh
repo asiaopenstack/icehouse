@@ -8,7 +8,7 @@ fi
 
 # single or multi?
 echo;
-read -p "Hit 'd' to drop the database.  Any other key exits. " -n 1 -r
+read -p "Hit 'd' to drop the OpenStack databases.  Any other key exits. " -n 1 -r
 if [[ $REPLY =~ ^[Dd]$ ]]
 then
 
