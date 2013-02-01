@@ -53,15 +53,16 @@ EOF
 . ./stackrc
 
 # edit keystone conf file to use templates and mysql
-if [ -f /etc/keystone/keystone.conf.org ]; then
-  echo "Original backup of keystone.conf file exists. Your current config may be modified by this script."
+if [ -f /etc/keystone/keystone.conf.orig ]; then
+  echo "Original backup of keystone.conf file exists. Your current config will be modified by this script."
+  cp /etc/keystone/keystone.conf.orig /etc/keystone/keystone.conf
 else
   cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.orig
 fi
 
 sed -e "
-/^admin_token = ADMIN/s/^.*$/admin_token = $token/
 /^connection =.*$/s/^.*$/connection = mysql:\/\/keystone:$password@127.0.0.1\/keystone/
+/^# admin_token =.*$/s/^.*$/admin_token = $token/
 " -i /etc/keystone/keystone.conf
 
 # create db tables and restart
