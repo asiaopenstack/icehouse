@@ -17,3 +17,4 @@ Now checkout the StackGeek OpenStack setup scripts from Github:
 
     git clone git://github.com/StackGeek/openstackgeek.git
     cd openstackgeek/folsom
+
