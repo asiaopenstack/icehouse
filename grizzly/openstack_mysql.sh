@@ -57,12 +57,15 @@ GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' IDENTIFIED BY '$ser
 CREATE DATABASE quantum;
 GRANT ALL PRIVILEGES ON quantum.* TO 'quantum'@'%' IDENTIFIED BY '$service_pass';
 GRANT ALL PRIVILEGES ON quantum.* TO 'quantum'@'localhost' IDENTIFIED BY '$service_pass';
+CREATE DATABASE cinder;
+GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'%' IDENTIFIED BY '$service_pass';
+GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'localhost' IDENTIFIED BY '$service_pass';
 EOF
 
 echo;
 echo "#######################################################################################"
 echo;
-echo "Run './openstack_keystone.sh' now."
+echo "Run './openstack_cinder.sh' now."
 echo;
 echo "#######################################################################################"
 echo;

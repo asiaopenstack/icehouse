@@ -11,18 +11,22 @@ fi
 . ./setuprc
 
 # grab our IP 
-# comment out the following line and uncomment the one after if you have a different IP in mind
-HOST_IP=$(/sbin/ifconfig eth0| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
-# HOST_IP=10.0.10.100
+read -p "Enter the device name for the Internet NIC (eth0, em1, etc.) : " internetnic
+read -p "Enter the device name for the Management NIC (eth0, em1, etc.) : " managementnic
+
+INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 echo;
 echo "#############################################################################################################"
 echo;
-echo "The main IP address for this machine is probably $HOST_IP.  If that's wrong, ctrl-c and edit this script."
+echo "The IP address on the Internet NIC is probably $INTERNET_IP.  If that's wrong, ctrl-c and edit this script."
+echo "The IP address on the Management NIC is probably $MANAGEMENT_IP If that's wrong, ctrl-c and edit this script."
 echo;
 echo "#############################################################################################################"
 echo;
-
+#INTERNET_IP=x.x.x.x
+#MANAGEMENT_IP=x.x.x.x
 read -p "Hit enter to start Keystone setup. " -n 1 -r
 
 # get keystone
@@ -40,11 +44,11 @@ cat > stackrc <<EOF
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=$password
-export OS_AUTH_URL="http://127.0.0.1:5000/v2.0/" 
+export OS_AUTH_URL="http://$INTERNET_IP:5000/v2.0/" 
 export ADMIN_PASSWORD=$password
 export SERVICE_PASSWORD=$password
 export SERVICE_TOKEN=$token
-export SERVICE_ENDPOINT="http://127.0.0.1:35357/v2.0"
+export SERVICE_ENDPOINT="http://$INTERNET_IP:35357/v2.0"
 export SERVICE_TENANT_NAME=service
 export KEYSTONE_REGION=$region
 EOF
@@ -61,7 +65,7 @@ else
 fi
 
 sed -e "
-/^connection =.*$/s/^.*$/connection = mysql:\/\/keystone:$password@127.0.0.1\/keystone/
+/^connection =.*$/s/^.*$/connection = mysql:\/\/keystone:$password@$MANAGEMENT_IP\/keystone/
 /^# admin_token =.*$/s/^.*$/admin_token = $token/
 " -i /etc/keystone/keystone.conf
 
@@ -83,7 +87,7 @@ function get_id () {
 # we run a keystone command through the get_id function (defined above) and then use the resulting md5 hash  
 # to set a variable which we then use on the next command, effectively tying the two resources together inside
 # keystone.  later on we do this twice for each role.  why on earth keystone itself doesn't do this is anyone's 
-# guess. consider me disgruntled.  Kord Campbell
+# guess. consider me disgruntled. Kord 
 
 # Tenants
 ADMIN_TENANT=$(get_id keystone tenant-create --name=admin)

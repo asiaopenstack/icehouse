@@ -6,79 +6,97 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-host_ip=$(/sbin/ifconfig eth0| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
-echo "#############################################################################################################"
-echo "The IP address for eth0 is probably $host_ip".  Keep in mind you need an eth1 for this to work.
-echo "#############################################################################################################"
-read -p "Enter the primary ethernet interface IP: " host_ip_entry
-read -p "Enter the fixed network (eg. 10.0.2.32/27): " fixed_range
-read -p "Enter the fixed starting IP (eg. 10.0.2.33): " fixed_start
-echo "#######################################################################################"
-echo "The floating range can be a subset of your current network.  Configure your DHCP server"
-echo "to block out the range before you choose it here.  An example would be 10.0.1.224-255"
-echo "#######################################################################################"
-read -p "Enter the floating network (eg. 10.0.1.224/27): " floating_range
-read -p "Enter the floating netowrk size (eg. 32): " floating_size
+# source the setup file
+. ./setuprc
 
-# get nova
-apt-get install nova-api nova-cert nova-common nova-compute nova-compute-kvm nova-doc nova-network nova-objectstore nova-scheduler nova-vncproxy nova-volume python-nova python-novaclient
+# some vars from the SG setup file getting locally reassigned 
+password=$SG_SERVICE_PASSWORD    
 
-. ./stackrc
-password=$SERVICE_PASSWORD
+# grab our IP 
+read -p "Enter the device name for the Internet NIC (eth0, em1, etc.) : " internetnic
+read -p "Enter the device name for the Management NIC (eth0, em1, etc.) : " managementnic
+
+INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+
+echo;
+echo "#############################################################################################################"
+echo;
+echo "The IP address on the Internet NIC is probably $INTERNET_IP.  If that's wrong, ctrl-c and edit this script."
+echo "The IP address on the Management NIC is probably $MANAGEMENT_IP If that's wrong, ctrl-c and edit this script."
+echo;
+echo "#############################################################################################################"
+echo;
+#INTERNET_IP=x.x.x.x
+#MANAGEMENT_IP=x.x.x.x
+read -p "Hit enter to start Nova setup. " -n 1 -r
+
+# install packages
+apt-get install -y nova-api nova-cert novnc nova-consoleauth nova-scheduler nova-novncproxy nova-doc nova-conductor
 
 # hack up the nova paste file
 sed -e "
-s,%SERVICE_TENANT_NAME%,admin,g;
-s,%SERVICE_USER%,admin,g;
+s,127.0.0.1,$MANAGEMENT_IP,g;
+s,%SERVICE_TENANT_NAME%,service,g;
+s,%SERVICE_USER%,nova,g;
 s,%SERVICE_PASSWORD%,$password,g;
 " -i /etc/nova/api-paste.ini
  
 # write out a new nova file
 echo "
---dhcpbridge_flagfile=/etc/nova/nova.conf
---dhcpbridge=/usr/bin/nova-dhcpbridge
---logdir=/var/log/nova
---state_path=/var/lib/nova
---lock_path=/var/lock/nova
---allow_admin_api=true
---use_deprecated_auth=false
---auth_strategy=keystone
---scheduler_driver=nova.scheduler.simple.SimpleScheduler
---s3_host=$host_ip_entry
---ec2_host=$host_ip_entry
---rabbit_host=$host_ip_entry
---cc_host=$host_ip_entry
---nova_url=http://$host_ip_entry:8774/v1.1/
---routing_source_ip=$host_ip_entry
---glance_api_servers=$host_ip_entry:9292
---image_service=nova.image.glance.GlanceImageService
---iscsi_ip_prefix=192.168.22
---sql_connection=mysql://nova:$password@127.0.0.1/nova
---ec2_url=http://$host_ip_entry:8773/services/Cloud
---keystone_ec2_url=http://$host_ip_entry:5000/v2.0/ec2tokens
---api_paste_config=/etc/nova/api-paste.ini
---libvirt_type=kvm
---libvirt_use_virtio_for_bridges=true
---start_guests_on_host_boot=true
---resume_guests_state_on_host_boot=true
---vnc_enabled=true
---vncproxy_url=http://$host_ip_entry:6080
---vnc_console_proxy_url=http://$host_ip_entry:6080
-# network specific settings
---network_manager=nova.network.manager.FlatDHCPManager
---public_interface=eth0
---flat_interface=eth1
---flat_network_bridge=br100
---fixed_range=$fixed_range
---floating_range=$floating_range
---network_size=$floating_size
---flat_network_dhcp_start=$fixed_start
---flat_injected=False
---force_dhcp_release
---iscsi_helper=tgtadm
---connection_type=libvirt
---root_helper=sudo nova-rootwrap
---verbose
+[DEFAULT]
+logdir=/var/log/nova
+state_path=/var/lib/nova
+lock_path=/run/lock/nova
+verbose=True
+api_paste_config=/etc/nova/api-paste.ini
+compute_scheduler_driver=nova.scheduler.simple.SimpleScheduler
+rabbit_host=$MANAGEMENT_IP
+nova_url=http://$MANAGEMENT_IP:8774/v1.1/
+sql_connection=mysql://nova:$password@$MANAGEMENT_IP/nova
+root_helper=sudo nova-rootwrap /etc/nova/rootwrap.conf
+
+# Auth
+use_deprecated_auth=false
+auth_strategy=keystone
+
+# Imaging service
+glance_api_servers=$MANAGEMENT_IP:9292
+image_service=nova.image.glance.GlanceImageService
+
+# Vnc configuration
+novnc_enabled=true
+novncproxy_base_url=http://$INTERNET_IP:6080/vnc_auto.html
+novncproxy_port=6080
+vncserver_proxyclient_address=$MANAGEMENT_IP
+vncserver_listen=0.0.0.0
+
+# Network settings
+network_api_class=nova.network.quantumv2.api.API
+quantum_url=http://$MANAGEMENT_IP:9696
+quantum_auth_strategy=keystone
+quantum_admin_tenant_name=service
+quantum_admin_username=quantum
+quantum_admin_password=service_pass
+quantum_admin_auth_url=http://$MANAGEMENT_IP:35357/v2.0
+libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
+linuxnet_interface_driver=nova.network.linux_net.LinuxOVSInterfaceDriver
+#If you want Quantum + Nova Security groups
+firewall_driver=nova.virt.firewall.NoopFirewallDriver
+security_group_api=quantum
+#If you want Nova Security groups only, comment the two lines above and uncomment line -1-.
+#-1-firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
+
+#Metadata
+service_quantum_metadata_proxy = True
+quantum_metadata_proxy_shared_secret = helloOpenStack
+
+# Compute #
+compute_driver=libvirt.LibvirtDriver
+
+# Cinder #
+volume_api_class=nova.volume.cinder.API
+osapi_volume_listen_port=5900
 " > /etc/nova/nova.conf
 
 # sync db
@@ -87,14 +105,7 @@ nova-manage db sync
 # restart nova
 ./openstack_restart_nova.sh
 
-# no clue why we have to do this when it's in the config?
-nova-manage network create private --fixed_range_v4=$fixed_range --num_networks=1 --bridge=br100 --bridge_interface=eth1 --network_size=$fixed_size
-nova-manage floating create --ip_range=$floating_range
-
-# do we need this?
-chown -R nova:nova /etc/nova/
-
-echo "#######################################################################################"
-echo "'nova list' and a 'nova image-list' to test.  Do './openstack_horizon.sh' next."
-echo "#######################################################################################"
+echo "############################################################################################"
+echo "Do a 'nova-manage list' and a 'nova image-list' to test.  Do './openstack_horizon.sh' next."
+echo "############################################################################################"
 

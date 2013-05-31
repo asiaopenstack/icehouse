@@ -7,16 +7,20 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # get horizon
-apt-get install libapache2-mod-wsgi openstack-dashboard
+apt-get install -y openstack-dashboard memcached
 
 # restart apache
-service apache2 restart
+service apache2 restart; service memcached restart
 
 . ./stackrc
 password=$SERVICE_PASSWORD
-host_ip=$(/sbin/ifconfig eth0| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+
+# grab our IP 
+read -p "Enter the device name for the Internet NIC (eth0, em1, etc.) : " internetnic
+
+INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 echo "#######################################################################################"
-echo "The horizon dashboard should be at http://$host_ip/.  Login with admin/$password"
+echo "The horizon dashboard should be at http://$INTERNET_IP/horizon.  Login with admin/$password"
 echo "#######################################################################################"
 

@@ -25,6 +25,7 @@ sed -e "
 
 # turn on forwarding
 echo 1 > /proc/sys/net/ipv4/ip_forward
+sysctl net.ipv4.ip_forward=1
 
 echo;
 echo "#################################################################################################
@@ -42,7 +43,7 @@ iface eth0 inet static
 
 auto eth1
 
-After you are done, do a '/etc/init.d/networking restart', then run './openstack_volumes.sh'
+After you are done, do a '/etc/init.d/networking restart', then run './openstack_mysql.sh'
 
 #################################################################################################
 "

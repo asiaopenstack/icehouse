@@ -12,6 +12,25 @@ apt-get install glance -y
 . ./stackrc
 password=$SERVICE_PASSWORD
 
+# grab our IP 
+read -p "Enter the device name for the Internet NIC (eth0, em1, etc.) : " internetnic
+read -p "Enter the device name for the Management NIC (eth0, em1, etc.) : " managementnic
+
+INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+
+echo;
+echo "#############################################################################################################"
+echo;
+echo "The IP address on the Internet NIC is probably $INTERNET_IP.  If that's wrong, ctrl-c and edit this script."
+echo "The IP address on the Management NIC is probably $MANAGEMENT_IP If that's wrong, ctrl-c and edit this script."
+echo;
+echo "#############################################################################################################"
+echo;
+#INTERNET_IP=x.x.x.x
+#MANAGEMENT_IP=x.x.x.x
+read -p "Hit enter to start Glance setup. " -n 1 -r
+
 # edit glance api conf files 
 if [ -f /etc/glance/glance-api.conf.orig ]
 then
@@ -28,7 +47,7 @@ else
 
    # we sed out the mysql connection here, but then tack on the flavor info later on...
    sed -e "
-   /^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@127.0.0.1\/glance/
+   /^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$MANAGEMENT_IP\/glance/
    s,%SERVICE_TENANT_NAME%,admin,g;
    s,%SERVICE_USER%,admin,g;
    s,%SERVICE_PASSWORD%,$password,g;
