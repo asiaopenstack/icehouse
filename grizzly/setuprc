@@ -1,7 +1,0 @@
-export SG_QUANTUM=0
-export SG_INSTALL_SWIFT=0
-export SG_MULTI_NODE=0
-export SG_SERVICE_EMAIL=kordless@gmail.com
-export SG_SERVICE_PASSWORD=f00bar
-export SG_SERVICE_TOKEN=
-export SG_SERVICE_REGION=StackGeek
