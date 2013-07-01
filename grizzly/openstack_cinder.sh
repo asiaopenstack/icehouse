@@ -9,12 +9,14 @@ fi
 # source the setup file
 . ./setuprc
 
+clear 
+
 # some vars from the SG setup file getting locally reassigned 
 password=$SG_SERVICE_PASSWORD    
 
 # grab our IP 
-read -p "Enter the device name for the Internet NIC (eth0, em1, etc.) : " internetnic
-read -p "Enter the device name for the Management NIC (eth0, em1, etc.) : " managementnic
+read -p "Enter the device name for the Internet NIC (eth0, etc.) : " internetnic
+read -p "Enter the device name for the Management NIC (eth1, etc.) : " managementnic
 
 INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
@@ -33,6 +35,7 @@ read -p "Hit enter to start Cinder setup. " -n 1 -r
 
 # install packages and toggle iscitarget
 apt-get install -y cinder-api cinder-scheduler cinder-volume iscsitarget open-iscsi iscsitarget-dkms
+
 sed -i 's/false/true/g' /etc/default/iscsitarget
 
 # hack up the cinder paste file
@@ -114,4 +117,5 @@ When you are done with one of the above, run './openstack_quantum.sh'
 
 #################################################################################################
 "
+echo;
 exit

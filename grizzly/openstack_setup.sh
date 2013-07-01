@@ -6,39 +6,34 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
+clear 
+
 if [ -f ./setuprc ]
 then
-	echo "#############################################################################################################"
+	echo "########################################################################################################################"
 	echo;
 	echo "Setup has already been run.  Edit or delete the ./setuprc file in this directory to reconfigure setup."
-	echo "You can also continue the setup by doing './openstack_server_test.sh'."
 	echo;
-	echo "#############################################################################################################"
+	echo "You can reset the installation by running './openstack_cleanup.sh' or continue by running './openstack_server_test.sh'."
+	echo;
+	echo "########################################################################################################################"
+	echo;
 	exit
 fi
 
+echo;
 echo "#############################################################################################################"
 echo "Please refer to http://stackgeek.com/guides/osi10min.html before continuing the setup."
 echo "#############################################################################################################"
 
 # single or multi?
 echo;
-read -p "Is this a single node install? " -n 2 -r
+read -p "Is this a multi node install? " -n 2 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-	SG_MULTI_NODE=0
-else
 	SG_MULTI_NODE=1
-fi
-echo;
-
-# quantum
-read -p "Do you want to install Quantum? " -n 2 -r
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-	SG_INSTALL_QUANTUM=1
 else
-	SG_INSTALL_QUANTUM=0
+	SG_MULTI_NODE=0
 fi
 echo;
 
@@ -65,7 +60,6 @@ echo;
 token=`cat /dev/urandom | head -c2048 | md5sum | cut -d' ' -f1`
 
 cat > setuprc <<EOF
-export SG_QUANTUM=$SG_INSTALL_QUANTUM
 export SG_INSTALL_SWIFT=$SG_INSTALL_SWIFT
 export SG_MULTI_NODE=$SG_MULTI_NODE
 export SG_SERVICE_EMAIL=$email
@@ -84,3 +78,4 @@ echo;
 echo "Setup configuration complete.  Continue the setup by doing a './openstack_server_test.sh'."
 echo;
 echo "#############################################################################################################"
+echo;

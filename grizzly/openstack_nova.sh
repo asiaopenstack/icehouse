@@ -9,12 +9,14 @@ fi
 # source the setup file
 . ./setuprc
 
+clear
+
 # some vars from the SG setup file getting locally reassigned 
 password=$SG_SERVICE_PASSWORD    
 
 # grab our IP 
-read -p "Enter the device name for the Internet NIC (eth0, em1, etc.) : " internetnic
-read -p "Enter the device name for the Management NIC (eth0, em1, etc.) : " managementnic
+read -p "Enter the device name for the Internet NIC (eth0, etc.) : " internetnic
+read -p "Enter the device name for the Management NIC (eth1, etc.) : " managementnic
 
 INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
@@ -32,7 +34,7 @@ echo;
 read -p "Hit enter to start Nova setup. " -n 1 -r
 
 # install packages
-apt-get install -y nova-api nova-cert novnc nova-consoleauth nova-scheduler nova-novncproxy nova-doc nova-conductor
+apt-get install -y nova-api nova-cert novnc nova-consoleauth nova-scheduler nova-novncproxy nova-doc nova-conductor nova-compute-kvm
 
 # hack up the nova paste file
 sed -e "
@@ -71,25 +73,20 @@ novncproxy_port=6080
 vncserver_proxyclient_address=$MANAGEMENT_IP
 vncserver_listen=0.0.0.0
 
+# Metadata
+service_quantum_metadata_proxy = True
+quantum_metadata_proxy_shared_secret = $password
 # Network settings
 network_api_class=nova.network.quantumv2.api.API
 quantum_url=http://$MANAGEMENT_IP:9696
 quantum_auth_strategy=keystone
 quantum_admin_tenant_name=service
 quantum_admin_username=quantum
-quantum_admin_password=service_pass
+quantum_admin_password=$password
 quantum_admin_auth_url=http://$MANAGEMENT_IP:35357/v2.0
-libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
-linuxnet_interface_driver=nova.network.linux_net.LinuxOVSInterfaceDriver
-#If you want Quantum + Nova Security groups
-firewall_driver=nova.virt.firewall.NoopFirewallDriver
-security_group_api=quantum
-#If you want Nova Security groups only, comment the two lines above and uncomment line -1-.
-#-1-firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
-
-#Metadata
-service_quantum_metadata_proxy = True
-quantum_metadata_proxy_shared_secret = helloOpenStack
+libvirt_vif_driver=nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver
+linuxnet_interface_driver=nova.network.linux_net.LinuxBridgeInterfaceDriver
+firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
 
 # Compute #
 compute_driver=libvirt.LibvirtDriver
@@ -99,13 +96,26 @@ volume_api_class=nova.volume.cinder.API
 osapi_volume_listen_port=5900
 " > /etc/nova/nova.conf
 
+# add to nova-compute.conf
+
+echo "
+libvirt_vif_type=ethernet
+libvirt_vif_driver=nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver
+" >> /etc/nova/nova-compute.conf
+
+# restart
+cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
+sleep 4
+
 # sync db
 nova-manage db sync
+sleep 4
 
 # restart nova
-./openstack_restart_nova.sh
+cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
 
-echo "############################################################################################"
-echo "Do a 'nova-manage list' and a 'nova image-list' to test.  Do './openstack_horizon.sh' next."
-echo "############################################################################################"
+echo "###################################################################################################"
+echo "Do a 'nova-manage service list' and a 'nova image-list' to test.  Do './openstack_horizon.sh' next."
+echo "###################################################################################################"
+echo;
 

@@ -9,13 +9,15 @@ fi
 # install and run kvm-ok to see if we have virt capabilities
 apt-get install cpu-checker -y
 if /usr/sbin/kvm-ok
-then echo "#################################################################################################
+then echo;
+echo "#################################################################################################
 
 Your CPU seems to support KVM extensions.  Run './openstack_system_update.sh' to continue setup. 
 
 #################################################################################################
 "
-else echo "#################################################################################################
+else echo;
+echo "#################################################################################################
 
 Your system isn't configured to run KVM properly.  Investigate this before continuing.
 

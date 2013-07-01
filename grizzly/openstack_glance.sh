@@ -6,15 +6,14 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-# get glance
-apt-get install glance -y
-
 . ./stackrc
 password=$SERVICE_PASSWORD
 
+clear
+
 # grab our IP 
-read -p "Enter the device name for the Internet NIC (eth0, em1, etc.) : " internetnic
-read -p "Enter the device name for the Management NIC (eth0, em1, etc.) : " managementnic
+read -p "Enter the device name for the Internet NIC (eth0, etc.) : " internetnic
+read -p "Enter the device name for the Management NIC (eth1, etc.) : " managementnic
 
 INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
@@ -31,6 +30,9 @@ echo;
 #MANAGEMENT_IP=x.x.x.x
 read -p "Hit enter to start Glance setup. " -n 1 -r
 
+# get glance
+apt-get install glance -y
+
 # edit glance api conf files 
 if [ -f /etc/glance/glance-api.conf.orig ]
 then
@@ -41,42 +43,57 @@ then
    echo "#################################################################################################"
 else 
    # copy to backups before editing
+   cp /etc/glance/glance-api-paste.ini /etc/glance/glance-api-paste.ini.orig
+   cp /etc/glance/glance-registry-paste.ini /etc/glance/glance-registry-paste.ini.orig
    cp /etc/glance/glance-api.conf /etc/glance/glance-api.conf.orig
-   cp /etc/glance/glance-cache.conf /etc/glance/glance-cache.conf.orig
    cp /etc/glance/glance-registry.conf /etc/glance/glance-registry.conf.orig
 
-   # we sed out the mysql connection here, but then tack on the flavor info later on...
-   sed -e "
-   /^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$MANAGEMENT_IP\/glance/
-   s,%SERVICE_TENANT_NAME%,admin,g;
-   s,%SERVICE_USER%,admin,g;
-   s,%SERVICE_PASSWORD%,$password,g;
-   " -i /etc/glance/glance-registry.conf
-   
-   sed -e "
-   s,%SERVICE_TENANT_NAME%,admin,g;
-   s,%SERVICE_USER%,admin,g;
-   s,%SERVICE_PASSWORD%,$password,g;
-   " -i /etc/glance/glance-cache.conf
-   
-   sed -e "
-   s,%SERVICE_TENANT_NAME%,admin,g;
-   s,%SERVICE_USER%,admin,g;
-   s,%SERVICE_PASSWORD%,$password,g;
-   " -i /etc/glance/glance-api.conf
+# do not unindent!
+# hack up glance-api-paste.ini file
+echo "
+auth_host = $MANAGEMENT_IP
+auth_port = 35357
+auth_protocol = http
+admin_tenant_name = service
+admin_user = glance
+admin_password = $password
+" >> /etc/glance/glance-api-paste.ini
 
-# lazy way of tossing a few things we need onto the end of the conf files  
+# hack up glance-registry-paste.ini file
+echo "
+auth_host = $MANAGEMENT_IP
+auth_port = 35357
+auth_protocol = http
+admin_tenant_name = service
+admin_user = glance
+admin_password = $password
+" >> /etc/glance/glance-registry-paste.ini
+
+# we sed out the mysql connection here, but then tack on the flavor info later on...
+sed -e "
+/^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$MANAGEMENT_IP\/glance/
+s,%SERVICE_TENANT_NAME%,service,g;
+s,%SERVICE_USER%,glance,g;
+s,%SERVICE_PASSWORD%,$password,g;
+" -i /etc/glance/glance-registry.conf
+   
+echo "
+[paste_deploy]
+flavor = keystone
+" >> /etc/glance/glance-registry.conf
+
+sed -e "
+/^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$MANAGEMENT_IP\/glance/
+s,%SERVICE_TENANT_NAME%,service,g;
+s,%SERVICE_USER%,glance,g;
+s,%SERVICE_PASSWORD%,$password,g;
+" -i /etc/glance/glance-api.conf
+
 # do not unindent!
 echo "
 [paste_deploy]
 flavor = keystone
 " >> /etc/glance/glance-api.conf
-   
-# do not unindent!
-echo "
-[paste_deploy]
-flavor = keystone
-" >> /etc/glance/glance-registry.conf
 
    echo "#################################################################################################"
    echo;
@@ -85,15 +102,14 @@ flavor = keystone
    echo "#################################################################################################"
 fi
 
-# prevent version control, create db tables, and restart
-glance-manage version_control 0
+service glance-api restart; service glance-registry restart
+sleep 4
 glance-manage db_sync
 sleep 4
-service glance-api restart
-service glance-registry restart
-sleep 4
+service glance-api restart; service glance-registry restart
 
 # add ubuntu image
+mkdir images
 if [ -f images/ubuntu-12.04-server-cloudimg-amd64-disk1.img ]
 then
   glance image-create --name "Ubuntu 12.04 LTS" --is-public true --container-format ovf --disk-format qcow2 --file images/ubuntu-12.04-server-cloudimg-amd64-disk1.img 
@@ -103,8 +119,12 @@ else
   glance image-create --name "Ubuntu 12.04 LTS" --is-public true --container-format ovf --disk-format qcow2 --file images/ubuntu-12.04-server-cloudimg-amd64-disk1.img 
 fi
 
+# add cirros image
+glance image-create --name "Cirros 0.3.0"  --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+
 echo "#################################################################################################"
 echo;
-echo "You can now run './openstack_nova.sh' to set up Nova." 
+echo "Do a 'glance image-list' to see images.  You can now run './openstack_nova.sh' to set up Nova." 
 echo;
 echo "#################################################################################################"
+echo;

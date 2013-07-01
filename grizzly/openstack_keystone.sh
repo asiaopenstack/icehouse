@@ -11,11 +11,12 @@ fi
 . ./setuprc
 
 # grab our IP 
-read -p "Enter the device name for the Internet NIC (eth0, em1, etc.) : " internetnic
-read -p "Enter the device name for the Management NIC (eth0, em1, etc.) : " managementnic
+read -p "Enter the device name for the Internet NIC (eth0, etc.) : " internetnic
+read -p "Enter the device name for the Management NIC (eth1, etc.) : " managementnic
 
 INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+HOST_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 echo;
 echo "#############################################################################################################"
@@ -27,6 +28,8 @@ echo "##########################################################################
 echo;
 #INTERNET_IP=x.x.x.x
 #MANAGEMENT_IP=x.x.x.x
+#HOST_IP=x.x.x.x
+
 read -p "Hit enter to start Keystone setup. " -n 1 -r
 
 # get keystone
