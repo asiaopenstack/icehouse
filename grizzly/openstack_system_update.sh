@@ -17,8 +17,6 @@ fi
 
 apt-get install ubuntu-cloud-keyring -y
 aptitude update -y
-aptitude upgrade -y
-aptitude dist-upgrade -y
 
 echo "#################################################################################################
 
