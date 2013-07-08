@@ -33,12 +33,30 @@ echo;
 #MANAGEMENT_IP=x.x.x.x
 read -p "Hit enter to start Cinder setup. " -n 1 -r
 
-# install packages and toggle iscitarget
-apt-get install -y cinder-api cinder-scheduler cinder-volume iscsitarget open-iscsi iscsitarget-dkms
+# edit keystone conf file to use templates and mysql
+if [ -f /etc/cinder/cinder.conf.orig ]; then
+  echo "Original backup of cinder config files exist. Your current configs will be modified by this script."
+  cp /etc/default/iscsitarget.orig /etc/default/iscsitarget
+  cp /etc/cinder/api-paste.ini.orig /etc/cinder/api-paste.ini
+  cp /etc/cinder/cinder.conf.orig /etc/cinder/cinder.conf
+else
+  cp /etc/default/iscsitarget /etc/default/iscsitarget.orig
+  cp /etc/cinder/api-paste.ini /etc/cinder/api-paste.ini.orig
+  cp /etc/cinder/cinder.conf /etc/cinder/cinder.conf.orig
+fi
 
+# install packages and toggle iscitarget
+apt-get install -y iscsitarget iscsitarget-source
+apt-get install -y open-iscsi iscsitarget-dkms
+apt-get install -y cinder-api cinder-scheduler cinder-volume 
 sed -i 's/false/true/g' /etc/default/iscsitarget
 
 # hack up the cinder paste file
+sed -e "
+/^service_host =.*$/s/^.*$/service_host = $INTERNET_IP/
+/^auth_host =.*$/s/^.*$/auth_host = $MANAGEMENT_IP/
+" -i /etc/cinder/api-paste.ini
+
 sed -e "
 s,127.0.0.1,$INTERNET_IP,g;
 s,%SERVICE_TENANT_NAME%,service,g;
@@ -91,6 +109,21 @@ Now verify 'cinder-volumes' exists by doing:
 
 Using an Existing Volume Group
 ------------------------------
+NOTE: Don't do this part if you are using a dedicated partition.  You can skip to running the next
+script to set up Quantum.
+
+You need to find the physical volume name and use it to edit your cinder.conf file.  Begin by 
+running 'pvdisplay' and finding the 'VG Name':
+
+  root@ace:/home/kord/# pvdisplay 
+    --- Physical volume ---
+    PV Name               /dev/sda3
+    VG Name               ace-vg  <----- THIS IS WHAT YOU WANT
+    PV Size               7.28 TiB / not usable 0   
+    Allocatable           yes 
+    PE Size               4.00 MiB
+Using an Existing Volume Group
+------------------------------
 NOTE: Don't do this part if you are using a dedicated partition. 
 
 You need to find the physical volume name and use it to edit your cinder.conf file.  Begin by 
@@ -105,7 +138,6 @@ running 'pvdisplay' and finding the 'VG Name':
     PE Size               4.00 MiB
     Total PE              1907138
     Free PE               1156720
-    Allocated PE          750418
 
 Now use the 'VG Name' to edit the cinder.conf file to use the volume group name:
 
@@ -119,3 +151,4 @@ When you are done with one of the above, run './openstack_quantum.sh'
 "
 echo;
 exit
+"
