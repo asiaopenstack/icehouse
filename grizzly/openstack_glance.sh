@@ -7,7 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 . ./stackrc
-password=$SERVICE_PASSWORD
+password=$SG_SERVICE_PASSWORD
 
 clear
 
