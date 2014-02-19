@@ -15,21 +15,17 @@ clear
 password=$SG_SERVICE_PASSWORD    
 
 # grab our IP 
-read -p "Enter the device name for the Internet NIC (eth0, etc.) : " internetnic
-read -p "Enter the device name for the Management NIC (eth1, etc.) : " managementnic
+read -p "Enter the device name for the controller's NIC (eth0, etc.) : " managementnic
 
-INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 echo;
-echo "#############################################################################################################"
+echo "#################################################################################################################"
 echo;
-echo "The IP address on the Internet NIC is probably $INTERNET_IP.  If that's wrong, ctrl-c and edit this script."
-echo "The IP address on the Management NIC is probably $MANAGEMENT_IP If that's wrong, ctrl-c and edit this script."
+echo "The IP address on the controller's NIC is probably $MANAGEMENT_IP.  If that's wrong, ctrl-c and edit this script."
 echo;
-echo "#############################################################################################################"
+echo "#################################################################################################################"
 echo;
-#INTERNET_IP=x.x.x.x
 #MANAGEMENT_IP=x.x.x.x
 read -p "Hit enter to start Nova setup. " -n 1 -r
 
@@ -57,6 +53,9 @@ rabbit_host=$MANAGEMENT_IP
 nova_url=http://$MANAGEMENT_IP:8774/v1.1/
 sql_connection=mysql://nova:$password@$MANAGEMENT_IP/nova
 root_helper=sudo nova-rootwrap /etc/nova/rootwrap.conf
+ec2_private_dns_show_ip=True
+volumes_path=/var/lib/nova/volumes
+enabled_apis=ec2,osapi_compute,metadata
 
 # Auth
 use_deprecated_auth=false
@@ -68,25 +67,26 @@ image_service=nova.image.glance.GlanceImageService
 
 # Vnc configuration
 novnc_enabled=true
-novncproxy_base_url=http://$INTERNET_IP:6080/vnc_auto.html
+novncproxy_base_url=http://$MANAGEMENT_IP:6080/vnc_auto.html
 novncproxy_port=6080
 vncserver_proxyclient_address=$MANAGEMENT_IP
 vncserver_listen=0.0.0.0
 
-# Metadata
-service_quantum_metadata_proxy = True
-quantum_metadata_proxy_shared_secret = $password
-# Network settings
-network_api_class=nova.network.quantumv2.api.API
-quantum_url=http://$MANAGEMENT_IP:9696
-quantum_auth_strategy=keystone
-quantum_admin_tenant_name=service
-quantum_admin_username=quantum
-quantum_admin_password=$password
-quantum_admin_auth_url=http://$MANAGEMENT_IP:35357/v2.0
-libvirt_vif_driver=nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver
-linuxnet_interface_driver=nova.network.linux_net.LinuxBridgeInterfaceDriver
+# Network
+dhcpbridge_flagfile=/etc/nova/nova.conf
+dhcpbridge=/usr/bin/nova-dhcpbridge
+force_dhcp_release=True
+network_manager=nova.network.manager.FlatDHCPManager
 firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
+network_size=254
+allow_same_net_traffic=False
+multi_host=True
+send_arp_for_ha=True
+share_dhcp_address=True
+force_dhcp_release=True
+flat_network_bridge=br100
+flat_interface=$MANAGEMENT_IP
+public_interface=$MANAGEMENT_IP
 
 # Compute #
 compute_driver=libvirt.LibvirtDriver

@@ -12,21 +12,17 @@ password=$SERVICE_PASSWORD
 clear
 
 # grab our IP 
-read -p "Enter the device name for the Internet NIC (eth0, etc.) : " internetnic
-read -p "Enter the device name for the Management NIC (eth1, etc.) : " managementnic
+read -p "Enter the device name for the controller NIC (eth0, etc.) : " managementnic
 
-INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 echo;
-echo "#############################################################################################################"
+echo "#################################################################################################################"
 echo;
-echo "The IP address on the Internet NIC is probably $INTERNET_IP.  If that's wrong, ctrl-c and edit this script."
-echo "The IP address on the Management NIC is probably $MANAGEMENT_IP If that's wrong, ctrl-c and edit this script."
+echo "The IP address on the controller's NIC is probably $MANAGEMENT_IP.  If that's wrong, ctrl-c and edit this script."
 echo;
-echo "#############################################################################################################"
+echo "#################################################################################################################"
 echo;
-#INTERNET_IP=x.x.x.x
 #MANAGEMENT_IP=x.x.x.x
 read -p "Hit enter to start Glance setup. " -n 1 -r
 

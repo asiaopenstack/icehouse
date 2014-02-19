@@ -37,17 +37,6 @@ else
 fi
 echo;
 
-# swift
-read -p "Do you want to install Swift? " -n 2 -r
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-	SG_INSTALL_SWIFT=1
-else
-	SG_INSTALL_SWIFT=0
-fi
-echo;
-
-
 # prompt for a few things we'll need for mysql
 read -p "Enter a password to be used for the OpenStack services to talk to MySQL (users nova, glance, keystone, quantum): " password
 echo;
@@ -60,7 +49,6 @@ echo;
 token=`cat /dev/urandom | head -c2048 | md5sum | cut -d' ' -f1`
 
 cat > setuprc <<EOF
-export SG_INSTALL_SWIFT=$SG_INSTALL_SWIFT
 export SG_MULTI_NODE=$SG_MULTI_NODE
 export SG_SERVICE_EMAIL=$email
 export SG_SERVICE_PASSWORD=$password

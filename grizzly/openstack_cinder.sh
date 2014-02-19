@@ -15,21 +15,17 @@ clear
 password=$SG_SERVICE_PASSWORD    
 
 # grab our IP 
-read -p "Enter the device name for the Internet NIC (eth0, etc.) : " internetnic
-read -p "Enter the device name for the Management NIC (eth1, etc.) : " managementnic
+read -p "Enter the device name for the controller's NIC (eth0, etc.) : " managementnic
 
-INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 echo;
-echo "#############################################################################################################"
+echo "#################################################################################################################"
 echo;
-echo "The IP address on the Internet NIC is probably $INTERNET_IP.  If that's wrong, ctrl-c and edit this script."
-echo "The IP address on the Management NIC is probably $MANAGEMENT_IP If that's wrong, ctrl-c and edit this script."
+echo "The IP address on the controller's NIC is probably $MANAGEMENT_IP.  If that's wrong, ctrl-c and edit this script."
 echo;
-echo "#############################################################################################################"
+echo "#################################################################################################################"
 echo;
-#INTERNET_IP=x.x.x.x
 #MANAGEMENT_IP=x.x.x.x
 read -p "Hit enter to start Cinder setup. " -n 1 -r
 
@@ -53,12 +49,12 @@ sed -i 's/false/true/g' /etc/default/iscsitarget
 
 # hack up the cinder paste file
 sed -e "
-/^service_host =.*$/s/^.*$/service_host = $INTERNET_IP/
+/^service_host =.*$/s/^.*$/service_host = $MANAGEMENT_IP/
 /^auth_host =.*$/s/^.*$/auth_host = $MANAGEMENT_IP/
 " -i /etc/cinder/api-paste.ini
 
 sed -e "
-s,127.0.0.1,$INTERNET_IP,g;
+s,127.0.0.1,$MANAGEMENT_IP,g;
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,cinder,g;
 s,%SERVICE_PASSWORD%,$password,g;
@@ -122,6 +118,7 @@ running 'pvdisplay' and finding the 'VG Name':
     PV Size               7.28 TiB / not usable 0   
     Allocatable           yes 
     PE Size               4.00 MiB
+
 Using an Existing Volume Group
 ------------------------------
 NOTE: Don't do this part if you are using a dedicated partition. 

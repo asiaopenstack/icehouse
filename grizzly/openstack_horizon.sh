@@ -16,11 +16,11 @@ service apache2 restart; service memcached restart
 password=$SERVICE_PASSWORD
 
 # grab our IP 
-read -p "Enter the device name for the Internet NIC (eth0, em1, etc.) : " internetnic
+read -p "Enter the device name for the node's NIC (eth0, em1, etc.) : " managmentnic
 
-INTERNET_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+NODE_IP=$(/sbin/ifconfig $internetnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 echo "#######################################################################################"
-echo "The horizon dashboard should be at http://$INTERNET_IP/horizon.  Login with admin/$password"
+echo "The horizon dashboard should be at http://$NODE_IP/horizon.  Login with admin/$password"
 echo "#######################################################################################"
 

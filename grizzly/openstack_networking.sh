@@ -28,7 +28,7 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 sysctl net.ipv4.ip_forward=1
 
 echo;
-echo "#################################################################################################
+echo "#########################################################################################################
 
 Go and edit your /etc/network/interfaces file to look something like this:
 
@@ -42,27 +42,11 @@ iface eth0 inet static
  gateway 10.0.1.1
  dns-nameservers 8.8.8.8
 
-# management interface
-auto eth1
-iface eth1 inet static
- address 10.0.2.20
- network 10.0.2.0
- netmask 255.255.255.0
- broadcast 10.0.2.255
-
-# storage network
-auto eth2
-iface eth2 inet static
- address 10.0.3.20
- network 10.0.3.0
- netmask 255.255.255.0
- broadcast 10.0.3.255
-
+You many need to remove the net rules if you change interfaces: 'rm /etc/udev/rules.d/70-persistent-net.rules'.
 
 After you are done, do a '/etc/init.d/networking restart', then run './openstack_mysql.sh'
 
-#################################################################################################
+###############################################################################################################
 "
-
 
 exit
