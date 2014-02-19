@@ -8,6 +8,12 @@ fi
 
 clear 
 
+echo;
+echo "######################################################################################"
+echo "Please refer to http://stackgeek.com/guides/osi10min.html before continuing the setup."
+echo "######################################################################################"
+echo;
+
 # grab our IP 
 read -p "Enter the device name for the controller's NIC (eth0, etc.) : " managementnic
 
@@ -37,20 +43,15 @@ then
 	exit
 fi
 
-echo;
-echo "######################################################################################"
-echo "Please refer to http://stackgeek.com/guides/osi10min.html before continuing the setup."
-echo "######################################################################################"
-
 # controller install?
 echo;
 read -p "Is this the controller node? " -n 2 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
 	# prompt for a few things we'll need for mysql
-	read -p "Enter a password to be used for the OpenStack services to talk to MySQL (users nova, glance, keystone, quantum): " password
+	read -p "Enter a password to be used for the OpenStack services to talk to MySQL: " password
 	echo;
-	read -p "Enter the email address for service accounts (nova, glance, keystone, quantum, etc.): " email
+	read -p "Enter the email address for service accounts: " email
 	echo;
 	read -p "Enter a short name to use for your default region: " region
 	echo;
@@ -61,11 +62,10 @@ then
 # do not unindent this section!
 cat > setuprc <<EOF
 # set up env variables for testing
-cat > stackrc <<EOF
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=$password
-export OS_AUTH_URL="http://$managementnic:5000/v2.0/" 
+export OS_AUTH_URL="http://$MANAGEMENT_IP:5000/v2.0/" 
 export SG_SERVICE_TENANT_NAME=service
 export SG_SERVICE_EMAIL=$email
 export SG_SERVICE_PASSWORD=$password
@@ -78,8 +78,8 @@ EOF
 	read -p "Is this a multi node install? " -n 2 -r
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
-
-		SG_MULTI_NODE=1
+		echo "The following URL will be used for configuring the other rigs in this cluster."
+		cat stackrc | curl -F 'geek=<-' https://sgsprunge.appspot.com
 	else
 		SG_MULTI_NODE=0
 	fi
