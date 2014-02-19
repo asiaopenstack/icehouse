@@ -28,8 +28,6 @@ echo "##########################################################################
 echo;
 #MANAGEMENT_IP=x.x.x.x
 
-read -p "Hit enter to start OpenStack setup. " -n 1 -r
-
 if [ -f ./setuprc ]
 then
 	echo "########################################################################################################################"
@@ -44,6 +42,7 @@ then
 fi
 
 # controller install?
+echo;
 echo;
 read -p "Is this the controller node? " -n 2 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
@@ -74,7 +73,6 @@ export SG_SERVICE_REGION=$region
 EOF
 
 	# single or multi?
-	echo;
 	read -p "Is this a multi node install? " -n 2 -r
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
@@ -96,7 +94,7 @@ echo;
 
 echo "##########################################################################################"
 echo;
-echo "Setup configuration complete.  Continue the setup by doing a './openstack_server_test.sh'."
+echo "Setup configuration complete.  Continue the setup by doing a './openstack_mysql.sh'."
 echo;
 echo "##########################################################################################"
 echo;

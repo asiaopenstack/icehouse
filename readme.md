@@ -37,7 +37,7 @@ Assuming a fresh install of Ubuntu Desktop, you'll need to locally login to each
 
     sudo apt-get install openssh-server
     
-You may not login remotely to your rig via *ssh* and install *git* with *aptitude*. After logging in, we'll become root and install *git*:
+You may now login remotely to your rig via *ssh* and install *git* with *aptitude*:
 
 	sudo su
     apt-get install git
@@ -48,7 +48,7 @@ Checkout the StackGeek OpenStack setup scripts from Github:
     cd openstackgeek/grizzly
 
 #### Network Interfaces
-This part of the networking setup is fairly straighforward.  You need to manually configure your ethernet interface to support a non-routable static IPv4 address and an autoconfigured IPv6 address.  To start, run the following script:
+You need to manually configure your ethernet interface to support a non-routable static IPv4 address and an autoconfigured IPv6 address.  Externally routed IPv4 addresses will be added in a later section. To start, run the following script:
 
     ./openstack_networking.sh
     
@@ -68,7 +68,18 @@ The script will output a short configuration block which should be placed manual
 
     # ipv6 configuration
     iface eth0 inet6 auto
+
+#### Test and Update
+After editing the network, you'll need to test your rig for virtualization support:
+
+    ./openstack_server_test.sh
     
+If your rig doesn't support virtualization, you will need to upgrade your hardware.  If it does, you'll be prompted to update your Ubuntu install:
+
+    ./openstack_system_update.sh
+    
+The update takes a while, so just kick back and enjoy the music!
+
 #### Setup, Test and Update
 *Note: Be sure to take a look at the scripts before you run them.  Keep in mind the setup scripts will periodically prompt you for input, either for confirming installation of a package, or asking you for information for configuration.*
 
@@ -83,16 +94,6 @@ If you indicated the rig is a controller node, the result of the setup will be a
     export SG_SERVICE_PASSWORD=f00bar
     export SG_SERVICE_TOKEN=83a412be8036d1e6e516598051cf6826
     export SG_SERVICE_REGION=nodeprime
-
-After running setup, you'll be prompted to test for virtualization support:
-
-    ./openstack_server_test.sh
-    
-If your rig doesn't support virtualization, you will need to upgrade your hardware.  If it does, you'll be prompted to update your Ubuntu install:
-
-    ./openstack_system_update.sh
-    
-That last one takes a while, so just kick back and enjoy the music!
 
 
 #### Database Setup (Controller Only)

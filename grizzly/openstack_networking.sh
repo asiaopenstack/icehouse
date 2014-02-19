@@ -28,7 +28,8 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 sysctl net.ipv4.ip_forward=1
 
 echo;
-echo "#########################################################################################################
+echo 
+"##############################################################################################################
 
 Go and edit your /etc/network/interfaces file to look something like this:
 
@@ -47,9 +48,9 @@ iface eth0 inet static
 # ipv6 configuration
 iface eth0 inet6 auto
 
-You many need to remove the net rules if you change interfaces: 'rm /etc/udev/rules.d/70-persistent-net.rules'.
+After you are done, do a '/etc/init.d/networking restart'.
 
-After you are done, do a '/etc/init.d/networking restart', then run './openstack_setup.sh'
+To start the virtualization test, run './openstack_server_test.sh'
 
 ###############################################################################################################
 "

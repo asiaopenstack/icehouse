@@ -22,7 +22,7 @@ apt-get install curl -y
 
 echo "#################################################################################################
 
-System updated.  Now run './openstack_mysql.sh' to run the database setup.
+System updated.  Now run './openstack_setup.sh' to run the system setup.
 
 #################################################################################################
 "
