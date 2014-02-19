@@ -142,7 +142,7 @@ Now use the 'VG Name' to edit the cinder.conf file to use the volume group name:
 
 #################################################################################################
 
-When you are done with one of the above, run './openstack_quantum.sh'
+When you are done with one of the above, run './openstack_glance.sh'
 
 #################################################################################################
 "
