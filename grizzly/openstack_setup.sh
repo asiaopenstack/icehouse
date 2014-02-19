@@ -8,6 +8,19 @@ fi
 
 clear 
 
+if [ -f ./setuprc ]
+then
+	echo "########################################################################################################################"
+	echo;
+	echo "Setup has already been run.  Edit or delete the ./setuprc file in this directory to reconfigure setup."
+	echo;
+	echo "You can reset the installation by running './openstack_cleanup.sh' or continue by running './openstack_server_test.sh'."
+	echo;
+	echo "########################################################################################################################"
+	echo;
+	exit
+fi
+
 echo;
 echo "######################################################################################"
 echo "Please refer to http://stackgeek.com/guides/osi10min.html before continuing the setup."
@@ -27,19 +40,6 @@ echo;
 echo "#################################################################################################################"
 echo;
 #MANAGEMENT_IP=x.x.x.x
-
-if [ -f ./setuprc ]
-then
-	echo "########################################################################################################################"
-	echo;
-	echo "Setup has already been run.  Edit or delete the ./setuprc file in this directory to reconfigure setup."
-	echo;
-	echo "You can reset the installation by running './openstack_cleanup.sh' or continue by running './openstack_server_test.sh'."
-	echo;
-	echo "########################################################################################################################"
-	echo;
-	exit
-fi
 
 # controller install?
 echo;
