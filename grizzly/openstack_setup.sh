@@ -43,11 +43,11 @@ fi
 
 # controller install?
 echo;
-echo;
 read -p "Is this the controller node? " -n 2 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
 	# prompt for a few things we'll need for mysql
+	echo;
 	read -p "Enter a password to be used for the OpenStack services to talk to MySQL: " password
 	echo;
 	read -p "Enter the email address for service accounts: " email
@@ -77,7 +77,7 @@ EOF
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
 		echo "The following URL will be used for configuring the other rigs in this cluster."
-		cat stackrc | curl -F 'geek=<-' https://sgsprunge.appspot.com
+		cat setuprc | curl -F 'geek=<-' https://sgsprunge.appspot.com
 	else
 		SG_MULTI_NODE=0
 	fi
