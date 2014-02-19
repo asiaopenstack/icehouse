@@ -10,13 +10,13 @@ clear
 
 if [ -f ./setuprc ]
 then
-	echo "########################################################################################################################"
+	echo "######################################################################################################"
 	echo;
 	echo "Setup has already been run.  Edit or delete the ./setuprc file in this directory to reconfigure setup."
 	echo;
-	echo "You can reset the installation by running './openstack_cleanup.sh' or continue by running './openstack_server_test.sh'."
+	echo "You can reset the installation by running './openstack_cleanup.sh'"
 	echo;
-	echo "########################################################################################################################"
+	echo "#######################################################################################################"
 	echo;
 	exit
 fi
@@ -76,17 +76,14 @@ EOF
 	read -p "Is this a multi node install? " -n 2 -r
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
-		echo "The following URL will be used for configuring the other rigs in this cluster."
-		cat setuprc | curl -F 'geek=<-' https://sgsprunge.appspot.com
-	else
-		SG_MULTI_NODE=0
+		echo;
+		echo "The following URL will be used for configuring the other rigs in this cluster.  Copy it."
+		cat setuprc | curl -F 'geek=<-' https://sgsprunge.appspot.com 
 	fi
 
-	cat setuprc
-	echo
-
 else
-	SG_MULTI_NODE=0
+	read -p "Enter the URL given to you from the controller setup: " sprungeurl
+	curl $sprungeurl > setuprc
 fi
 echo;
 
