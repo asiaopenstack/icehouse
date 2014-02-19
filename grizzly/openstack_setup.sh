@@ -8,6 +8,22 @@ fi
 
 clear 
 
+# grab our IP 
+read -p "Enter the device name for the controller's NIC (eth0, etc.) : " managementnic
+
+MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+
+echo;
+echo "#################################################################################################################"
+echo;
+echo "The IP address on the controller's NIC is probably $MANAGEMENT_IP.  If that's wrong, ctrl-c and edit this script."
+echo;
+echo "#################################################################################################################"
+echo;
+#MANAGEMENT_IP=x.x.x.x
+
+read -p "Hit enter to start OpenStack setup. " -n 1 -r
+
 if [ -f ./setuprc ]
 then
 	echo "########################################################################################################################"
@@ -22,48 +38,65 @@ then
 fi
 
 echo;
-echo "#############################################################################################################"
+echo "######################################################################################"
 echo "Please refer to http://stackgeek.com/guides/osi10min.html before continuing the setup."
-echo "#############################################################################################################"
+echo "######################################################################################"
 
-# single or multi?
+# controller install?
 echo;
-read -p "Is this a multi node install? " -n 2 -r
+read -p "Is this the controller node? " -n 2 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-	SG_MULTI_NODE=1
-else
-	SG_MULTI_NODE=0
-fi
-echo;
+	# prompt for a few things we'll need for mysql
+	read -p "Enter a password to be used for the OpenStack services to talk to MySQL (users nova, glance, keystone, quantum): " password
+	echo;
+	read -p "Enter the email address for service accounts (nova, glance, keystone, quantum, etc.): " email
+	echo;
+	read -p "Enter a short name to use for your default region: " region
+	echo;
 
-# prompt for a few things we'll need for mysql
-read -p "Enter a password to be used for the OpenStack services to talk to MySQL (users nova, glance, keystone, quantum): " password
-echo;
-read -p "Enter the email address for service accounts (nova, glance, keystone, quantum, etc.): " email
-echo;
-read -p "Enter a short name to use for your default region: " region
-echo;
+	# making a unique token for this install
+	token=`cat /dev/urandom | head -c2048 | md5sum | cut -d' ' -f1`
 
-# making a unique token for this install
-token=`cat /dev/urandom | head -c2048 | md5sum | cut -d' ' -f1`
-
+# do not unindent this section!
 cat > setuprc <<EOF
-export SG_MULTI_NODE=$SG_MULTI_NODE
+# set up env variables for testing
+cat > stackrc <<EOF
+export OS_TENANT_NAME=admin
+export OS_USERNAME=admin
+export OS_PASSWORD=$password
+export OS_AUTH_URL="http://$managementnic:5000/v2.0/" 
+export SG_SERVICE_TENANT_NAME=service
 export SG_SERVICE_EMAIL=$email
 export SG_SERVICE_PASSWORD=$password
 export SG_SERVICE_TOKEN=$token
 export SG_SERVICE_REGION=$region
 EOF
 
-echo "Using the following for determining your setup type.  Edit 'setuprc' if you don't like what you see. "
-echo
-cat setuprc
-echo
+	# single or multi?
+	echo;
+	read -p "Is this a multi node install? " -n 2 -r
+	if [[ $REPLY =~ ^[Yy]$ ]]
+	then
 
-echo "#############################################################################################################"
+		SG_MULTI_NODE=1
+	else
+		SG_MULTI_NODE=0
+	fi
+
+	cat setuprc
+	echo
+
+else
+	SG_MULTI_NODE=0
+fi
+echo;
+
+
+
+echo "##########################################################################################"
 echo;
 echo "Setup configuration complete.  Continue the setup by doing a './openstack_server_test.sh'."
 echo;
-echo "#############################################################################################################"
+echo "##########################################################################################"
 echo;

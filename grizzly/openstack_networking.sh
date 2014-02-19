@@ -32,19 +32,24 @@ echo "##########################################################################
 
 Go and edit your /etc/network/interfaces file to look something like this:
 
-# primary internet connection
-auto eth0 
+# loopback
+auto lo
+iface lo inet loopback
+
+# primary interface
+auto eth0
 iface eth0 inet static
- address 10.0.1.20
- network 10.0.1.0
- netmask 255.255.255.0
- broadcast 10.0.1.255
- gateway 10.0.1.1
- dns-nameservers 8.8.8.8
+  address 10.0.1.100
+  netmask 255.255.255.0
+  gateway 10.0.1.1
+  dns-nameservers 8.8.8.8
+
+# ipv6 configuration
+iface eth0 inet6 auto
 
 You many need to remove the net rules if you change interfaces: 'rm /etc/udev/rules.d/70-persistent-net.rules'.
 
-After you are done, do a '/etc/init.d/networking restart', then run './openstack_mysql.sh'
+After you are done, do a '/etc/init.d/networking restart', then run './openstack_setup.sh'
 
 ###############################################################################################################
 "

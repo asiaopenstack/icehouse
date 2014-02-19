@@ -29,6 +29,11 @@ echo;
 #MANAGEMENT_IP=x.x.x.x
 read -p "Hit enter to start Cinder setup. " -n 1 -r
 
+# install packages
+apt-get install -y iscsitarget iscsitarget-source
+apt-get install -y open-iscsi iscsitarget-dkms
+apt-get install -y cinder-api cinder-scheduler cinder-volume 
+
 # edit keystone conf file to use templates and mysql
 if [ -f /etc/cinder/cinder.conf.orig ]; then
   echo "Original backup of cinder config files exist. Your current configs will be modified by this script."
@@ -41,10 +46,7 @@ else
   cp /etc/cinder/cinder.conf /etc/cinder/cinder.conf.orig
 fi
 
-# install packages and toggle iscitarget
-apt-get install -y iscsitarget iscsitarget-source
-apt-get install -y open-iscsi iscsitarget-dkms
-apt-get install -y cinder-api cinder-scheduler cinder-volume 
+# toggle iscsitarget
 sed -i 's/false/true/g' /etc/default/iscsitarget
 
 # hack up the cinder paste file
