@@ -49,7 +49,7 @@ else
 fi
 
 sed -e "
-/^connection =.*$/s/^.*$/connection = mysql:\/\/keystone:$password@$MANAGEMENT_IP\/keystone/
+/^connection =.*$/s/^.*$/connection = mysql:\/\/keystone:$password@$managementip\/keystone/
 /^# admin_token =.*$/s/^.*$/admin_token = $token/
 " -i /etc/keystone/keystone.conf
 
@@ -103,27 +103,27 @@ keystone user-role-add --user-id $DEMO_USER --role-id $MEMBER_ROLE --tenant-id $
 NOVA_USER=$(get_id keystone user-create --name=nova --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
 keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $NOVA_USER --role-id $ADMIN_ROLE
 NOVA=$(get_id keystone service-create --name nova --type compute --description Compute )
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $NOVA --publicurl 'http://'"$MANAGEMENT_IP"':8774/v2/$(tenant_id)s' --adminurl 'http://'"$MANAGEMENT_IP"':8774/v2/$(tenant_id)s' --internalurl 'http://'"$MANAGEMENT_IP"':8774/v2/$(tenant_id)s'
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $NOVA --publicurl 'http://'"$managementip"':8774/v2/$(tenant_id)s' --adminurl 'http://'"$managementip"':8774/v2/$(tenant_id)s' --internalurl 'http://'"$managementip"':8774/v2/$(tenant_id)s'
 
 # glance
 GLANCE_USER=$(get_id keystone user-create --name=glance --pass="$SERVICE_PASSWORD" --tenant_id $SERVICE_TENANT --email=$email)
 keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $GLANCE_USER --role-id $ADMIN_ROLE
 GLANCE=$(get_id keystone service-create --name glance --type image --description Image)
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $GLANCE --publicurl 'http://'"$MANAGEMENT_IP"':9292/v2' --adminurl 'http://'"$MANAGEMENT_IP"':9292/v2' --internalurl 'http://'"$MANAGEMENT_IP"':9292/v2'
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $GLANCE --publicurl 'http://'"$managementip"':9292/v2' --adminurl 'http://'"$managementip"':9292/v2' --internalurl 'http://'"$managementip"':9292/v2'
 
 # cinder
 CINDER_USER=$(get_id keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
 keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $CINDER_USER --role-id $ADMIN_ROLE
 CINDER=$(get_id keystone service-create --name cinder --type volume --description Volume )
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $CINDER --publicurl 'http://'"$MANAGEMENT_IP"':8776/v1/$(tenant_id)s' --adminurl 'http://'"$MANAGEMENT_IP"':8776/v1/$(tenant_id)s' --internalurl 'http://'"$MANAGEMENT_IP"':8776/v1/$(tenant_id)s'
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $CINDER --publicurl 'http://'"$managementip"':8776/v1/$(tenant_id)s' --adminurl 'http://'"$managementip"':8776/v1/$(tenant_id)s' --internalurl 'http://'"$managementip"':8776/v1/$(tenant_id)s'
 
 # keystone 
 KEYSTONE=$(get_id keystone service-create --name keystone --type identity --description Identity )
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $KEYSTONE --publicurl 'http://'"$MANAGEMENT_IP"':5000/v2.0' --adminurl 'http://'"$MANAGEMENT_IP"':35357/v2.0' --internalurl 'http://'"$MANAGEMENT_IP"':5000/v2.0'
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $KEYSTONE --publicurl 'http://'"$managementip"':5000/v2.0' --adminurl 'http://'"$managementip"':35357/v2.0' --internalurl 'http://'"$managementip"':5000/v2.0'
 
 # ec2 compatability
 EC2=$(get_id keystone service-create --name ec2 --type ec2 --description EC2 )
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $EC2 --publicurl 'http://'"$MANAGEMENT_IP"':8773/services/Cloud' --adminurl 'http://'"$MANAGEMENT_IP"':8773/services/Admin' --internalurl 'http://'"$MANAGEMENT_IP"':8773/services/Cloud'
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $EC2 --publicurl 'http://'"$managementip"':8773/services/Cloud' --adminurl 'http://'"$managementip"':8773/services/Admin' --internalurl 'http://'"$managementip"':8773/services/Cloud'
 
 # create ec2 creds and parse the secret and access key returned
 RESULT=$(keystone ec2-credentials-create --tenant-id=$ADMIN_TENANT --user-id=$ADMIN_USER)
