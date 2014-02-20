@@ -110,7 +110,7 @@ glance image-create --name "Cirros 0.3.0"  --is-public true --container-format b
 
 echo "#################################################################################################"
 echo;
-echo "Do a 'glance image-list' to see images.  You can now run './openstack_nova.sh' to set up Nova." 
+echo "Do a 'glance image-list' to see images.  You can now run './openstack_cinder.sh' to set up Nova." 
 echo;
 echo "#################################################################################################"
 echo;

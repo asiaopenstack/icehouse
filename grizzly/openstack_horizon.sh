@@ -9,6 +9,9 @@ fi
 # get horizon
 apt-get install -y openstack-dashboard memcached
 
+# remove the ubuntu theme - seriously this is fucking stupid it's still broken
+apt-get remove --purge openstack-dashboard-ubuntu-theme
+
 # restart apache
 service apache2 restart; service memcached restart
 
