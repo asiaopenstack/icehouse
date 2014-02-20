@@ -12,7 +12,7 @@ OpenStack was released as [Open Source software by Rackspace](http://en.wikipedi
 
 The [OpenStack project](http://openstack.org/) is managed by the [OpenStack Foundation](http://openstack.org/foundation/).  The foundation is controlled by a governance board which is comprised of individuals who work for very large corporations with very large corporate interests, including Rackspace.  The effect on the OpenStack ecosystem has been mixed.  In this author's opinion, corporate interests have been detrimental to the innovative process inside OpenStack's ecosystem.
 
-At the very least, this effect has caused the OpenStack scene to lose marketing traction.  Evidence of that fact is seen in the complete lack of a decent install methodologies and infighting between foundation members on [stupid matters including EC2 API support](http://www.cloudscaling.com/blog/cloud-computing/openstack-aws/).  This project aims to fix that.
+At the very least, this effect has caused the OpenStack scene to lose marketing traction.  Evidence of that fact is seen in the complete lack of a decent install methodology and infighting between foundation members on [stupid matters including EC2 API support](http://www.cloudscaling.com/blog/cloud-computing/openstack-aws/).  This project aims to fix that.
 
 Corporations who create infrastructure components and the sotware they run, including compute, storage and networking gear, and who do so using combinations that include closed source code, are a direct threat by way of centralized pools of control.  There are complex reasons why this is a **'very bad thing'** for the ecosystem and I encourage you to do independent research around this concept to form your own opinions on the topic.  You should start by researching [cryptocurrency technologies](http://en.wikipedia.org/wiki/Cryptocurrency).  BTW, there is a distiction between pools of power and pools of knowledge.  The latter is acceptable by way of proof of work concepts.
 
@@ -290,6 +290,15 @@ There will be additional guides posted on best practices for IPv6 allocation and
 
 #### OpenStack Cheat Sheet
 An OpenStack Command Line Cheat Sheet is available on [Anystacker's site](http://anystacker.com/2014/02/openstack-command-line-cheat-sheet/).  Commands can be run once the **setuprc** file has been sourced:
+
+    . ./setuprc
+
+#### Delete the Paste File
+The URL created for a multi-rig install is stored on an AppEngine application based on [Rupa's sprunge project](http://github.com/rupa/sprunge).  You should delete the paste after you are done with your setup for security's sake:
+
+    curl -X DELETE https://sgsprunge.appspot.com/I2DIkNZxJyPhhIJc
+
+If you have any questions, issues or concerns, please feel free to join IRC, post on the forum, or create a ticket!nds can be run once the **setuprc** file has been sourced:
 
     . ./setuprc
 
