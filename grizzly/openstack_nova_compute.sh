@@ -102,7 +102,7 @@ cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
 
 echo "###################################################################################################"
 echo;
-echo "Do a 'nova-manage service list' and a 'nova image-list' to test.  Do './openstack_horizon.sh' next."
+echo "Install complete.  Do './openstack_horizon.sh' next."
 echo;
 echo "###################################################################################################"
 echo;

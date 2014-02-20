@@ -59,28 +59,13 @@ service iscsitarget start
 service open-iscsi start
 sleep 5
 cinder-manage db sync
- 
+
+echo;
 echo "#################################################################################################
 
-Instructions for Cinder volume configuration coming soon.
+Run ./openstack_loop.sh to setup the cinder-volumes loopback device.
 
 #################################################################################################"
 echo;
 
-if [[ -z $SG_CONTROLLER ]]; then
-echo "#################################################################################################
-
-When you are done with setting up your volumes, run './openstack_glance.sh'
-
-#################################################################################################"
-else
-echo "#################################################################################################
-
-When you are done with setting up your volumes, run './openstack_nova_compute.sh'
-
-#################################################################################################"
-fi
-
-echo;
 exit
-"

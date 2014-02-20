@@ -16,7 +16,7 @@ password=$SG_SERVICE_PASSWORD
 managementip=$SG_SERVICE_CONTROLLER_IP
 
 # install packages
-apt-get install -y nova-novncproxy novnc nova-api nova-ajax-console-proxy nova-cert nova-conductor nova-consoleauth nova-doc nova-scheduler nova-network
+apt-get install -y nova-novncproxy novnc nova-api nova-ajax-console-proxy nova-cert nova-conductor nova-consoleauth nova-doc nova-scheduler nova-network nova-compute
 
 # hack up the nova paste file
 sed -e "
