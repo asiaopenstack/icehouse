@@ -6,25 +6,12 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-. ./stackrc
-password=$SG_SERVICE_PASSWORD
-
 clear
 
-# grab our IP 
-read -p "Enter the device name for the controller NIC (eth0, etc.) : " managementnic
-
-MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
-
-echo;
-echo "#################################################################################################################"
-echo;
-echo "The IP address on the controller's NIC is probably $MANAGEMENT_IP.  If that's wrong, ctrl-c and edit this script."
-echo;
-echo "#################################################################################################################"
-echo;
-#MANAGEMENT_IP=x.x.x.x
-read -p "Hit enter to start Glance setup. " -n 1 -r
+# source the setup file and set variables
+. ./stackrc
+password=$SG_SERVICE_PASSWORD
+managementip=$SG_SERVICE_CONTROLLER_IP
 
 # get glance
 apt-get install glance -y
@@ -47,7 +34,7 @@ else
 # do not unindent!
 # hack up glance-api-paste.ini file
 echo "
-auth_host = $MANAGEMENT_IP
+auth_host = $managementip
 auth_port = 35357
 auth_protocol = http
 admin_tenant_name = service
@@ -57,7 +44,7 @@ admin_password = $password
 
 # hack up glance-registry-paste.ini file
 echo "
-auth_host = $MANAGEMENT_IP
+auth_host = $managementip
 auth_port = 35357
 auth_protocol = http
 admin_tenant_name = service
@@ -67,7 +54,7 @@ admin_password = $password
 
 # we sed out the mysql connection here, but then tack on the flavor info later on...
 sed -e "
-/^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$MANAGEMENT_IP\/glance/
+/^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$managementip\/glance/
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,glance,g;
 s,%SERVICE_PASSWORD%,$password,g;
@@ -79,7 +66,7 @@ flavor = keystone
 " >> /etc/glance/glance-registry.conf
 
 sed -e "
-/^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$MANAGEMENT_IP\/glance/
+/^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$managementip\/glance/
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,glance,g;
 s,%SERVICE_PASSWORD%,$password,g;

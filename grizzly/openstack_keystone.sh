@@ -12,22 +12,6 @@ fi
 
 clear 
 
-# grab our IP 
-read -p "Enter the device name for the controller's NIC (eth0, etc.) : " managementnic
-
-MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
-
-echo;
-echo "#################################################################################################################"
-echo;
-echo "The IP address on the controller's NIC is probably $MANAGEMENT_IP.  If that's wrong, ctrl-c and edit this script."
-echo;
-echo "#################################################################################################################"
-echo;
-#MANAGEMENT_IP=x.x.x.x
-
-read -p "Hit enter to start Keystone setup. " -n 1 -r
-
 # get keystone
 apt-get install keystone -y
 
@@ -36,6 +20,7 @@ password=$SG_SERVICE_PASSWORD
 email=$SG_SERVICE_EMAIL
 token=$SG_SERVICE_TOKEN
 region=$SG_SERVICE_REGION
+managementip=$SG_SERVICE_CONTROLLER_IP
 
 # set up env variables for various things - you'll need this later to run keystone and nova-manage commands 
 # some of these variables are used by this script, so don't get confused if you seem them listed below again
@@ -43,11 +28,11 @@ cat > stackrc <<EOF
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=$password
-export OS_AUTH_URL="http://$MANAGEMENT_IP:5000/v2.0/" 
+export OS_AUTH_URL="http://$managementip:5000/v2.0/" 
 export ADMIN_PASSWORD=$password
 export SERVICE_PASSWORD=$password
 export SERVICE_TOKEN=$token
-export SERVICE_ENDPOINT="http://$MANAGEMENT_IP:35357/v2.0"
+export SERVICE_ENDPOINT="http://$managementip:35357/v2.0"
 export SERVICE_TENANT_NAME=service
 export KEYSTONE_REGION=$region
 EOF

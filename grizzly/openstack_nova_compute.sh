@@ -13,15 +13,14 @@ clear
 
 # some vars from the SG setup file getting locally reassigned 
 password=$SG_SERVICE_PASSWORD    
-
-read -p "Hit enter to start Nova setup. " -n 1 -r
+managementip=$SG_SERVICE_CONTROLLER_IP
 
 # install packages
 apt-get install -y nova-compute nova-network
 
 # hack up the nova paste file
 sed -e "
-s,127.0.0.1,$MANAGEMENT_IP,g;
+s,127.0.0.1,$managementip,g;
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,nova,g;
 s,%SERVICE_PASSWORD%,$password,g;
@@ -36,9 +35,9 @@ lock_path=/run/lock/nova
 verbose=True
 api_paste_config=/etc/nova/api-paste.ini
 compute_scheduler_driver=nova.scheduler.simple.SimpleScheduler
-rabbit_host=$MANAGEMENT_IP
-nova_url=http://$MANAGEMENT_IP:8774/v1.1/
-sql_connection=mysql://nova:$password@$MANAGEMENT_IP/nova
+rabbit_host=$managementip
+nova_url=http://$managementip:8774/v1.1/
+sql_connection=mysql://nova:$password@$managementip/nova
 root_helper=sudo nova-rootwrap /etc/nova/rootwrap.conf
 ec2_private_dns_show_ip=True
 volumes_path=/var/lib/nova/volumes
@@ -49,14 +48,14 @@ use_deprecated_auth=false
 auth_strategy=keystone
 
 # Imaging service
-glance_api_servers=$MANAGEMENT_IP:9292
+glance_api_servers=$managementip:9292
 image_service=nova.image.glance.GlanceImageService
 
 # Vnc configuration
 novnc_enabled=true
-novncproxy_base_url=http://$MANAGEMENT_IP:6080/vnc_auto.html
+novncproxy_base_url=http://$managementip:6080/vnc_auto.html
 novncproxy_port=6080
-vncserver_proxyclient_address=$MANAGEMENT_IP
+vncserver_proxyclient_address=$managementip
 vncserver_listen=0.0.0.0
 
 # Network
@@ -72,8 +71,8 @@ send_arp_for_ha=True
 share_dhcp_address=True
 force_dhcp_release=True
 flat_network_bridge=br100
-flat_interface=$MANAGEMENT_IP
-public_interface=$MANAGEMENT_IP
+flat_interface=$managementip
+public_interface=$managementip
 
 # Compute #
 compute_driver=libvirt.LibvirtDriver
@@ -102,7 +101,9 @@ sleep 4
 cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
 
 echo "###################################################################################################"
+echo;
 echo "Do a 'nova-manage service list' and a 'nova image-list' to test.  Do './openstack_horizon.sh' next."
 echo "###################################################################################################"
+echo;
 echo;
 

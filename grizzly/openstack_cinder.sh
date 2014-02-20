@@ -13,21 +13,7 @@ clear
 
 # some vars from the SG setup file getting locally reassigned 
 password=$SG_SERVICE_PASSWORD    
-
-# grab our IP 
-read -p "Enter the device name for the controller's NIC (eth0, etc.) : " managementnic
-
-MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
-
-echo;
-echo "#################################################################################################################"
-echo;
-echo "The IP address on the controller's NIC is probably $MANAGEMENT_IP.  If that's wrong, ctrl-c and edit this script."
-echo;
-echo "#################################################################################################################"
-echo;
-#MANAGEMENT_IP=x.x.x.x
-read -p "Hit enter to start Cinder setup. " -n 1 -r
+managementip=$SG_SERVICE_CONTROLLER_IP
 
 # install packages
 apt-get install -y iscsitarget iscsitarget-source
@@ -51,12 +37,12 @@ sed -i 's/false/true/g' /etc/default/iscsitarget
 
 # hack up the cinder paste file
 sed -e "
-/^service_host =.*$/s/^.*$/service_host = $MANAGEMENT_IP/
-/^auth_host =.*$/s/^.*$/auth_host = $MANAGEMENT_IP/
+/^service_host =.*$/s/^.*$/service_host = $managementip/
+/^auth_host =.*$/s/^.*$/auth_host = $managementip/
 " -i /etc/cinder/api-paste.ini
 
 sed -e "
-s,127.0.0.1,$MANAGEMENT_IP,g;
+s,127.0.0.1,$managementip,g;
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,cinder,g;
 s,%SERVICE_PASSWORD%,$password,g;
@@ -64,8 +50,8 @@ s,%SERVICE_PASSWORD%,$password,g;
 
  # hack up the cinder config file
 echo "
-iscsi_ip_address=$MANAGEMENT_IP
-sql_connection = mysql://cinder:$password@$MANAGEMENT_IP/cinder
+iscsi_ip_address=$managementip
+sql_connection = mysql://cinder:$password@$managementip/cinder
 " >> /etc/cinder/cinder.conf
 
 # restart and sync

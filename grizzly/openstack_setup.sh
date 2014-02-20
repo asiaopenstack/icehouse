@@ -61,12 +61,13 @@ then
 	token=`cat /dev/urandom | head -c2048 | md5sum | cut -d' ' -f1`
 
 # do not unindent this section!
+# some of these envrionment variables are set again in stackrc later
 cat > setuprc <<EOF
 # set up env variables for testing
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=$password
-export OS_AUTH_URL="http://$MANAGEMENT_IP:5000/v2.0/" 
+export OS_AUTH_URL="http://$MANAGEMENT_IP:5000/v2.0/"
 export SG_SERVICE_CONTROLLER_IP=$MANAGEMENT_IP
 export SG_SERVICE_TENANT_NAME=service
 export SG_SERVICE_EMAIL=$email
