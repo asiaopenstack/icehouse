@@ -240,7 +240,7 @@ Horizon provides OpenStack's managment interface.  Install Horizon by typing:
     
 Once you have installed Horzion, you should be able to log into your OpenStack cluster with the following URL format (changing the IP of course):
 
-    https://10.0.1.100/horizon
+    http://10.0.1.100/horizon
 
 Your user/pass combination will be *'admin'* and whatever you entered for a password earlier.  Be sure to complete the networking setup below before you log into the UI.
     
@@ -290,6 +290,15 @@ There will be additional guides posted on best practices for IPv6 allocation and
 
 #### OpenStack Cheat Sheet
 An OpenStack Command Line Cheat Sheet is available on [Anystacker's site](http://anystacker.com/2014/02/openstack-command-line-cheat-sheet/).  Commands can be run once the **setuprc** file has been sourced:
+
+    . ./setuprc
+
+#### Delete the Paste File
+The URL created for a multi-rig install is stored on an AppEngine application based on [Rupa's sprunge project](http://github.com/rupa/sprunge).  You should delete the paste after you are done with your setup for security's sake:
+
+    curl -X DELETE https://sgsprunge.appspot.com/I2DIkNZxJyPhhIJc
+
+If you have any questions, issues or concerns, please feel free to join IRC, post on the forum, or create a ticket!nds can be run once the **setuprc** file has been sourced:
 
     . ./setuprc
 

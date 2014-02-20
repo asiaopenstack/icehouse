@@ -240,7 +240,7 @@ Horizon provides OpenStack's managment interface.  Install Horizon by typing:
     
 Once you have installed Horzion, you should be able to log into your OpenStack cluster with the following URL format (changing the IP of course):
 
-    https://10.0.1.100/horizon
+    http://10.0.1.100/horizon
 
 Your user/pass combination will be *'admin'* and whatever you entered for a password earlier.  Be sure to complete the networking setup below before you log into the UI.
     
