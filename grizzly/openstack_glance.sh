@@ -9,7 +9,7 @@ fi
 clear
 
 # source the setup file and set variables
-. ./stackrc
+. ./setuprc
 password=$SG_SERVICE_PASSWORD
 managementip=$SG_SERVICE_CONTROLLER_IP
 
@@ -101,6 +101,9 @@ else
   mv ubuntu-12.04-server-cloudimg-amd64-disk1.img images
   glance image-create --name "Ubuntu 12.04 LTS" --is-public true --container-format ovf --disk-format qcow2 --file images/ubuntu-12.04-server-cloudimg-amd64-disk1.img 
 fi
+
+# source the setuprc file
+. ./setuprc
 
 # add cirros image
 glance image-create --name "Cirros 0.3.0"  --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
