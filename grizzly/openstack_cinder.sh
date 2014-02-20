@@ -76,78 +76,25 @@ cinder-manage db sync
  
 echo "#################################################################################################
 
-You need to manually create a LVM for the 'cinder-volumes' group.  This process requires you have
-either a a dedicated partition to use for the volume group, usually located on an extra drive, or
-room in your existing physical volume to allow cinder to create new logical volumes.
+Instructions for Cinder volume configuration coming soon.
 
-Using a Dedicated Partition
----------------------------
-We're going to assume you have an empty disk spinning at /dev/sdb.  Begin by starting 'fdisk':
+#################################################################################################"
+echo;
 
- fdisk /dev/sdb
+if [[ -z $SG_CONTROLLER ]]; then
+echo "#################################################################################################
 
-Create a new partition by hitting 'n' then 'p'.  Use the defaults.  Type 't' then '8e' to set the 
-partition to the LVM type.  Hit 'w' to write and exit.
+When you are done with setting up your volumes, run './openstack_glance.sh'
 
-Next, from the command line, enter the follow commands:
+#################################################################################################"
+else
+echo "#################################################################################################
 
-  pvcreate -ff /dev/sdb1
-  vgcreate cinder-volumes /dev/sdb1
+When you are done with setting up your volumes, run './openstack_nova_compute.sh'
 
-You should get back something like this:
+#################################################################################################"
+fi
 
-  root@nero:/home/kord# vgcreate cinder-volumes /dev/sdb1
-  Volume group "cinder-volumes" successfully created
-
-NOTE: You should use whatever device handle your system has for the second drive.  Do be careful!
-
-Now verify 'cinder-volumes' exists by doing:
-
-  vgdisplay cinder-volumes
-
-Using an Existing Volume Group
-------------------------------
-NOTE: Don't do this part if you are using a dedicated partition.  You can skip to running the next
-script to set up Quantum.
-
-You need to find the physical volume name and use it to edit your cinder.conf file.  Begin by 
-running 'pvdisplay' and finding the 'VG Name':
-
-  root@ace:/home/kord/# pvdisplay 
-    --- Physical volume ---
-    PV Name               /dev/sda3
-    VG Name               ace-vg  <----- THIS IS WHAT YOU WANT
-    PV Size               7.28 TiB / not usable 0   
-    Allocatable           yes 
-    PE Size               4.00 MiB
-
-Using an Existing Volume Group
-------------------------------
-NOTE: Don't do this part if you are using a dedicated partition. 
-
-You need to find the physical volume name and use it to edit your cinder.conf file.  Begin by 
-running 'pvdisplay' and finding the 'VG Name':
-
-  root@ace:/home/kord/# pvdisplay 
-    --- Physical volume ---
-    PV Name               /dev/sda3
-    VG Name               ace-vg  <----- THIS IS WHAT YOU WANT
-    PV Size               7.28 TiB / not usable 0   
-    Allocatable           yes 
-    PE Size               4.00 MiB
-    Total PE              1907138
-    Free PE               1156720
-
-Now use the 'VG Name' to edit the cinder.conf file to use the volume group name:
-
-  volume_group = ace-vg
-
-#################################################################################################
-
-When you are done with one of the above, run './openstack_glance.sh'
-
-#################################################################################################
-"
 echo;
 exit
 "

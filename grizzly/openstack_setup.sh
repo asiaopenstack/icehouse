@@ -22,9 +22,11 @@ then
 fi
 
 echo;
-echo "######################################################################################"
-echo "Please refer to http://stackgeek.com/guides/osi10min.html before continuing the setup."
-echo "######################################################################################"
+echo "################################################################################################"
+echo;
+echo "Please refer to https://github.com/StackGeek/openstackgeek/blob/master/readme.md for setup help."
+echo;
+echo "################################################################################################"
 echo;
 
 # grab our IP 
@@ -65,6 +67,7 @@ export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=$password
 export OS_AUTH_URL="http://$MANAGEMENT_IP:5000/v2.0/" 
+export SG_SERVICE_CONTROLLER_IP=$MANAGEMENT_IP
 export SG_SERVICE_TENANT_NAME=service
 export SG_SERVICE_EMAIL=$email
 export SG_SERVICE_PASSWORD=$password
@@ -78,17 +81,31 @@ EOF
 	then
 		echo;
 		echo "The following URL will be used for configuring the other rigs in this cluster.  Copy it."
+		echo;
 		cat setuprc | curl -F 'geek=<-' https://sgsprunge.appspot.com 
 	fi
 
 else
+	echo;
 	read -p "Enter the URL given to you from the controller setup: " sprungeurl
 	curl $sprungeurl > setuprc
+
+	echo;
+	echo "##########################################################################################"
+	echo;
+	echo "Setup configuration complete.  Continue the setup by doing a './openstack_cinder.sh'."
+	echo;
+	echo "##########################################################################################"
+	echo;
+	exit
 fi
+
+# tack on an indicator we're the controller
+cat >> setuprc <<EOF
+export SG_SERVICE_CONTROLLER=1
+EOF
+
 echo;
-
-
-
 echo "##########################################################################################"
 echo;
 echo "Setup configuration complete.  Continue the setup by doing a './openstack_mysql.sh'."

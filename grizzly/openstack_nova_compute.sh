@@ -14,23 +14,10 @@ clear
 # some vars from the SG setup file getting locally reassigned 
 password=$SG_SERVICE_PASSWORD    
 
-# grab our IP 
-read -p "Enter the device name for the controller's NIC (eth0, etc.) : " managementnic
-
-MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
-
-echo;
-echo "#################################################################################################################"
-echo;
-echo "The IP address on the controller's NIC is probably $MANAGEMENT_IP.  If that's wrong, ctrl-c and edit this script."
-echo;
-echo "#################################################################################################################"
-echo;
-#MANAGEMENT_IP=x.x.x.x
 read -p "Hit enter to start Nova setup. " -n 1 -r
 
 # install packages
-apt-get install -y nova-novncproxy novnc nova-api nova-ajax-console-proxy nova-cert nova-conductor nova-consoleauth nova-doc nova-scheduler nova-network
+apt-get install -y nova-compute nova-network
 
 # hack up the nova paste file
 sed -e "
