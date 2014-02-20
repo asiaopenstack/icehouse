@@ -111,14 +111,6 @@ keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $GLANCE_USER --role
 GLANCE=$(get_id keystone service-create --name glance --type image --description Image)
 keystone endpoint-create --region $KEYSTONE_REGION --service-id $GLANCE --publicurl 'http://'"$MANAGEMENT_IP"':9292/v2' --adminurl 'http://'"$MANAGEMENT_IP"':9292/v2' --internalurl 'http://'"$MANAGEMENT_IP"':9292/v2'
 
-# quantum
-if [ "$SG_QUANTUM" != "0" ]; then
-  QUANTUM_USER=$(get_id keystone user-create --name=quantum --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
-  keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $QUANTUM_USER --role-id $ADMIN_ROLE
-  QUANTUM=$(get_id keystone service-create --name quantum --type network --description Networking )
-  keystone endpoint-create --region $KEYSTONE_REGION --service-id $QUANTUM --publicurl 'http://'"$MANAGEMENT_IP"':9696/' --adminurl 'http://'"$MANAGEMENT_IP"':9696/' --internalurl 'http://'"$MANAGEMENT_IP"':9696/'
-fi
-
 # cinder
 CINDER_USER=$(get_id keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
 keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $CINDER_USER --role-id $ADMIN_ROLE

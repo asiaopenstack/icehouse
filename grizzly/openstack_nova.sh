@@ -43,22 +43,22 @@ ec2_private_dns_show_ip=True
 volumes_path=/var/lib/nova/volumes
 enabled_apis=ec2,osapi_compute,metadata
 
-# Auth
+# AUTH
 use_deprecated_auth=false
 auth_strategy=keystone
 
-# Imaging service
+# IMAGING SERVICE
 glance_api_servers=$managementip:9292
 image_service=nova.image.glance.GlanceImageService
 
-# Vnc configuration
+# VNC CONFIG
 novnc_enabled=true
 novncproxy_base_url=http://$managementip:6080/vnc_auto.html
 novncproxy_port=6080
 vncserver_proxyclient_address=$managementip
 vncserver_listen=0.0.0.0
 
-# Network
+# NETWORK
 dhcpbridge_flagfile=/etc/nova/nova.conf
 dhcpbridge=/usr/bin/nova-dhcpbridge
 force_dhcp_release=True
@@ -74,16 +74,15 @@ flat_network_bridge=br100
 flat_interface=$managementip
 public_interface=$managementip
 
-# Compute #
+# COMPUTE
 compute_driver=libvirt.LibvirtDriver
 
-# Cinder #
+# CINDER
 volume_api_class=nova.volume.cinder.API
 osapi_volume_listen_port=5900
 " > /etc/nova/nova.conf
 
 # add to nova-compute.conf
-
 echo "
 libvirt_vif_type=ethernet
 libvirt_vif_driver=nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver
@@ -101,7 +100,8 @@ sleep 4
 cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
 
 echo "###################################################################################################"
+echo;
 echo "Do a 'nova-manage service list' and a 'nova image-list' to test.  Do './openstack_horizon.sh' next."
+echo;
 echo "###################################################################################################"
 echo;
-
