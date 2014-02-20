@@ -19,7 +19,7 @@ password=$SERVICE_PASSWORD
 
 echo "#######################################################################################"
 echo;
-echo "The horizon dashboard should be at http://$NODE_IP/horizon.  Login with admin/$password"
+echo "The horizon dashboard should be at http://$managementip/horizon.  Login with admin/$password"
 echo;
 echo "#######################################################################################"
 
