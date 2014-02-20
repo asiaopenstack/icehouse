@@ -99,6 +99,10 @@ sleep 4
 # restart nova
 cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
 
+# create cinder volume type
+cinder type-create Storage
+
+echo;
 echo "###################################################################################################"
 echo;
 echo "Do a 'nova-manage service list' and a 'nova image-list' to test.  Do './openstack_horizon.sh' next."

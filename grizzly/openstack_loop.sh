@@ -16,7 +16,7 @@ read -p "Enter the integer amount in gigabytes (min 1G) to use as a loopback fil
 echo;
 echo "Creating loopback file of size $gigabytes GB at /cinder-volumes..."
 gigabytesly=$gigabytes"G"
-dd if=/dev/zero of=cinder-volumes bs=1 count=0 seek=$gigabytesly
+dd if=/dev/zero of=/cinder-volumes bs=1 count=0 seek=$gigabytesly
 echo;
 
 # loop the file up
@@ -30,11 +30,6 @@ ln -s /etc/init.d/cinder-setup-backing-file /etc/rc2.d/S10cinder-setup-backing-f
 # create the physical volume and volume group
 sudo pvcreate /dev/loop2
 sudo vgcreate cinder-volumes /dev/loop2
-
-# create a storage type
-. ./stackrc
-cinder type-create Storage
-echo;
 
 if [[ -z $SG_CONTROLLER ]]; then
 echo "#################################################################################################

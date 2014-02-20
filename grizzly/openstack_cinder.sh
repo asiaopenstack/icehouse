@@ -60,6 +60,10 @@ service open-iscsi start
 sleep 5
 cinder-manage db sync
 
+# restart cinder services
+service cinder-scheduler restart
+service cinder-api restart
+
 echo;
 echo "#################################################################################################
 

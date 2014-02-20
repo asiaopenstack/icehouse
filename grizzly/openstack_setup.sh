@@ -63,7 +63,7 @@ then
 # do not unindent this section!
 # some of these envrionment variables are set again in stackrc later
 cat > setuprc <<EOF
-# set up env variables for testing
+# set up env variables for install
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=$password

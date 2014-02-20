@@ -56,7 +56,7 @@ Assuming a fresh install of Ubuntu Desktop, you'll need to locally login to each
     
 You may now login remotely to your rig via *ssh* and install *git* with *aptitude*:
 
-	sudo su
+    sudo su
     apt-get -y install git
 
 Checkout the StackGeek OpenStack setup scripts from Github:
@@ -85,6 +85,8 @@ The script will output a short configuration block which should be placed manual
 
     # ipv6 configuration
     iface eth0 inet6 auto
+
+Reboot the rig after saving the file.
 
 #### Test and Update
 After editing the network, you'll need to test your rig for virtualization support:
@@ -162,11 +164,11 @@ Once the install of Cinder is complete, determine your space requirements and ru
 
     ./openstack_loop.sh
 
-Keep in mind you have to create a loopback file that is at least 1GB in size.  You should be able to query a storage type now:
+Keep in mind you have to create a loopback file that is at least 1GB in size.  After you complete the Nova setup for the controller below, you should be able to query installed storage types:
 
     cinder type-list
     
-You may then create a new volume to test:
+You may then create a new volume to test (again, this requires running the Nova setup for the controller below):
 
     cinder create --volume-type Storage --display-name test 1
 
@@ -229,8 +231,20 @@ Once the compute rig has been configured, you may log back into the **controller
 You should see new entries for the newly added compute rig:
 
     EXAMPLE HERE
+
+
+#### Horizon Setup (Controller Only)
+Horizon provides OpenStack's managment interface.  Install Horizon by typing:
+
+    ./openstack_horizon.sh
     
-#### Flat Networking Setup
+Once you have installed Horzion, you should be able to log into your OpenStack cluster with the following URL format (changing the IP of course):
+
+    https://10.0.1.100/horizon
+
+Your user/pass combination will be *'admin'* and whatever you entered for a password earlier.  Be sure to complete the networking setup below before you log into the UI.
+    
+#### Flat Networking Setup (Controller Only)
 This guide completely ignores the disaster ridden [Neutron/Quantum project](https://wiki.openstack.org/wiki/Neutron).  If you are interested in Neutron, this is not the place to seek help.
 
 Begin by creating an IPv4 private network range which blocks out the **10.0.47.0** network:
@@ -249,7 +263,7 @@ This example would allow a floating IP address to be assigned to instance from t
 
 You can view the private network by querying nova:
 
-	nova network-list
+    nova network-list
 
 Output should look like this:
 
