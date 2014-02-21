@@ -108,6 +108,7 @@ fi
 # add cirros image
 glance image-create --name "Cirros 0.3.0"  --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
 
+echo;
 echo "#################################################################################################"
 echo;
 echo "Do a 'glance image-list' to see images.  You can now run './openstack_cinder.sh' to set up Nova." 

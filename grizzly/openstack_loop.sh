@@ -34,7 +34,7 @@ sudo vgcreate cinder-volumes /dev/loop2
 if [[ -z $SG_CONTROLLER ]]; then
 echo "#################################################################################################
 
-When you are done with setting up your volumes, run './openstack_glance.sh'
+When you are done with setting up your volumes, run './openstack_nova.sh'
 
 #################################################################################################"
 else

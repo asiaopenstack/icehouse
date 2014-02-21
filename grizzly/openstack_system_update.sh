@@ -17,7 +17,6 @@ fi
 
 apt-get install ubuntu-cloud-keyring -y
 apt-get update -y
-apt-get upgrade -y
 apt-get install curl -y
 
 echo "#################################################################################################
