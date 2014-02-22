@@ -26,6 +26,12 @@ s,%SERVICE_USER%,nova,g;
 s,%SERVICE_PASSWORD%,$password,g;
 " -i /etc/nova/api-paste.ini
  
+# create the dnsmasq-nova.conf file
+echo "
+cache-size=0
+" > /etc/nova/dnsmasq-nova.conf
+
+
 # write out a new nova file
 echo "
 [DEFAULT]
@@ -41,9 +47,11 @@ use_deprecated_auth=false
 state_path=/var/lib/nova
 lock_path=/run/lock/nova
 
+# PASTE FILE
+api_paste_config=/etc/nova/api-paste.ini
+
 # RABBIT
 rabbit_host=$managementip
-rabbit_password=guest
 rabbit_port=5672
 
 # SCHEDULER
@@ -57,24 +65,24 @@ default_schedule_zone=nova
 
 # NETWORK
 network_manager=nova.network.manager.FlatDHCPManager
+firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
 multi_host=True
 public_interface=br100
 fixed_range=10.0.47.0/24
 dmz_cidr=10.128.0.0/24
-force_dhcp_release=True
-send_arp_for_ha=True
+force_dhcp_release=true
+dns_server=8.8.8.8
+send_arp_for_ha=true
 auto_assign_floating_ip=false
-dhcp_domain=xov.io
+#dhcp_domain=geekceo.com
 dhcpbridge_flagfile=/etc/nova/nova.conf
 dhcpbridge=/usr/bin/nova-dhcpbridge
 libvirt_use_virtio_for_bridges=true
-dnsmasq_config_file=/etc/nova/dnsmasq-nova.conf ####################
-allow_same_net_traffic=true
+dnsmasq_config_file=/etc/nova/dnsmasq-nova.conf
 
 # GLANCE
-glance_api_servers=$managementip:9292
 image_service=nova.image.glance.GlanceImageService
-force_raw_images=false
+glance_api_servers=$managementip:9292
 
 # CINDER
 volume_api_class=nova.volume.cinder.API
@@ -84,12 +92,12 @@ iscsi_helper=tgtadm
 
 # COMPUTE
 compute_manager=nova.compute.manager.ComputeManager
-sql_connection=mysql://nova:$password@$managementip/nova
+sql_connection=mysql://nova:f00bar404@$managementip/nova
 connection_type=libvirt
 compute_driver=libvirt.LibvirtDriver
 libvirt_type=kvm
 libvirt_inject_key=false
-rootwrap_config=/etc/nova/rootwrap.conf ####################
+rootwrap_config=/etc/nova/rootwrap.conf
 remove_unused_base_images=true
 remove_unused_resized_minimum_age_seconds=3600
 remove_unused_original_minimum_age_seconds=3600
@@ -110,8 +118,10 @@ keystone_ec2_url=http://$managementip:5000/v2.0/ec2tokens
 
 # VNC CONFIG
 novnc_enabled=true
-novncproxy_base_url=http://$managementip:6080/vnc_auto.html
-xvpvncproxy_base_url=http://$managementip:6081/console
+novncproxy_base_url=$managementip:6080/vnc_auto.html
+xvpvncproxy_base_url=$managementip:6081/console
+xvpvncproxy_host=$managementip
+xvpvncproxy_port=6081
 novncproxy_host=$managementip
 novncproxy_port=6080
 vncserver_listen=$managementip
@@ -129,21 +139,7 @@ osapi_compute_listen=$managementip
 osapi_compute_listen_port=8774
 ec2_listen=$managementip
 ec2_listen_port=8773
-ec2_host=$managementip
-
-# OLD CRAP
-# firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
-# network_size=254
-# share_dhcp_address=True
-# flat_network_bridge=br100
-# flat_interface=$managementip
-# public_interface=$managementip
-# api_paste_config=/etc/nova/api-paste.ini
-# nova_url=http://$managementip:8774/v1.1/
-# root_helper=sudo nova-rootwrap /etc/nova/rootwrap.conf
-# ec2_private_dns_show_ip=True
-# volumes_path=/var/lib/nova/volumes
-# enabled_apis=ec2,osapi_compute,metadata
+ec2_host=$managmentip
 
 " > /etc/nova/nova.conf
 

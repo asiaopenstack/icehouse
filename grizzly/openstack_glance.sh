@@ -91,17 +91,6 @@ glance-manage db_sync
 sleep 4
 service glance-api restart; service glance-registry restart
 
-# add ubuntu image
-mkdir images
-if [ -f images/ubuntu-12.04-server-cloudimg-amd64-disk1.img ]
-then
-  glance image-create --name "Ubuntu 12.04 LTS" --is-public true --container-format ovf --disk-format qcow2 --file images/ubuntu-12.04-server-cloudimg-amd64-disk1.img 
-else
-  wget http://stackgeek.s3.amazonaws.com/ubuntu-12.04-server-cloudimg-amd64-disk1.img
-  mv ubuntu-12.04-server-cloudimg-amd64-disk1.img images
-  glance image-create --name "Ubuntu 12.04 LTS" --is-public true --container-format ovf --disk-format qcow2 --file images/ubuntu-12.04-server-cloudimg-amd64-disk1.img 
-fi
-
 # source the setuprc file
 . ./setuprc
 

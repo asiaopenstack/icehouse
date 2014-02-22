@@ -32,16 +32,16 @@ echo;
 # grab our IP 
 read -p "Enter the device name for the controller's NIC (eth0, etc.) : " managementnic
 
-MANAGEMENT_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+RIG_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 echo;
 echo "#################################################################################################################"
 echo;
-echo "The IP address on the controller's NIC is probably $MANAGEMENT_IP.  If that's wrong, ctrl-c and edit this script."
+echo "The IP address on this rig's NIC is probably $RIG_IP.  If that's wrong, ctrl-c and edit this script."
 echo;
 echo "#################################################################################################################"
 echo;
-#MANAGEMENT_IP=x.x.x.x
+#RIG_IP=x.x.x.x
 
 # controller install?
 echo;
@@ -67,8 +67,8 @@ cat > setuprc <<EOF
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=$password
-export OS_AUTH_URL="http://$MANAGEMENT_IP:5000/v2.0/"
-export SG_SERVICE_CONTROLLER_IP=$MANAGEMENT_IP
+export OS_AUTH_URL="http://$RIG_IP:5000/v2.0/"
+export SG_SERVICE_CONTROLLER_IP=$RIG_IP
 export SG_SERVICE_TENANT_NAME=service
 export SG_SERVICE_EMAIL=$email
 export SG_SERVICE_PASSWORD=$password
@@ -86,10 +86,22 @@ EOF
 		cat setuprc | curl -F 'geek=<-' https://sgsprunge.appspot.com 
 	fi
 
+# again, don't unindent!
+# tack on an indicator we're the controller
+cat >> setuprc <<EOF
+export SG_SERVICE_CONTROLLER=1
+EOF
+
 else
 	echo;
 	read -p "Enter the URL given to you from the controller setup: " sprungeurl
 	curl $sprungeurl > setuprc
+
+# don't unindent!
+# tack on the IP address for the compute rig
+cat >> setuprc <<EOF
+export SG_SERVICE_COMPUTE_IP=$RIG_IP
+EOF
 
 	echo;
 	echo "##########################################################################################"
@@ -100,11 +112,6 @@ else
 	echo;
 	exit
 fi
-
-# tack on an indicator we're the controller
-cat >> setuprc <<EOF
-export SG_SERVICE_CONTROLLER=1
-EOF
 
 echo;
 echo "##########################################################################################"

@@ -14,6 +14,7 @@ clear
 # some vars from the SG setup file getting locally reassigned 
 password=$SG_SERVICE_PASSWORD    
 managementip=$SG_SERVICE_CONTROLLER_IP
+computeip=$SG_SERVICE_COMPUTE_IP
 
 # install packages
 apt-get install -y nova-compute nova-network
@@ -28,58 +29,112 @@ s,%SERVICE_PASSWORD%,$password,g;
  
 # write out a new nova file
 echo "
-[DEFAULT]
+[[DEFAULT]
+
+# LOGS
+verbose=true
+debug=false
 logdir=/var/log/nova
+
+# STATE
+auth_strategy=keystone
+use_deprecated_auth=false
 state_path=/var/lib/nova
 lock_path=/run/lock/nova
-verbose=True
+
+# PASTE FILE
 api_paste_config=/etc/nova/api-paste.ini
-compute_scheduler_driver=nova.scheduler.simple.SimpleScheduler
+
+# RABBIT
 rabbit_host=$managementip
-nova_url=http://$managementip:8774/v1.1/
-sql_connection=mysql://nova:$password@$managementip/nova
-root_helper=sudo nova-rootwrap /etc/nova/rootwrap.conf
-ec2_private_dns_show_ip=True
-volumes_path=/var/lib/nova/volumes
-enabled_apis=ec2,osapi_compute,metadata
+rabbit_port=5672
 
-# AUTH
-use_deprecated_auth=false
-auth_strategy=keystone
-
-# IMAGING SERVICE
-glance_api_servers=$managementip:9292
-image_service=nova.image.glance.GlanceImageService
-
-# VNC CONFIG
-novnc_enabled=true
-novncproxy_base_url=http://$managementip:6080/vnc_auto.html
-novncproxy_port=6080
-vncserver_proxyclient_address=$managementip
-vncserver_listen=0.0.0.0
+# SCHEDULER
+compute_scheduler_driver=nova.scheduler.simple.SimpleScheduler
+scheduler_available_filters=nova.scheduler.filters.standard_filters
+scheduler_max_attempts=3
+scheduler_default_filters=AvailabilityZoneFilter,RamFilter,ComputeFilter,CoreFilter,SameHostFilter,DifferentHostFilter,RetryFilter
+least_cost_functions=nova.scheduler.least_cost.compute_fill_first_cost_fn
+default_availability_zone=nova
+default_schedule_zone=nova
 
 # NETWORK
-dhcpbridge_flagfile=/etc/nova/nova.conf
-dhcpbridge=/usr/bin/nova-dhcpbridge
-force_dhcp_release=True
 network_manager=nova.network.manager.FlatDHCPManager
 firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
-network_size=254
-allow_same_net_traffic=False
 multi_host=True
-send_arp_for_ha=True
-share_dhcp_address=True
-force_dhcp_release=True
-flat_network_bridge=br100
-flat_interface=$managementip
-public_interface=$managementip
+public_interface=br100
+fixed_range=10.0.47.0/24
+dmz_cidr=10.128.0.0/24
+force_dhcp_release=true
+dns_server=8.8.8.8
+send_arp_for_ha=true
+auto_assign_floating_ip=false
+#dhcp_domain=geekceo.com
+dhcpbridge_flagfile=/etc/nova/nova.conf
+dhcpbridge=/usr/bin/nova-dhcpbridge
+libvirt_use_virtio_for_bridges=true
+dnsmasq_config_file=/etc/nova/dnsmasq-nova.conf
 
-# COMPUTE
-compute_driver=libvirt.LibvirtDriver
+# GLANCE
+image_service=nova.image.glance.GlanceImageService
+glance_api_servers=$managementip:9292
 
 # CINDER
 volume_api_class=nova.volume.cinder.API
 osapi_volume_listen_port=5900
+snapshot_image_format=qcow2
+iscsi_helper=tgtadm
+
+# COMPUTE
+compute_manager=nova.compute.manager.ComputeManager
+sql_connection=mysql://nova:f00bar404@$managementip/nova
+connection_type=libvirt
+compute_driver=libvirt.LibvirtDriver
+libvirt_type=kvm
+libvirt_inject_key=false
+rootwrap_config=/etc/nova/rootwrap.conf
+remove_unused_base_images=true
+remove_unused_resized_minimum_age_seconds=3600
+remove_unused_original_minimum_age_seconds=3600
+checksum_base_images=false
+start_guests_on_host_boot=true
+resume_guests_state_on_host_boot=true
+
+# QUOTAS
+quota_security_groups=50
+quota_fixed_ips=40
+quota_instances=20
+force_config_drive=false
+cpu_allocation_ratio=16.0
+ram_allocation_ratio=1.5
+
+# KEYSTONE
+keystone_ec2_url=http://$managementip:5000/v2.0/ec2tokens
+
+# VNC CONFIG
+novnc_enabled=true
+novncproxy_base_url=$managementip:6080/vnc_auto.html
+xvpvncproxy_base_url=$managementip:6081/console
+xvpvncproxy_host=$computeip
+xvpvncproxy_port=6081
+novncproxy_host=$computeip
+novncproxy_port=6080
+vncserver_listen=$computeip
+vncserver_proxyclient_address=$computeip
+
+# OTHER
+osapi_max_limit=1000
+
+# APIs
+ec2_workers=4
+osapi_compute_workers=4
+metadata_workers=4
+osapi_volume_workers=4
+osapi_compute_listen=$computeip
+osapi_compute_listen_port=8774
+ec2_listen=$computeip
+ec2_listen_port=8773
+ec2_host=$computeip
 " > /etc/nova/nova.conf
 
 # add to nova-compute.conf

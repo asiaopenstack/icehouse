@@ -10,7 +10,7 @@ Anyone is welcome to use these scripts to install OpenStack for evaluation or pr
 ### A Brief Rant on the OpenStack Scene
 OpenStack was released as [Open Source software by Rackspace](http://en.wikipedia.org/wiki/OpenStack#History).  While portions of the project carried an Open Source license from the beginning, [Rackspace](http2://rackspace.com/) is ultimately credited for the release of OpenStack's codebase by way of the aquisition of Anso Labs.  Anso Labs was contracted by NASA to build an early version of OpenStack called Nebula.  Anso Lab's and Rackspace's contributions were based on the premise to create open and trustworthy infrastructure.
 
-The [OpenStack project](http://openstack.org/) is managed by the [OpenStack Foundation](http://openstack.org/foundation/).  The foundation is controlled by a governance board which is comprised of individuals who work for very large corporations with very large corporate interests, including Rackspace.  The effect on the OpenStack ecosystem has been mixed.  In this author's opinion, corporate interests have been detrimental to the innovative process inside OpenStack's ecosystem.
+The [OpenStack project](http://openstack.org/) is managed by the [OpenStack Foundation](http://openstack.org/foundation/).  The foundation is controlled by a governance board which is comprised of individuals who work for very large corporations with very large corporate interests.  The effect on the OpenStack ecosystem has been mixed.  In this author's opinion, corporate interests have been detrimental to the innovative process inside OpenStack's ecosystem.
 
 At the very least, this effect has caused the OpenStack scene to lose marketing traction.  Evidence of that fact is seen in the complete lack of a decent install methodology and infighting between foundation members on [stupid matters including EC2 API support](http://www.cloudscaling.com/blog/cloud-computing/openstack-aws/).  This project aims to fix that.
 
@@ -155,6 +155,13 @@ Once Glance is installed, you can get a list of images installed on the cluster:
     
 The output should look something like this:
 
+    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
+    | ID                                   | Name             | Disk Format | Container Format | Size      | Status |
+    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
+    | 9bc54800-b89f-4b87-9416-8ae1395eb8d6 | Cirros 0.3.0     | qcow2       | bare             | 9761280   | active |
+    | 81144bfc-e70d-4377-8195-71884d68fa04 | Ubuntu 12.04 LTS | qcow2       | ovf              | 226426880 | active |
+    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
+    
 #### Cinder Setup
 Cinder is used to provide additional volume attachments to running instances and snapshot space.  Start the install of Cinder by typing:
 
@@ -233,17 +240,6 @@ You should see new entries for the newly added compute rig:
     EXAMPLE HERE
 
 
-#### Horizon Setup (Controller Only)
-Horizon provides OpenStack's managment interface.  Install Horizon by typing:
-
-    ./openstack_horizon.sh
-    
-Once you have installed Horzion, you should be able to log into your OpenStack cluster with the following URL format (changing the IP of course):
-
-    http://10.0.1.100/horizon
-
-Your user/pass combination will be *'admin'* and whatever you entered for a password earlier.  Be sure to complete the networking setup below before you log into the UI.
-    
 #### Flat Networking Setup (Controller Only)
 This guide completely ignores the disaster ridden [Neutron/Quantum project](https://wiki.openstack.org/wiki/Neutron).  If you are interested in Neutron, this is not the place to seek help.
 
@@ -287,6 +283,17 @@ Output should look like this (truncated for space):
     +------------+---------------+---------------+------+-----------+
 
 There will be additional guides posted on best practices for IPv6 allocation and IPv4 mapping and isolation.  Hold tight.
+
+#### Horizon Setup (Controller Only)
+Horizon provides OpenStack's managment interface.  Install Horizon by typing:
+
+    ./openstack_horizon.sh
+    
+Once you have installed Horzion, you should be able to log into your OpenStack cluster with the following URL format (changing the IP of course):
+
+    http://10.0.1.100/horizon
+
+Your user/pass combination will be *'admin'* and whatever you entered for a password earlier.  If you accidently run this command before adding the network above, you may see errors in the UI.    
 
 #### OpenStack Cheat Sheet
 An OpenStack Command Line Cheat Sheet is available on [Anystacker's site](http://anystacker.com/2014/02/openstack-command-line-cheat-sheet/).  Commands can be run once the **setuprc** file has been sourced:
