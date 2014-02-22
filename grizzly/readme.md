@@ -1,25 +1,25 @@
 ## Installing OpenStack Grizzly on Ubuntu 12.04 LTS
-Infrastructure is meant to be [open, trustworthy and secure](http://www.stackgeek.com/blog/kordless/post/a-code-of-trust). The best way to ensure these goals is to use Open Source software and [hardware](http://en.wikipedia.org/wiki/Open_Compute_Project) exclusively at the infrastruture level.  As such, this guides and the software it references are released under the MIT and Apache Open Source licenses.
-
 OpenStack's technology stack consists of a series of interrelated projects which controls a given deployment of hardware providing processing, storage, and networking.  Deployments are managed using a simple UI and a flexible API which can be used by third party software.
 
-This guide is dedicated to helping individuals deploy OpenStack for use with the [xov.io](https://github.com/stackmonkey/xovio-pool) decentralized cloud project.  Xov.io impliments highly a highly distributed cloud backed by a simple cryptocurrency payment system.  Partcipitation in a xov.io enabled compute pool provides resource and revenue sharing among participants.
+Infrastructure is meant to be [open, trustworthy and secure](http://www.stackgeek.com/blog/kordless/post/a-code-of-trust). The best way to ensure trust in infrastructure is the use of Open Source software and [hardware](http://en.wikipedia.org/wiki/Open_Compute_Project) exclusively at the infrastructure level.  
 
-Anyone is welcome to use these scripts to install OpenStack for evaluation or production use.
+This guide is dedicated to helping individuals deploy OpenStack for use with the [xov.io](https://github.com/stackmonkey/xovio-pool) project.  Xov.io's goal is to create a highly a highly distributed cloud backed by a simple cryptocurrency payment system.  Participation in a xov.io enabled compute pool provides resource and revenue sharing among participants.
 
-### A Brief Rant on the OpenStack Scene
-OpenStack was released as [Open Source software by Rackspace](http://en.wikipedia.org/wiki/OpenStack#History).  While portions of the project carried an Open Source license from the beginning, [Rackspace](http2://rackspace.com/) is ultimately credited for the release of OpenStack's codebase by way of the aquisition of Anso Labs.  Anso Labs was contracted by NASA to build an early version of OpenStack called Nebula.  Anso Lab's and Rackspace's contributions were based on the premise to create open and trustworthy infrastructure.
+This guide and the software it contains are released under the MIT Open Source license. Anyone is welcome to use these scripts to install OpenStack for evaluation or production use. 
 
-The [OpenStack project](http://openstack.org/) is managed by the [OpenStack Foundation](http://openstack.org/foundation/).  The foundation is controlled by a governance board which is comprised of individuals who work for very large corporations with very large corporate interests.  The effect on the OpenStack ecosystem has been mixed.  In this author's opinion, corporate interests have been detrimental to the innovative process inside OpenStack's ecosystem.
+### A Brief Rant on OpenStack
+OpenStack was released as [Open Source software by Rackspace](http://en.wikipedia.org/wiki/OpenStack#History).  While portions of the project carried an Open Source license from the beginning, [Rackspace](http2://rackspace.com/) is ultimately credited for the release of OpenStack's codebase by way of the acquisition of Anso Labs.  Anso Labs was contracted by NASA to build an early version of OpenStack called Nebula.  **These efforts by Anso Labs and Rackspace set the stage for open and trustworthy infrastructure.**
 
-At the very least, this effect has caused the OpenStack scene to lose marketing traction.  Evidence of that fact is seen in the complete lack of a decent install methodology and infighting between foundation members on [stupid matters including EC2 API support](http://www.cloudscaling.com/blog/cloud-computing/openstack-aws/).  This project aims to fix that.
+The [OpenStack project](http://openstack.org/) is managed by the [OpenStack Foundation](http://openstack.org/foundation/).  The foundation is controlled by a governance board which is comprised of individuals who work for DreamHost, HP, AT&T, Dell, Nebula, RackSpace, Red Hat, IBM, Yahoo, Mirantis, Canonical, and Cisco.  The combined market cap of these companies exceeds 400 BILLION dollars.
 
-Corporations who create infrastructure components and the sotware they run, including compute, storage and networking gear, and who do so using combinations that include closed source code, are a direct threat by way of centralized pools of control.  There are complex reasons why this is a **'very bad thing'** for the ecosystem and I encourage you to do independent research around this concept to form your own opinions on the topic.  You should start by researching [cryptocurrency technologies](http://en.wikipedia.org/wiki/Cryptocurrency).  BTW, there is a distiction between pools of power and pools of knowledge.  The latter is acceptable by way of proof of work concepts.
+Corporations who produce infrastructure components and software using closed source code are a direct threat to the open infrastructure movement.  There are complex reasons why this is a **'very bad thing'** for the world and I encourage you to do independent research around this concept to form your own opinions on the topic.  You can start by researching [cryptocurrency technologies](http://en.wikipedia.org/wiki/Cryptocurrency) and their focus on decentralized control.
 
-Again, infrastructure is meant to be open, trustworthy and secure.  We will not relent on this topic.  Humanitiy's future lies in the balance.
+Centralization of power hampers innovation, limits progress, and causes goal misalignment.  Simply put, most large corporation's interests don't align with the goals of high decentrilization and open infrastructure.  It is left to individuals to take up the charge of improving the OpenStack project to meet these goals.
+
+It is my hope this project contributes to the improvement of the OpenStack install experience.  You can help by testing, opening tickets, and contributing to the project.
 
 ### Getting Started
-StackGeek provides [these scripts](https://github.com/StackGeek/openstackgeek) and this guide to enable you to get a working installation of OpenStack Grizzly going in about 10 minutes. This author is the source of the **'10 Minute OpenStack Install'** craze and is also responsible for coining the term **'cloud'** back in 1999 while working on the [Grub project]().  Sorry about that.
+StackGeek provides [these scripts](https://github.com/StackGeek/openstackgeek) and this guide to enable you to get a working installation of OpenStack Grizzly going in about 10 minutes. This author is the source of the **'10 Minute OpenStack Install'** craze and is reportedly responsible for coining the term **'cloud'** back in 1999 while working on the [Grub project]().
 
 Before you start your OpenStack setup, please read the following requirements carefully:
 
@@ -65,7 +65,7 @@ Checkout the StackGeek OpenStack setup scripts from Github:
     cd openstackgeek/grizzly
 
 #### Network Interfaces
-You need to manually configure your ethernet interface to support a non-routable static IPv4 address and an autoconfigured IPv6 address.  Externally routed IPv4 addresses will be added in a later section. To start, run the following script:
+You need to manually configure your ethernet interface to support a non-routable static IPv4 address and an auto configured IPv6 address.  Externally routed IPv4 addresses will be added in a later section. To start, run the following script:
 
     ./openstack_networking.sh
     
@@ -155,6 +155,13 @@ Once Glance is installed, you can get a list of images installed on the cluster:
     
 The output should look something like this:
 
+    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
+    | ID                                   | Name             | Disk Format | Container Format | Size      | Status |
+    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
+    | 9bc54800-b89f-4b87-9416-8ae1395eb8d6 | Cirros 0.3.0     | qcow2       | bare             | 9761280   | active |
+    | 81144bfc-e70d-4377-8195-71884d68fa04 | Ubuntu 12.04 LTS | qcow2       | ovf              | 226426880 | active |
+    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
+    
 #### Cinder Setup
 Cinder is used to provide additional volume attachments to running instances and snapshot space.  Start the install of Cinder by typing:
 
@@ -233,17 +240,6 @@ You should see new entries for the newly added compute rig:
     EXAMPLE HERE
 
 
-#### Horizon Setup (Controller Only)
-Horizon provides OpenStack's managment interface.  Install Horizon by typing:
-
-    ./openstack_horizon.sh
-    
-Once you have installed Horzion, you should be able to log into your OpenStack cluster with the following URL format (changing the IP of course):
-
-    http://10.0.1.100/horizon
-
-Your user/pass combination will be *'admin'* and whatever you entered for a password earlier.  Be sure to complete the networking setup below before you log into the UI.
-    
 #### Flat Networking Setup (Controller Only)
 This guide completely ignores the disaster ridden [Neutron/Quantum project](https://wiki.openstack.org/wiki/Neutron).  If you are interested in Neutron, this is not the place to seek help.
 
@@ -251,7 +247,7 @@ Begin by creating an IPv4 private network range which blocks out the **10.0.47.0
 
     nova-manage network create private --fixed_range_v4=10.0.47.0/24 --num_networks=1 --bridge=br100 --bridge_interface=eth0 --network_size=255
 
-You'll need to add a route in your router to point to the new network managed by the controller (psuedo command here):
+You'll need to add a route in your router to point to the new network managed by the controller (pseudo command here):
 
     route add 10.0.47.0 255.255.255.0 gw 10.0.1.200
 
@@ -288,17 +284,19 @@ Output should look like this (truncated for space):
 
 There will be additional guides posted on best practices for IPv6 allocation and IPv4 mapping and isolation.  Hold tight.
 
+#### Horizon Setup (Controller Only)
+Horizon provides OpenStack's managment interface.  Install Horizon by typing:
+
+    ./openstack_horizon.sh
+    
+Once you have installed Horzion, you should be able to log into your OpenStack cluster with the following URL format (changing the IP of course):
+
+    http://10.0.1.100/horizon
+
+Your user/pass combination will be *'admin'* and whatever you entered for a password earlier.  If you accidentally run this command before adding the network above, you may see errors in the UI.    
+
 #### OpenStack Cheat Sheet
 An OpenStack Command Line Cheat Sheet is available on [Anystacker's site](http://anystacker.com/2014/02/openstack-command-line-cheat-sheet/).  Commands can be run once the **setuprc** file has been sourced:
-
-    . ./setuprc
-
-#### Delete the Paste File
-The URL created for a multi-rig install is stored on an AppEngine application based on [Rupa's sprunge project](http://github.com/rupa/sprunge).  You should delete the paste after you are done with your setup for security's sake:
-
-    curl -X DELETE https://sgsprunge.appspot.com/I2DIkNZxJyPhhIJc
-
-If you have any questions, issues or concerns, please feel free to join IRC, post on the forum, or create a ticket!nds can be run once the **setuprc** file has been sourced:
 
     . ./setuprc
 

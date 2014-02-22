@@ -137,13 +137,6 @@ ec2_listen_port=8773
 ec2_host=$computeip
 " > /etc/nova/nova.conf
 
-# add to nova-compute.conf
-
-echo "
-libvirt_vif_type=ethernet
-libvirt_vif_driver=nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver
-" >> /etc/nova/nova-compute.conf
-
 # restart
 cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
 sleep 4
