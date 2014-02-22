@@ -54,7 +54,14 @@ Assuming a fresh install of Ubuntu Desktop, you'll need to locally login to each
 
     sudo apt-get install openssh-server
     
-You may now login remotely to your rig via *ssh* and install *git* with *aptitude*:
+You may now login remotely to your rig via *ssh* and do an upgrade:
+    
+    echo '# STACKGEEK ADDED THIS' >> /etc/apt/sources.list
+  	echo 'deb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/grizzly main' >> /etc/apt/sources.list
+	apt-get update -y
+	apt-get upgrade -y
+	
+The upgrade will take a while.  When it is done, install *git* with *aptitude*:
 
     sudo su
     apt-get -y install git
@@ -112,7 +119,7 @@ You will be asked whether or not this rig is to be configured as a controller.  
 
 If you indicated the rig is not a controller node, you will be prompted for the URL spit out by the controller installation as mentioned above.  Paste this URL in and hit enter to start the compute rig install.
 
-***Note: If you are installing a compute rig, you may skip to the *Cinder Setup* section below.***
+***Note: If you are installing a compute rig, you may skip to the Cinder Setup section below.***
 
 #### Database Setup (Controller Only)
 The next part of the setup installs MySQL and RabbitMQ.  **This is only required for the controller rig. Skip this step if you are setting up a compute rig for your cluster.** Start the install on the controller rig by typing:
@@ -289,7 +296,11 @@ Horizon provides OpenStack's managment interface.  Install Horizon by typing:
 
     ./openstack_horizon.sh
     
-Once you have installed Horzion, you should be able to log into your OpenStack cluster with the following URL format (changing the IP of course):
+Now reboot the controller rig:
+
+    reboot
+    
+Once the rig comes back up, you should be able to log into your OpenStack cluster with the following URL format (changing the IP of course):
 
     http://10.0.1.100/horizon
 
