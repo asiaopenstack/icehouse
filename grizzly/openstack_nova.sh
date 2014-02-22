@@ -119,13 +119,8 @@ keystone_ec2_url=http://$managementip:5000/v2.0/ec2tokens
 # VNC CONFIG
 novnc_enabled=true
 novncproxy_base_url=$managementip:6080/vnc_auto.html
-xvpvncproxy_base_url=$managementip:6081/console
-xvpvncproxy_host=$managementip
-xvpvncproxy_port=6081
-novncproxy_host=$managementip
+novncproxy_host=0.0.0.0
 novncproxy_port=6080
-vncserver_listen=$managementip
-vncserver_proxyclient_address=$managementip
 
 # OTHER
 osapi_max_limit=1000

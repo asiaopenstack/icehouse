@@ -86,10 +86,11 @@ flavor = keystone
 fi
 
 service glance-api restart; service glance-registry restart
-sleep 4
+sleep 5
 glance-manage db_sync
-sleep 4
+sleep 5
 service glance-api restart; service glance-registry restart
+sleep 5
 
 # source the setuprc file
 . ./setuprc

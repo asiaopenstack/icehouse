@@ -35,6 +35,7 @@ Go and edit your /etc/network/interfaces file to look something like this:
 # loopback
 auto lo
 iface lo inet loopback
+iface lo inet6 loopback
 
 # primary interface
 auto eth0
