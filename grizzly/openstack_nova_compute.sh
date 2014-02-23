@@ -137,14 +137,6 @@ ec2_host=$computeip
 
 # restart
 cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
-sleep 4
-
-# sync db
-nova-manage db sync
-sleep 4
-
-# restart nova
-cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
 
 echo "###################################################################################################"
 echo;
