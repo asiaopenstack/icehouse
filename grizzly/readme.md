@@ -1,5 +1,5 @@
 ## Installing OpenStack Grizzly on Ubuntu 12.04 LTS
-Before beginning this guide, be sure you read the introduction README in the directory above this one.  Information on the project, goals, support channels and other versions is available there.
+Before beginning this guide, be sure you read the introduction README in the [directory above this one](https://github.com/stackgeek/openstackgeek/).  Information on the project, goals, support channels and other versions is available there.
 
 #### Video Guide
 A video guide is forthcoming.  Hold tight.
