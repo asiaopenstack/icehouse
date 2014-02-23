@@ -30,9 +30,9 @@ echo "##########################################################################
 echo;
 
 # grab our IP 
-read -p "Enter the device name for the controller's NIC (eth0, etc.) : " managementnic
+read -p "Enter the device name for this rig's NIC (eth0, etc.) : " rignic
 
-RIG_IP=$(/sbin/ifconfig $managementnic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+RIG_IP=$(/sbin/ifconfig $rignic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 echo;
 echo "#################################################################################################################"

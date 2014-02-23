@@ -13,6 +13,7 @@ You may now login remotely to your rig via *ssh* and do an upgrade:
     
     echo '# STACKGEEK ADDED THIS' >> /etc/apt/sources.list
   	echo 'deb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/grizzly main' >> /etc/apt/sources.list
+	apt-get install ubuntu-cloud-keyring -y
 	apt-get update -y
 	apt-get upgrade -y
 	
@@ -59,7 +60,7 @@ If your rig doesn't support virtualization, you will need to check your virtuali
 
     ./openstack_system_update.sh
     
-The update takes a while, so just kick back and enjoy the music!
+The update takes a while, so just kick back and hang out!
 
 #### Setup
 *Note: Be sure to take a look at the scripts before you run them.  Keep in mind the setup scripts will periodically prompt you for input, either for confirming installation of a package, or asking you for information for configuration.*
@@ -260,6 +261,8 @@ Once the rig comes back up, you should be able to log into your OpenStack cluste
     http://10.0.1.100/horizon
 
 Your user/pass combination will be *'admin'* and whatever you entered for a password earlier.  If you accidentally run this command before adding the network above, you may see errors in the UI.    
+
+***Note: If you log into the dashboard and get errors regarding quotas, log out of the UI by clicking on 'sign out' at the top right and then reboot the rig.  The errors should go away when you log back in.***
 
 #### OpenStack Cheat Sheet
 An OpenStack Command Line Cheat Sheet is available on [Anystacker's site](http://anystacker.com/2014/02/openstack-command-line-cheat-sheet/).  Commands can be run once the **setuprc** file has been sourced:

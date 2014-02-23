@@ -113,10 +113,8 @@ keystone_ec2_url=http://$managementip:5000/v2.0/ec2tokens
 
 # VNC CONFIG
 novnc_enabled=true
-novncproxy_base_url=$managementip:6080/vnc_auto.html
-xvpvncproxy_base_url=$managementip:6081/console
-xvpvncproxy_host=$computeip
-xvpvncproxy_port=6081
+novncproxy_base_url=http://$managementip:6080/vnc_auto.html
+xvpvncproxy_base_url=http://$managementip:6081/console
 novncproxy_host=$computeip
 novncproxy_port=6080
 vncserver_listen=$computeip
