@@ -29,7 +29,7 @@ s,%SERVICE_PASSWORD%,$password,g;
  
 # write out a new nova file
 echo "
-[[DEFAULT]
+[DEFAULT]
 
 # LOGS
 verbose=true
@@ -140,7 +140,7 @@ cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
 
 echo "###################################################################################################"
 echo;
-echo "Install complete.  Do './openstack_horizon.sh' next."
+echo "Install complete.  Log into the controller and run a 'nova-manage service list' to check."
 echo;
 echo "###################################################################################################"
 echo;
