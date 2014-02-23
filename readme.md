@@ -33,9 +33,6 @@ Before you start your OpenStack setup, please read the following requirements ca
 
 ***Note: Each OpenStack cluster needs a single controller which is in charge of managing the cluster.  Certain steps below are labeled to indicate they need to be run only on the controller.  All other steps which are not labeled will need to be completed for each and every node in the cluster - including the controller.*** 
 
-#### Video Guide
-A video guide is forthcoming.  Hold tight.
-
 #### Forum Discussion
 There is a [forum based discussion area on Google Groups](https://groups.google.com/forum/#!category-topic/stackgeek/openstack/zVVS4DgiJnI) for posting technical questions regarding the guide.
 
