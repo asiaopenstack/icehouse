@@ -107,25 +107,6 @@ Keystone should output the current user list to the console:
     | 7fa480363a364d539278613aa7e32875 | quantum |   True  | xxxxxxxx@gmail.com |
     +----------------------------------+---------+---------+--------------------+
 
-#### Cinder Setup
-Cinder is used to provide additional volume attachments to running instances and snapshot space.  Start the install of Cinder by typing:
-
-    ./openstack_cinder.sh
-    
-Once the install of Cinder is complete, determine your space requirements and run the loopback volume creation script:
-
-    ./openstack_loop.sh
-
-Keep in mind you have to create a loopback file that is at least 1GB in size.  After you complete the Nova setup for the controller below, you should be able to query installed storage types:
-
-    cinder type-list
-    
-You may then create a new volume to test (again, this requires running the Nova setup for the controller below):
-
-    cinder create --volume-type Storage --display-name test 1
-
-***Note: If you are installing a compute rig, you may skip to the *Nova Compute Setup* section below.***
-
 #### Glance Setup (Controller Only)
 Glance provides image services for OpenStack.  Images are comprised of prebuilt operating system images built to run on OpenStack.  There is a [list of available images](http://docs.openstack.org/image-guide/content/ch_obtaining_images.html) on the OpenStack site.
 
@@ -145,6 +126,25 @@ The output should be something like this:
     | df53bace-b5a0-49ba-9b7f-4d43f249e3f3 | Cirros 0.3.0     | qcow2       | bare             | 9761280   | active |
     | 29ac82cc-f3ac-4530-922d-672dfa743bc0 | Ubuntu 12.04 LTS | qcow2       | ovf              | 226426880 | active |
     +--------------------------------------+------------------+-------------+------------------+-----------+--------+
+
+#### Cinder Setup
+Cinder is used to provide additional volume attachments to running instances and snapshot space.  Start the install of Cinder by typing:
+
+    ./openstack_cinder.sh
+    
+Once the install of Cinder is complete, determine your space requirements and run the loopback volume creation script:
+
+    ./openstack_loop.sh
+
+Keep in mind you have to create a loopback file that is at least 1GB in size.  After you complete the Nova setup for the controller below, you should be able to query installed storage types:
+
+    cinder type-list
+    
+You may then create a new volume to test (again, this requires running the Nova setup for the controller below):
+
+    cinder create --volume-type Storage --display-name test 1
+
+***Note: If you are installing a compute rig, you may skip to the *Nova Compute Setup* section below.***
 
 #### Nova Setup (Controller Only)
 Nova provides multiple services to OpenStack for controlling networking, imaging and starting and stopping instances.  If you are installing a compute rig, please skip to the following section to install the base *nova-compute* methods needed for running a compute rig.
