@@ -92,7 +92,7 @@ iscsi_helper=tgtadm
 
 # COMPUTE
 compute_manager=nova.compute.manager.ComputeManager
-sql_connection=mysql://nova:f00bar404@$managementip/nova
+sql_connection=mysql://nova:$password@$managementip/nova
 connection_type=libvirt
 compute_driver=libvirt.LibvirtDriver
 libvirt_type=kvm
