@@ -107,24 +107,6 @@ Keystone should output the current user list to the console:
     | 7fa480363a364d539278613aa7e32875 | quantum |   True  | xxxxxxxx@gmail.com |
     +----------------------------------+---------+---------+--------------------+
 
-#### Glance Setup (Controller Only)
-The Glance service provides operating system images used for booting instances.  The xov.io software provides methods for installing system recommended images for instance starts.  You'll add more images once you install the xov.io appliance.  Start the Glance install by typing:
-
-    ./openstack_glance.sh
-    
-Once Glance is installed, you can get a list of images installed on the cluster:
-
-    glance image-list
-    
-The output should look something like this:
-
-    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
-    | ID                                   | Name             | Disk Format | Container Format | Size      | Status |
-    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
-    | 9bc54800-b89f-4b87-9416-8ae1395eb8d6 | Cirros 0.3.0     | qcow2       | bare             | 9761280   | active |
-    | 81144bfc-e70d-4377-8195-71884d68fa04 | Ubuntu 12.04 LTS | qcow2       | ovf              | 226426880 | active |
-    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
-    
 #### Cinder Setup
 Cinder is used to provide additional volume attachments to running instances and snapshot space.  Start the install of Cinder by typing:
 
