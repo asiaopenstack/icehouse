@@ -60,7 +60,7 @@ If your rig doesn't support virtualization, you will need to check your virtuali
 
     ./openstack_system_update.sh
     
-The update takes a while, so just kick back and hang out!
+The update should come back pretty quick as you've already updated the system.
 
 #### Setup
 *Note: Be sure to take a look at the scripts before you run them.  Keep in mind the setup scripts will periodically prompt you for input, either for confirming installation of a package, or asking you for information for configuration.*
