@@ -124,7 +124,6 @@ The output should be something like this:
     | ID                                   | Name             | Disk Format | Container Format | Size      | Status |
     +--------------------------------------+------------------+-------------+------------------+-----------+--------+
     | df53bace-b5a0-49ba-9b7f-4d43f249e3f3 | Cirros 0.3.0     | qcow2       | bare             | 9761280   | active |
-    | 29ac82cc-f3ac-4530-922d-672dfa743bc0 | Ubuntu 12.04 LTS | qcow2       | ovf              | 226426880 | active |
     +--------------------------------------+------------------+-------------+------------------+-----------+--------+
 
 #### Cinder Setup
