@@ -31,7 +31,7 @@ ln -s /etc/init.d/cinder-setup-backing-file /etc/rc2.d/S10cinder-setup-backing-f
 sudo pvcreate /dev/loop2
 sudo vgcreate cinder-volumes /dev/loop2
 
-if [[ -z $SG_CONTROLLER ]]; then
+if [[ -z $SG_SERVICE_CONTROLLER ]]; then
 echo "#################################################################################################
 
 When you are done with setting up your volumes, run './openstack_nova_compute.sh'
