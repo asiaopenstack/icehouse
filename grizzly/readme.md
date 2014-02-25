@@ -4,7 +4,7 @@ Before beginning this guide, be sure you read the introduction README in the [di
 #### Video Guide
 The video for this guide is [located on Vimeo](https://vimeo.com/87528023).
 
-!(http://github.com/)
+[!(https://raw.github.com/StackGeek/openstackgeek/master/grizzly/openstack_grizzly.png)](https://vimeo.com/87528023)
 
 ### Installation
 Assuming a fresh install of Ubuntu Desktop, you'll need to locally login to each rig and install the *openssh-server* to allow remote *ssh* access:
