@@ -2,7 +2,9 @@
 Before beginning this guide, be sure you read the introduction README in the [directory above this one](https://github.com/stackgeek/openstackgeek/).  Information on the project, goals, support channels and other versions is available there.
 
 #### Video Guide
-A video guide is forthcoming.  Hold tight.
+The video for this guide is [located on Vimeo](https://vimeo.com/87528023).
+
+!(http://github.com/)
 
 ### Installation
 Assuming a fresh install of Ubuntu Desktop, you'll need to locally login to each rig and install the *openssh-server* to allow remote *ssh* access:
@@ -60,7 +62,7 @@ If your rig doesn't support virtualization, you will need to check your virtuali
 
     ./openstack_system_update.sh
     
-The update should come back pretty quick as you've already updated the system.
+The update should come back pretty quick as you've already updated the system. 
 
 #### Setup
 *Note: Be sure to take a look at the scripts before you run them.  Keep in mind the setup scripts will periodically prompt you for input, either for confirming installation of a package, or asking you for information for configuration.*
