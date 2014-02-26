@@ -79,6 +79,7 @@ dhcpbridge_flagfile=/etc/nova/nova.conf
 dhcpbridge=/usr/bin/nova-dhcpbridge
 libvirt_use_virtio_for_bridges=true
 dnsmasq_config_file=/etc/nova/dnsmasq-nova.conf
+use_ipv6=true
 
 # GLANCE
 image_service=nova.image.glance.GlanceImageService
@@ -140,12 +141,6 @@ ec2_listen_port=8773
 ec2_host=$managmentip
 
 " > /etc/nova/nova.conf
-
-# add to nova-compute.conf
-echo "
-libvirt_vif_type=ethernet
-libvirt_vif_driver=nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver
-" >> /etc/nova/nova-compute.conf
 
 # restart
 cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
