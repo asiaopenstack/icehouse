@@ -91,7 +91,7 @@ cat >> setuprc <<EOF
 export SG_SERVICE_CONTROLLER=1
 EOF
 	fi
-	
+
 else
 	echo;
 	read -p "Enter the URL given to you from the controller setup: " sprungeurl
@@ -101,6 +101,7 @@ else
 # tack on the IP address for the compute rig
 cat >> setuprc <<EOF
 export SG_SERVICE_COMPUTE_IP=$RIG_IP
+export SG_SERVICE_COMPUTE_NIC=$rignic
 EOF
 
 	echo;

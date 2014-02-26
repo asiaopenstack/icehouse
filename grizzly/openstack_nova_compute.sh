@@ -15,6 +15,7 @@ clear
 password=$SG_SERVICE_PASSWORD    
 managementip=$SG_SERVICE_CONTROLLER_IP
 computeip=$SG_SERVICE_COMPUTE_IP
+computenic=$SG_SERVICE_COMPUTE_NIC
 
 # install packages
 apt-get install -y nova-compute nova-network
@@ -62,7 +63,7 @@ default_schedule_zone=nova
 network_manager=nova.network.manager.FlatDHCPManager
 firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
 multi_host=True
-public_interface=br100
+public_interface=$computenic
 fixed_range=10.0.47.0/24
 dmz_cidr=10.128.0.0/24
 force_dhcp_release=true
@@ -87,7 +88,7 @@ iscsi_helper=tgtadm
 
 # COMPUTE
 compute_manager=nova.compute.manager.ComputeManager
-sql_connection=mysql://nova:f00bar404@$managementip/nova
+sql_connection=mysql://nova:$password@$managementip/nova
 connection_type=libvirt
 compute_driver=libvirt.LibvirtDriver
 libvirt_type=kvm
