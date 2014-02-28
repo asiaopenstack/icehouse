@@ -32,16 +32,16 @@ echo;
 # grab our IP 
 read -p "Enter the device name for this rig's NIC (eth0, etc.) : " rignic
 
-RIG_IP=$(/sbin/ifconfig $rignic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
+rigip=$(/sbin/ifconfig $rignic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 echo;
 echo "#################################################################################################################"
 echo;
-echo "The IP address on this rig's NIC is probably $RIG_IP.  If that's wrong, ctrl-c and edit this script."
+echo "The IP address on this rig's NIC is probably $rigip.  If that's wrong, ctrl-c and edit this script."
 echo;
 echo "#################################################################################################################"
 echo;
-#RIG_IP=x.x.x.x
+#rigip=x.x.x.x
 
 # controller install?
 echo;
@@ -67,8 +67,9 @@ cat > setuprc <<EOF
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=$password
-export OS_AUTH_URL="http://$RIG_IP:5000/v2.0/"
-export SG_SERVICE_CONTROLLER_IP=$RIG_IP
+export OS_AUTH_URL="http://$rigip:5000/v2.0/"
+export SG_SERVICE_CONTROLLER_IP=$rigip
+export SG_SERVICE_CONTROLLER_NIC=$rignic
 export SG_SERVICE_TENANT_NAME=service
 export SG_SERVICE_EMAIL=$email
 export SG_SERVICE_PASSWORD=$password
@@ -100,7 +101,7 @@ else
 # don't unindent!
 # tack on the IP address for the compute rig
 cat >> setuprc <<EOF
-export SG_SERVICE_COMPUTE_IP=$RIG_IP
+export SG_SERVICE_COMPUTE_IP=$rigip
 export SG_SERVICE_COMPUTE_NIC=$rignic
 EOF
 

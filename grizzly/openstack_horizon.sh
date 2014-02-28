@@ -18,7 +18,7 @@ service apache2 restart; service memcached restart
 # source the setup and stack files
 . ./setuprc
 managementip=$SG_SERVICE_CONTROLLER_IP
-password=$SERVICE_PASSWORD
+password=$SG_SERVICE_PASSWORD
 
 echo "#######################################################################################"
 echo;

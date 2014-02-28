@@ -6,22 +6,43 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
+clear
+
 # source the setup file
 . ./setuprc
-
-clear
 
 # install netaddr and radvd
 apt-get install -y python-netaddr
 apt-get install -y radvd
 
+# variables
+if [[ -z $SG_SERVICE_CONTROLLER ]]; then
+	rignic=$SG_SERVICE_CONTROLLER_NIC
+else
+	rignic=$SG_SERVICE_COMPUTE_NIC
+fi
+
 # set the routing flags correctly
-echo 0 > /proc/sys/net/ipv6/conf/eth0/forwarding
-echo 1 > /proc/sys/net/ipv6/conf/eth0/accept_ra
+echo 0 > /proc/sys/net/ipv6/conf/$rignic/forwarding
+echo 1 > /proc/sys/net/ipv6/conf/$rignic/accept_ra
 echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra
 echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra
 echo 0 > /proc/sys/net/ipv6/conf/br100/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/br100/accept_ra
+
+# build a file for reboot
+cat > /etc/init.d/ipv6-setup <<EOF
+echo 0 > /proc/sys/net/ipv6/conf/$rignic/forwarding
+echo 1 > /proc/sys/net/ipv6/conf/$rignic/accept_ra
+echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra
+echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra
+echo 0 > /proc/sys/net/ipv6/conf/br100/forwarding
+echo 1 > /proc/sys/net/ipv6/conf/br100/accept_ra
+EOF
+
+# set to execute and run on boot
+chmod 755 /etc/init.d/ipv6-setup
+ln -s /etc/init.d/ipv6-setup /etc/rc2.d/S10ipv6-setup
 
 echo;
 echo "##########################################################################################"
