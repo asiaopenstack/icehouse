@@ -41,6 +41,11 @@ exit
 . ./setuprc
 . ./stackrc
 
+# get_id function for loading variables from command runs
+function get_id () {
+    echo `$@ | awk '/ id / { print $4 }'`
+}
+
 # create stackmonkey project, user and roles
 STACKMONKEY_TENANT=$(get_id keystone tenant-create --name=StackMonkey)
 STACKMONKEY_USER=$(get_id keystone user-create --name=stackmonkey --pass="$ADMIN_PASSWORD" --email=$SG_SERVICE_EMAIL)
