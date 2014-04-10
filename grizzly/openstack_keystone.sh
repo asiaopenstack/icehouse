@@ -78,6 +78,7 @@ ADMIN_TENANT=$(get_id keystone tenant-create --name=admin)
 SERVICE_TENANT=$(get_id keystone tenant-create --name=service)
 DEMO_TENANT=$(get_id keystone tenant-create --name=demo)
 INVIS_TENANT=$(get_id keystone tenant-create --name=invisible_to_admin)
+STACKMONKEY_TENANT=$(get_id keystone tenant-create --name=StackMonkey)
 
 # Users
 ADMIN_USER=$(get_id keystone user-create --name=admin --pass="$ADMIN_PASSWORD" --email=$email)

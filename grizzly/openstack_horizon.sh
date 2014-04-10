@@ -9,6 +9,7 @@ fi
 # get horizon
 apt-get install -y openstack-dashboard memcached
 
+
 # remove the ubuntu theme - seriously this is fucking stupid it's still broken
 apt-get remove -y --purge openstack-dashboard-ubuntu-theme
 
@@ -24,7 +25,7 @@ echo "##########################################################################
 echo;
 echo "The horizon dashboard should be at http://$managementip/horizon.  Login with admin/$password"
 echo;
-echo "Now run the StackMonkey virtual appliance setup: ./openstack_stackmonkey_va.sh"
+echo "To finish, run the StackMonkey virtual appliance setup: ./openstack_stackmonkey_va.sh"
 echo;
 echo "#######################################################################################"
 
