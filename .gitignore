@@ -1,3 +1,5 @@
 .DS_Store
 *.iso
 *.img
+*-id
+*-id.pub
