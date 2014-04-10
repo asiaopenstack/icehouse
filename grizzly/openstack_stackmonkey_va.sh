@@ -6,7 +6,20 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-# fake the install and do a tracking ping instead
+# warn we're going to track
+
+echo "######################################################################################################
+
+In 5 seconds, this script will call home to indicate your interest in setting up the StackMonkey VA.
+
+If you don't want this machine to be tracked, hit ctrl-c to halt execution.
+
+######################################################################################################
+"
+echo;
+sleep 5
+
+# fake the install and just do a tracking ping
 curl -s "https://www.stackmonkey.com/api/v1/track?message=OpenStack%20installed%20via%20StackGeek%20scripts." > /dev/null
 
 echo "######################################################################################################
@@ -15,7 +28,7 @@ This script just sent a tracking ping to https://www.stackmonkey.com/ to help me
 conversions resulting from users like yourself who are interested in participating in the 
 xov.io distributed cloud project.  More information about the project is available on the site.
 
-The public IP address of this box was recorded an no further action will be taken.
+The public IP address of this box was recorded an no further action will be taken.  We're done! :)
 
 If you'd like to test the script, edit it and remove the exit command following this comment section.
 
@@ -34,14 +47,21 @@ STACKMONKEY_USER=$(get_id keystone user-create --name=stackmonkey --pass="$ADMIN
 STACKMONKEY_ROLE=$(get_id keystone role-create --name=Monkey)
 keystone user-role-add --user-id $STACKMONKEY_USER --role-id $STACKMONKEY_ROLE --tenant-id $STACKMONKEY_TENANT
 
+# switch tenant name for the remaining commands
+export OS_TENANT_NAME=StackMonkey
+
 # create and add keypairs
 ssh-keygen -f stackmonkey-id -N ""
-nova keypair-add --tenant-id $STCKMONKEY_TENANT --pub_key stackmonkey-id.pub stackmonkey
+nova keypair-add --pub_key stackmonkey-id.pub stackmonkey
 
-# configure default security group
+# configure default security group to allow port 80 and 22, plus pings
+nova secgroup-add-rule default tcp 80 80 0.0.0.0/0
+nova secgroup-add-rule default tcp 22 80 0.0.0.0/0
+nova secgroup-add-rule default icmp -1 -1 0.0.0./0
 
 # start the appliance instance
-nova boot --user-data postcreation.sh --flavor 1 --image "Ubuntu Precise 12.04" "StackMonkey VA"
+# key, post boot data, flavor, image, instance name
+nova boot --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image "Ubuntu Precise 12.04" "StackMonkey VA"
 
 echo "#####################################################################################################
 
