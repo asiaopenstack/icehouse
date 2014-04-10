@@ -61,7 +61,7 @@ nova secgroup-add-rule default icmp -1 -1 0.0.0./0
 
 # start the appliance instance
 # key, post boot data, flavor, image, instance name
-nova boot --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image "Ubuntu Precise 12.04" "StackMonkey VA"
+nova boot --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image "Ubuntu Precise 12.04 LTS" "StackMonkey VA"
 
 echo "#####################################################################################################
 
