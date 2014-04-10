@@ -52,8 +52,9 @@ STACKMONKEY_USER=$(get_id keystone user-create --name=stackmonkey --pass="$ADMIN
 STACKMONKEY_ROLE=$(get_id keystone role-create --name=Monkey)
 keystone user-role-add --user-id $STACKMONKEY_USER --role-id $STACKMONKEY_ROLE --tenant-id $STACKMONKEY_TENANT
 
-# switch tenant name for the remaining commands
+# switch tenant name and username for the remaining commands
 export OS_TENANT_NAME=StackMonkey
+export OS_USERNAME_NAME=stackmonkey
 
 # create and add keypairs
 ssh-keygen -f stackmonkey-id -N ""
@@ -76,5 +77,9 @@ The IP address of the appliance is x.x.x.x.  You can configure the VA at: http:/
 
 #####################################################################################################
 "
+
+# switch tenant name and username back, just in case user runs stuff
+export OS_TENANT_NAME=admin
+export OS_USERNAME_NAME=admin
 
 exit
