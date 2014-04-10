@@ -247,6 +247,14 @@ Your user/pass combination will be *'admin'* and whatever you entered for a pass
 
 ***Note: If you log into the dashboard and get errors regarding quotas, log out of the UI by clicking on 'sign out' at the top right and then reboot the rig.  The errors should go away when you log back in.***
 
+#### Install the StackMonkey Virtual Appliance
+StackMonkey is a pool instance of the xov.io highly distributed cloud framework.  If you elect to install the appliance, this OpenStack node will provide a small portion of its compute power to help build a highly distributed cloud.  You will earn Bitcoin doing this.
+
+The virtual appliance setup can be run by typing the following command:
+
+    ./openstack_stackmonkey_va.sh
+
+More information about the project can be viewed on the [StackMonkey pool's site](https://www.stackmonkey.com).
 #### OpenStack Cheat Sheet
 An OpenStack Command Line Cheat Sheet is available on [Anystacker's site](http://anystacker.com/2014/02/openstack-command-line-cheat-sheet/).  Commands can be run once the **setuprc** file has been sourced:
 

@@ -98,6 +98,9 @@ sleep 5
 # add cirros image
 glance image-create --name "Cirros 0.3.0"  --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
 
+# add ubuntu image
+glance image-create --name "Ubuntu Precise 12.04 LTS" --is-public true --container-format bare --disk-format qcow2 --location http://cloud-images.ubuntu.com/precise/current/precise-server-cloudimg-amd64-disk1.img
+
 echo;
 echo "#################################################################################################"
 echo;

@@ -1,0 +1,26 @@
+#!/usr/bin/python
+ 
+# imports
+import os,sys,socket
+ 
+# port input
+port = 8000
+if len(sys.argv) > 1:
+    try:
+        port = int(sys.argv[1])
+    except:
+       print "enter a numeric port number!"
+       sys.exit()
+ 
+# get our ip address
+ip = socket.gethostbyname(socket.gethostname())
+ 
+# build a list of files in the directory
+print
+for subdir, dirs, files in os.walk('./'):
+    for file in files:
+      print "http://%s:%s/%s" % (ip, port, file)
+print
+ 
+# serve that shizzle
+os.system("python -m SimpleHTTPServer %s" % port)
