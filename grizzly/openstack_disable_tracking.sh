@@ -17,6 +17,9 @@ If you are OK with this compute rig being tracked, hit ctrl-c to halt execution.
 "
 echo;
 
+# take a nap
+sleep 5
+
 # set to not track
 cat >> trackrc <<EOF
 export SG_SERVICE_TRACK_DIABLE=true
