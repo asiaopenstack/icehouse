@@ -8,9 +8,10 @@ fi
 
 # have we run before?
 if [ ! -f ./stackmonkeyrc ]; then
-echo "###########################################################################################################################	
+echo "####################################################################################################	
 
-This script has already been run.  If you want to launch a new StackMonkey VA, enter the following on the command line:
+This script has already been run.  If you want to launch a new StackMonkey VA, enter the following 
+on the command line:
 
 export OS_TENANT_NAME='StackMonkey'
 export OS_USERNAME=stackmonkey
@@ -18,8 +19,9 @@ export OS_USERNAME=stackmonkey
 nova boot --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image 'Ubuntu Precise 12.04 LTS' 'StackMonkey VA'
 nova list
 
-###########################################################################################################################	
+####################################################################################################	
 "
+exit
 fi
 
 # indicate we've now run ourselves
