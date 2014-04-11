@@ -6,6 +6,11 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
+# tracking ping - run openstack_disable_tracking.sh to disable
+if [ ! -f ./trackrc ]; then
+	curl -s "https://www.stackmonkey.com/api/v1/track?message=OpenStack%20nova%20controller%20script%20run." > /dev/null
+fi
+
 # source the setup file
 . ./setuprc
 

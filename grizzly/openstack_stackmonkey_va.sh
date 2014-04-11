@@ -6,21 +6,11 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-# warn we're going to track
 
-echo "######################################################################################################
-
-In 5 seconds, this script will call home to indicate your interest in setting up the StackMonkey VA.
-
-If you don't want this machine to be tracked, hit ctrl-c to halt execution.
-
-######################################################################################################
-"
-echo;
-sleep 5
-
-# fake the install and just do a tracking ping
-curl -s "https://www.stackmonkey.com/api/v1/track?message=OpenStack%20installed%20via%20StackGeek%20scripts." > /dev/null
+# tracking ping - run openstack_disable_tracking.sh to disable
+if [ ! -f ./trackrc ]; then
+	curl -s "https://www.stackmonkey.com/api/v1/track?message=StackMonkey%20VA%20install%20script%20run." > /dev/null
+fi
 
 echo "######################################################################################################
 
@@ -28,13 +18,13 @@ This script just sent a tracking ping to https://www.stackmonkey.com/ to help me
 conversions resulting from users like yourself who are interested in participating in the 
 xov.io distributed cloud project.  More information about the project is available on the site.
 
-The public IP address of this box was recorded an no further action will be taken.  We're done! :)
-
 If you'd like to test the script, edit it and remove the exit command following this comment section.
+
+In the future, this script will install the StackMonkey Virtual Appliance.  As of now, it doesn't.
 
 ######################################################################################################
 "
-# remove this if you want to test - appreciate the fact you are here and alive
+# remove this if you want to test - appreciate the fact you are here and alive!
 exit
 
 # source the rc and setup files

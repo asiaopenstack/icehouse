@@ -53,6 +53,17 @@ The script will output a short configuration block which should be placed manual
 
 Reboot the rig after saving the file.
 
+#### Privacy and Tracking Notice
+A few of these scripts contain tracking pings and are used to analyze the install process flow.  The IP address of the machine(s) you are installing will be reported to [https://www.stackmonkey.com/](https://www.stackmonkey.com).  No other personal information is transmitted by the tracking pings.  You may examine the Open Source code for handling the ping requests [here](https://github.com/StackMonkey/xovio-pool/blob/master/web/handlers/apihandlers.py).
+
+If you would like to disable the tracking pings in these scripts, you may run the following script to disable the tracking pings:
+
+    ./openstack_disable_tracking.sh
+
+***Note: These scripts are provided free of charge and serve to assist users in setting up OpenStack to participate in a highly distributed cloud.  The intent is to bring trust and transparency to the Internet's infrastructure.  The compute rigs you are installing already call into several other services, including Ubuntu's hosted repos and various OpenStack cloud image hosting servers.  The impact of these tracking scripts to your privacy is minimal, at the worst.  Your participation in tracking your install is appreciated.***
+
+***Another Note: Please also be aware that the openstack_setup.sh script below sends your configuration file to a pastebin knockoff hosted on stackgeek.com and keeps it until you delete it (instructions below).  If you don't want this functionality, please edit the openstack_setup.sh script to your liking.***
+
 #### Test and Update
 After editing the network, you'll need to test your rig for virtualization support:
 
