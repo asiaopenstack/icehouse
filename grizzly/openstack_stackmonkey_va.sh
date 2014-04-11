@@ -6,6 +6,27 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
+# have we run before?
+if [ ! -f ./stackmonkeyrc ]; then
+echo "###########################################################################################################################	
+
+This script has already been run.  If you want to launch a new StackMonkey VA, enter the following on the command line:
+
+export OS_TENANT_NAME='StackMonkey'
+export OS_USERNAME=stackmonkey
+
+nova boot --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image 'Ubuntu Precise 12.04 LTS' 'StackMonkey VA'
+nova list
+
+###########################################################################################################################	
+"
+fi
+
+# indicate we've now run ourselves
+cat >> stackmonkeyrc <<EOF
+export SM_VA_LAUNCH=true
+EOF
+
 
 # tracking ping - run openstack_disable_tracking.sh to disable
 if [ ! -f ./trackrc ]; then
@@ -43,8 +64,8 @@ STACKMONKEY_ROLE=$(get_id keystone role-create --name=Monkey)
 keystone user-role-add --user-id $STACKMONKEY_USER --role-id $STACKMONKEY_ROLE --tenant-id $STACKMONKEY_TENANT
 
 # switch tenant name and username for the remaining commands
-export OS_TENANT_NAME=StackMonkey
-export OS_USERNAME_NAME=stackmonkey
+export OS_TENANT_NAME="StackMonkey"
+export OS_USERNAME=stackmonkey
 
 # create and add keypairs
 ssh-keygen -f stackmonkey-id -N ""
@@ -53,7 +74,7 @@ nova keypair-add --pub_key stackmonkey-id.pub stackmonkey
 # configure default security group to allow port 80 and 22, plus pings
 nova secgroup-add-rule default tcp 80 80 0.0.0.0/0
 nova secgroup-add-rule default tcp 22 80 0.0.0.0/0
-nova secgroup-add-rule default icmp -1 -1 0.0.0./0
+nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0 
 
 # start the appliance instance
 # key, post boot data, flavor, image, instance name
@@ -70,6 +91,6 @@ The IP address of the appliance is x.x.x.x.  You can configure the VA at: http:/
 
 # switch tenant name and username back, just in case user runs stuff
 export OS_TENANT_NAME=admin
-export OS_USERNAME_NAME=admin
+export OS_USERNAME=admin
 
 exit
