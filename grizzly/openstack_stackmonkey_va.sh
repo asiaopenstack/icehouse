@@ -7,7 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # have we run before?
-if [ ! -f ./stackmonkeyrc ]; then
+if [ -f ./stackmonkeyrc ]; then
 echo "####################################################################################################	
 
 This script has already been run.  If you want to launch a new StackMonkey VA, enter the following 
