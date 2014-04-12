@@ -38,12 +38,10 @@ fi
 echo "######################################################################################################
 
 This script just sent a tracking ping to https://www.stackmonkey.com/ to help measure possible
-conversions resulting from users like yourself who are interested in participating in the 
-xov.io distributed cloud project.  More information about the project is available on the site.
+conversions resulting from users like yourself who are interested in participating in a compute pool.
 
-If you'd like to test the script, edit it and remove the exit command following this comment section.
-
-In the future, this script will install the StackMonkey Virtual Appliance.  As of now, it doesn't.
+In the future, this script will install the StackMonkey Virtual Appliance. If you'd like to test the 
+script, edit it and remove the exit command following this comment section.
 
 ######################################################################################################
 "
