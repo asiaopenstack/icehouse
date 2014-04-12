@@ -81,13 +81,15 @@ nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
 nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image "Ubuntu Precise 12.04 LTS" "StackMonkey VA"
 
 # grab the IP address for display to the user
-nova list | grep "private*=[^=]" | cut -d= -f2
+APPLIANCE_IP=`nova list | grep "private*=[^=]" | cut -d= -f2 | cut -d, -f1`
 
 echo "#####################################################################################################
 
-The StackMonkey appliance has been built and a private key called 'stackmonkey.pem' has been created.
+The StackMonkey appliance is in progress and a private key called 'stackmonkey.pem' has been created.
 
-The IP address of the appliance is x.x.x.x.  You can configure the VA at: http://x.x.x.x/
+The username/password for the OpenStack Horizon account is $OS_USERNAME/$OS_PASSWORD.
+
+You may now configure the appliance at: http://$APPLIANCE_IP/
 
 #####################################################################################################
 "
