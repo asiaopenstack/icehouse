@@ -265,7 +265,7 @@ The virtual appliance setup can be run by typing the following command:
 
     ./openstack_stackmonkey_va.sh
 
-More information about the project can be viewed on the [StackMonkey pool's site](https://www.stackmonkey.com).
+More information about the project can be viewed on the [StackMonkey pool's site](https://www.stackmonkey.com).  There is also a [video guide](https://vimeo.com/91805503) that walks you through setting up your first appliance.
 
 #### OpenStack Cheat Sheet
 An OpenStack Command Line Cheat Sheet is available on [Anystacker's site](http://anystacker.com/2014/02/openstack-command-line-cheat-sheet/).  Commands can be run once the **setuprc** file has been sourced:

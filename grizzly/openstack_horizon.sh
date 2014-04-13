@@ -25,7 +25,7 @@ echo "##########################################################################
 echo;
 echo "The horizon dashboard should be at http://$managementip/horizon.  Login with admin/$password"
 echo;
-echo "To finish, run the StackMonkey virtual appliance setup: ./openstack_stackmonkey_va.sh"
+echo "Now run the StackMonkey virtual appliance setup: ./openstack_stackmonkey_va.sh"
 echo;
 echo "#######################################################################################"
 
