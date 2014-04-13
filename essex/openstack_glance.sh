@@ -70,6 +70,10 @@ then
   glance add name="Ubuntu 12.04 LTS" is_public=true container_format=ovf disk_format=qcow2 < images/ubuntu-12.04-server-cloudimg-amd64-disk1.img
 else
   wget http://stackgeek.s3.amazonaws.com/ubuntu-12.04-server-cloudimg-amd64-disk1.img
+  if [ ! -d images ]
+  then
+    mkdir images
+  fi
   mv ubuntu-12.04-server-cloudimg-amd64-disk1.img images
   glance add name="Ubuntu 12.04 LTS" is_public=true container_format=ovf disk_format=qcow2 < images/ubuntu-12.04-server-cloudimg-amd64-disk1.img
 fi
