@@ -194,8 +194,18 @@ Once the compute rig has been configured, you may log back into the **controller
     
 You should see new entries for the newly added compute rig:
 
-    EXAMPLE HERE
-
+    +------------------+---------+----------+---------+-------+----------------------------+
+    | Binary           | Host    | Zone     | Status  | State | Updated_at                 |
+    +------------------+---------+----------+---------+-------+----------------------------+
+    | nova-cert        | nero    | internal | enabled | up    | 2014-04-13T17:20:52.000000 |
+    | nova-compute     | booster | nova     | enabled | up    | 2014-04-13T17:20:55.000000 |
+    | nova-compute     | nero    | nova     | enabled | up    | 2014-04-13T17:20:55.000000 |
+    | nova-conductor   | nero    | internal | enabled | up    | 2014-04-13T17:20:52.000000 |
+    | nova-consoleauth | nero    | internal | enabled | up    | 2014-04-13T17:20:52.000000 |
+    | nova-network     | booster | internal | enabled | up    | 2014-04-13T17:20:52.000000 |
+    | nova-network     | nero    | internal | enabled | up    | 2014-04-13T17:20:52.000000 |
+    | nova-scheduler   | nero    | internal | enabled | up    | 2014-04-13T17:20:52.000000 |
+    +------------------+---------+----------+---------+-------+----------------------------+
 
 #### Flat Networking Setup (Controller Only)
 This guide completely ignores the disaster ridden [Neutron/Quantum project](https://wiki.openstack.org/wiki/Neutron).  If you are interested in Neutron, this is not the place to seek help.
@@ -265,7 +275,7 @@ The virtual appliance setup can be run by typing the following command:
 
     ./openstack_stackmonkey_va.sh
 
-More information about the project can be viewed on the [StackMonkey pool's site](https://www.stackmonkey.com).  There is also a [video guide](https://vimeo.com/91805503) that walks you through setting up your first appliance.
+More information about the project can be viewed on the [StackMonkey pool's site](https://www.stackmonkey.com/appliances/new) (requires auth to Google account).  There is also a [video guide](https://vimeo.com/91805503) that walks you through setting up your first appliance.
 
 #### OpenStack Cheat Sheet
 An OpenStack Command Line Cheat Sheet is available on [Anystacker's site](http://anystacker.com/2014/02/openstack-command-line-cheat-sheet/).  Commands can be run once the **setuprc** file has been sourced:
