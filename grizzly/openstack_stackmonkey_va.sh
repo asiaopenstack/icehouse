@@ -8,16 +8,18 @@ fi
 
 # have we run before?
 if [ -f ./stackmonkeyrc ]; then
+echo;
 echo "####################################################################################################	
 
 This script has already been run.  If you want to launch a new StackMonkey VA, enter the following 
 on the command line:
 
-  mysql -u root -p < 'use nova; delete from role where name=\"Monkey\";'
+  echo 'delete from role where name=\"Monkey\";' | mysql -u root -p nova
 
   . ./stackmonkeyrc
   
   nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image 'Ubuntu Precise 12.04 LTS' 'StackMonkey VA'
+  
   nova list
 
 ####################################################################################################	
@@ -27,6 +29,10 @@ fi
 
 # grab a new password 
 read -p "Enter a new password for the 'stackmonkey' user: " monkeypass
+
+# source the stack and setup files
+. ./setuprc
+. ./stackrc
 
 # indicate we've now run ourselves
 cat >> stackmonkeyrc <<EOF
@@ -50,10 +56,6 @@ conversions resulting from users like yourself who are interested in participati
 
 ######################################################################################################
 "
-
-# source the stack and setup files
-. ./setuprc
-. ./stackrc
 
 # get_id function for loading variables from command runs
 function get_id () {
