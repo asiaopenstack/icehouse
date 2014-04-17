@@ -13,22 +13,30 @@ echo "##########################################################################
 This script has already been run.  If you want to launch a new StackMonkey VA, enter the following 
 on the command line:
 
-export OS_TENANT_NAME='StackMonkey'
-export OS_USERNAME=stackmonkey
+  mysql -u root -p < 'use nova; delete from role where name=\"Monkey\";'
 
-nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image 'Ubuntu Precise 12.04 LTS' 'StackMonkey VA'
-nova list
+  . ./stackmonkeyrc
+  
+  nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image 'Ubuntu Precise 12.04 LTS' 'StackMonkey VA'
+  nova list
 
 ####################################################################################################	
 "
 exit
 fi
 
+# grab a new password 
+read -p "Enter a new password for the 'stackmonkey' user: " monkeypass
+
 # indicate we've now run ourselves
 cat >> stackmonkeyrc <<EOF
 export SM_VA_LAUNCH=true
+export OS_TENANT_NAME=StackMonkey
+export OS_USERNAME=stackmonkey
+export OS_PASSWORD=$monkeypass
+export OS_AUTH_URL=$OS_AUTH_URL 
+export KEYSTONE_REGION=$KEYSTONE_REGION
 EOF
-
 
 # tracking ping - run openstack_disable_tracking.sh to disable
 if [ ! -f ./trackrc ]; then
@@ -40,15 +48,10 @@ echo "##########################################################################
 This script just sent a tracking ping to https://www.stackmonkey.com/ to help measure possible
 conversions resulting from users like yourself who are interested in participating in a compute pool.
 
-In the future, this script will install the StackMonkey Virtual Appliance. If you'd like to test the 
-script, edit it and remove the exit command following this comment section.
-
 ######################################################################################################
 "
-# remove this if you want to test - appreciate the fact you are here and alive!
-exit
 
-# source the rc and setup files
+# source the stack and setup files
 . ./setuprc
 . ./stackrc
 
@@ -63,9 +66,8 @@ STACKMONKEY_USER=$(get_id keystone user-create --name=stackmonkey --pass="$ADMIN
 STACKMONKEY_ROLE=$(get_id keystone role-create --name=Monkey)
 keystone user-role-add --user-id $STACKMONKEY_USER --role-id $STACKMONKEY_ROLE --tenant-id $STACKMONKEY_TENANT
 
-# switch tenant name and username for the remaining commands
-export OS_TENANT_NAME="StackMonkey"
-export OS_USERNAME=stackmonkey
+# source rc file as the new user
+. ./stackmonkeyrc
 
 # create and add keypairs
 ssh-keygen -f stackmonkey-id -N ""
