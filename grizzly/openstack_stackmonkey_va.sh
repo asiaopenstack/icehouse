@@ -14,12 +14,8 @@ echo "##########################################################################
 This script has already been run.  If you want to launch a new StackMonkey VA, enter the following 
 on the command line:
 
-  echo 'delete from role where name=\"Monkey\";' | mysql -u root -p keystone
-
   . ./stackmonkeyrc
-  
-  nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image 'Ubuntu Precise 12.04 LTS' 'StackMonkey VA'
-  
+  nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor 1 --image 'Ubuntu Precise 12.04 LTS' 'StackMonkey VA'  
   nova list
 
 ####################################################################################################	
@@ -64,7 +60,7 @@ function get_id () {
 
 # create stackmonkey project, user and roles
 STACKMONKEY_TENANT=$(get_id keystone tenant-create --name=StackMonkey)
-STACKMONKEY_USER=$(get_id keystone user-create --name=stackmonkey --pass="$ADMIN_PASSWORD" --email=$SG_SERVICE_EMAIL)
+STACKMONKEY_USER=$(get_id keystone user-create --name=stackmonkey --pass="$monkeypass" --email=$SG_SERVICE_EMAIL)
 STACKMONKEY_ROLE=$(get_id keystone role-create --name=Monkey)
 keystone user-role-add --user-id $STACKMONKEY_USER --role-id $STACKMONKEY_ROLE --tenant-id $STACKMONKEY_TENANT
 
