@@ -14,7 +14,7 @@ echo "##########################################################################
 This script has already been run.  If you want to launch a new StackMonkey VA, enter the following 
 on the command line:
 
-  echo 'delete from role where name=\"Monkey\";' | mysql -u root -p nova
+  echo 'delete from role where name=\"Monkey\";' | mysql -u root -p keystone
 
   . ./stackmonkeyrc
   
