@@ -110,7 +110,7 @@ keystone endpoint-create --region $KEYSTONE_REGION --service-id $NOVA --publicur
 GLANCE_USER=$(get_id keystone user-create --name=glance --pass="$SERVICE_PASSWORD" --tenant_id $SERVICE_TENANT --email=$email)
 keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $GLANCE_USER --role-id $ADMIN_ROLE
 GLANCE=$(get_id keystone service-create --name glance --type image --description Image)
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $GLANCE --publicurl 'http://'"$managementip"':9292/v2' --adminurl 'http://'"$managementip"':9292/v2' --internalurl 'http://'"$managementip"':9292/v2'
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $GLANCE --publicurl 'http://'"$managementip"':9292/' --adminurl 'http://'"$managementip"':9292/v2' --internalurl 'http://'"$managementip"':9292/v2'
 
 # cinder
 CINDER_USER=$(get_id keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
