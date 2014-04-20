@@ -79,7 +79,7 @@ nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
 # create a new flavor for the va w/ 4GB drive space
 nova-manage instance_type create va.xovo 512 1 4
 
-# key, post boot data, flavor, image, instance name
+# boot va with key, post boot data, flavor, image, instance name
 nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor va.xovio --image "Ubuntu Precise 12.04 LTS" "StackMonkey VA"
 
 # grab the IP address for display to the user
