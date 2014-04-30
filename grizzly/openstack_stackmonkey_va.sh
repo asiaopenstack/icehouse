@@ -76,8 +76,8 @@ nova secgroup-add-rule default tcp 80 80 0.0.0.0/0
 nova secgroup-add-rule default tcp 22 80 0.0.0.0/0
 nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0 
 
-# create a new flavor for the va w/ 4GB drive space
-nova-manage instance_type create va.xovo 512 1 4
+# create a new flavor for the va w/ 8GB drive space
+nova-manage instance_type create va.xovo 512 1 8
 
 # boot va with key, post boot data, flavor, image, instance name
 nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor va.xovio --image "Ubuntu Precise 12.04 LTS" "StackMonkey VA"
