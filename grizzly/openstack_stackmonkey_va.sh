@@ -73,7 +73,7 @@ nova keypair-add --pub_key stackmonkey-id.pub stackmonkey
 
 # configure default security group to allow port 80 and 22, plus pings
 nova secgroup-add-rule default tcp 80 80 0.0.0.0/0
-nova secgroup-add-rule default tcp 22 80 0.0.0.0/0
+nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
 nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0 
 
 # create a new flavor for the va w/ 8GB drive space
@@ -85,6 +85,10 @@ nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor va.
 # grab the IP address for display to the user
 APPLIANCE_IP=`nova list | grep "private*=[^=]" | cut -d= -f2 | cut -d, -f1`
 
+# source the stackmonkeyrc file for user/pass
+. ./stackmonkeyrc
+
+# instruction bonanza
 echo "#####################################################################################################
 
 The StackMonkey appliance is being built and a private key called 'stackmonkey.pem' has been created.
