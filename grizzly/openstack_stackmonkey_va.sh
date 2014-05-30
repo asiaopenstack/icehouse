@@ -59,13 +59,13 @@ function get_id () {
 }
 
 # create stackmonkey project, user and roles
-STACKMONKEY_TENANT=$(get_id keystone tenant-create --name=StackMonkey)
+STACKMONKEY_TENANT=$(get_id keystone tenant-create --name=stackmonkey)
 STACKMONKEY_USER=$(get_id keystone user-create --name=stackmonkey --pass="$monkeypass" --email=$SG_SERVICE_EMAIL)
-STACKMONKEY_ROLE=$(get_id keystone role-create --name=Monkey)
+STACKMONKEY_ROLE=$(get_id keystone role-create --name=monkey)
 keystone user-role-add --user-id $STACKMONKEY_USER --role-id $STACKMONKEY_ROLE --tenant-id $STACKMONKEY_TENANT
 
-# source rc file as the new user
-. ./stackmonkeyrc
+# the following steps are run using the admin user and tenant
+# instance managment of the virtual appliance is done in horizon using the admin user/pass
 
 # create and add keypairs
 ssh-keygen -f stackmonkey-id -N ""
@@ -87,9 +87,12 @@ APPLIANCE_IP=`nova list | grep "private*=[^=]" | cut -d= -f2 | cut -d, -f1`
 
 echo "#####################################################################################################
 
-The StackMonkey appliance is in progress and a private key called 'stackmonkey.pem' has been created.
+The StackMonkey appliance is being built and a private key called 'stackmonkey.pem' has been created.
 
 The username/password for the OpenStack Horizon account is $OS_USERNAME/$OS_PASSWORD.
+
+Log into your OpenStack cluster with this user/pass to download your credentials file to your local
+machine.  You will need to upload this file when you configure the appliance.
 
 You may now configure the appliance at: http://$APPLIANCE_IP/
 
