@@ -133,11 +133,11 @@ Once the Glance install completes, you should be able to query the system for th
 
 The output should be something like this:
 
-    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
-    | ID                                   | Name             | Disk Format | Container Format | Size      | Status |
-    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
-    | df53bace-b5a0-49ba-9b7f-4d43f249e3f3 | Cirros 0.3.0     | qcow2       | bare             | 9761280   | active |
-    +--------------------------------------+------------------+-------------+------------------+-----------+--------+
+    +--------------------------------------+--------------+-------------+--------+-----------+--------+
+    | ID                                   | Name         | Disk Format | Format | Size      | Status |
+    +--------------------------------------+--------------+-------------+--------+-----------+--------+
+    | df53bace-b5a0-49ba-9b7f-4d43f249e3f3 | Cirros 0.3.0 | qcow2       | bare   | 9761280   | active |
+    +--------------------------------------+--------------+-------------+--------+-----------+--------+
 
 #### Cinder Setup
 Cinder is used to provide additional volume attachments to running instances and snapshot space.  Start the install of Cinder by typing:
