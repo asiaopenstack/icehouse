@@ -17,9 +17,9 @@ apt-get install -y radvd
 
 # variables
 if [[ -z $SG_SERVICE_CONTROLLER ]]; then
-	rignic=$SG_SERVICE_CONTROLLER_NIC
-else
 	rignic=$SG_SERVICE_COMPUTE_NIC
+else
+	rignic=$SG_SERVICE_CONTROLLER_NIC
 fi
 
 # set the routing flags correctly
