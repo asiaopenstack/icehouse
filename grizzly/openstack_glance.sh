@@ -102,9 +102,9 @@ glance image-create --name "Cirros 0.3.0"  --is-public true --container-format b
 glance image-create --name "Ubuntu Precise 12.04 LTS" --is-public true --container-format bare --disk-format qcow2 --location http://cloud-images.ubuntu.com/precise/current/precise-server-cloudimg-amd64-disk1.img
 
 echo;
-echo "#################################################################################################"
+echo "##################################################################################################"
 echo;
-echo "Do a 'glance image-list' to see images.  You can now run './openstack_cinder.sh' to set up Nova." 
+echo "Do a 'glance image-list' to see images.  You can now run './openstack_cinder.sh' to set up Cinder." 
 echo;
-echo "#################################################################################################"
+echo "##################################################################################################"
 echo;
