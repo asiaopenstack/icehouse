@@ -51,5 +51,7 @@ echo "##########################################################################
 echo;
 echo "IPv6 configuration complete.  Be sure to add a proper network using 'nova-manage'"
 echo;
+echo "If you install a compute node, you will need to run this command on it as well."
+echo;
 echo "##########################################################################################"
 echo;
