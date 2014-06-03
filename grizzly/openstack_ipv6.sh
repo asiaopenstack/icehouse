@@ -25,6 +25,7 @@ fi
 # set the routing flags correctly
 echo 0 > /proc/sys/net/ipv6/conf/$rignic/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/$rignic/accept_ra
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra
 echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra
 echo 0 > /proc/sys/net/ipv6/conf/br100/forwarding
@@ -34,6 +35,7 @@ echo 1 > /proc/sys/net/ipv6/conf/br100/accept_ra
 cat > /etc/init.d/ipv6-setup <<EOF
 echo 0 > /proc/sys/net/ipv6/conf/$rignic/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/$rignic/accept_ra
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra
 echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra
 echo 0 > /proc/sys/net/ipv6/conf/br100/forwarding
