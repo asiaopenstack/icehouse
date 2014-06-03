@@ -212,7 +212,7 @@ This guide completely ignores the [Neutron/Quantum project](https://wiki.opensta
 
 ***Note: If you want to run IPv4 + IPv6, please skip to the next section and do NOT run this section's commands.***
 
-Begin by creating an IPv4 private network range which blocks out the **10.0.47.0** network:
+Begin by creating an IPv4 private network range which blocks out the **10.0.47.0** network (assuming the ethernet interface is eth0):
 
     nova-manage network create private --fixed_range_v4=10.0.47.0/24 --num_networks=1 --bridge=br100 --bridge_interface=eth0 --network_size=255
 
@@ -247,7 +247,7 @@ Just in case, restart the Nova services to sync up the network:
 
     ./openstack_restart_nova.sh
 
-Create an IPv4 private network range using sample networks of **10.0.47.0** for IPv4 and **2601:9:1380:821::/64** for an IPv6 prefix:
+Create an IPv4 private network range using sample networks of **10.0.47.0** for IPv4 and **2601:9:1380:821::/64** for an IPv6 prefix (again, assuming the ethernet interface is eth0):
 
     nova-manage network create private --fixed_range_v4=10.0.47.0/24 --fixed_range_v6=2601:9:1380:821::/64 --num_networks=1 --bridge=br100 --bridge_interface=eth0 --network_size=255
 
