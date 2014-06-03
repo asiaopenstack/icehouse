@@ -133,11 +133,11 @@ Once the Glance install completes, you should be able to query the system for th
 
 The output should be something like this:
 
+    +--------------------------------------+--------------+-------------+--------+---------+--------+
+    | ID                                   | Name         | Disk Format | Format | Size    | Status |
     +--------------------------------------+--------------+-------------+--------+-----------+--------+
-    | ID                                   | Name         | Disk Format | Format | Size      | Status |
-    +--------------------------------------+--------------+-------------+--------+-----------+--------+
-    | df53bace-b5a0-49ba-9b7f-4d43f249e3f3 | Cirros 0.3.0 | qcow2       | bare   | 9761280   | active |
-    +--------------------------------------+--------------+-------------+--------+-----------+--------+
+    | df53bace-b5a0-49ba-9b7f-4d43f249e3f3 | Cirros 0.3.0 | qcow2       | bare   | 9761280 | active |
+    +--------------------------------------+--------------+-------------+--------+---------+--------+
 
 #### Cinder Setup
 Cinder is used to provide additional volume attachments to running instances and snapshot space.  Start the install of Cinder by typing:
@@ -207,8 +207,10 @@ You should see new entries for the newly added compute rig:
     | nova-scheduler   | nero    | internal | enabled | up    | 2014-04-13T17:20:52.000000 |
     +------------------+---------+----------+---------+-------+----------------------------+
 
-#### Flat Networking Setup (Controller Only)
-This guide completely ignores the disaster ridden [Neutron/Quantum project](https://wiki.openstack.org/wiki/Neutron).  If you are interested in Neutron, this is not the place to seek help.
+#### Flat Networking Setup for IPv4 (Controller Only)
+This guide completely ignores the [Neutron/Quantum project](https://wiki.openstack.org/wiki/Neutron).  If you are interested in Neutron, this is not the place to seek help.
+
+***Note: If you want to run IPv4 + IPv6, please skip to the next section and do NOT run this section's commands.***
 
 Begin by creating an IPv4 private network range which blocks out the **10.0.47.0** network:
 
@@ -218,11 +220,40 @@ You'll need to add a route in your router to point to the new network managed by
 
     route add 10.0.47.0 255.255.255.0 gw 10.0.1.200
 
-Now enter a set of publicly available IPv4 based addresses:
+You can view the networks by querying nova:
 
-    nova-mange floating create 208.128.7.128/25
-    
-This example would allow a floating IP address to be assigned to instance from the range of **208.128.7.129 to 208.128.7.254**.
+    nova network-list
+
+Output should look like this:
+
+    +--------------------------------------+---------+---------------+
+    | ID                                   | Label   | CIDR          |
+    +--------------------------------------+---------+---------------+
+    | 22aca431-14b3-43e0-a762-b02914770e6d | private | 10.0.1.224/28 |
+    +--------------------------------------+---------+---------------+
+
+#### Flat Networking Setup for IPv4 + IPv6 (Controller Only)
+Before you can add an IPv6 prefix to your OpenStack controller, you will need to configure your router to enable IPv6 on your provider.  Your milage may vary by router type and provider.  We've found the Asus routers + Comcast to be the easiest to configure: simply navigate to the IPv6 settings and then select 'native' or 'native with DHCP-PD' in your router's admin interface to turn on IPv6.
+
+***Note: If your provider doesn't support IPv6 and you have an IPv6 capable router, you can use [Huricane Electric's Tunnel Broker](https://tunnelbroker.net/) to enable IPv6 on your network.***
+
+After configuring your router for IPv6, your router interface should show a LAN IPv6 prefix and length.  Make note of the address, as you'll use it in a minute to add a prefix to OpenStack.
+
+Now configure IPv6 forwarding support on the controller:
+
+    ./openstack_ipv6.sh
+
+Just in case, restart the Nova services to sync up the network:
+
+    ./openstack_restart_nova.sh
+
+Create an IPv4 private network range using sample networks of **10.0.47.0** for IPv4 and **2601:9:1380:821::/64** for an IPv6 prefix:
+
+    nova-manage network create private --fixed_range_v4=10.0.47.0/24 --fixed_range_v6=2601:9:1380:821::/64 --num_networks=1 --bridge=br100 --bridge_interface=eth0 --network_size=255
+
+You'll need to add a route in your router to point to the new network managed by the controller (pseudo command here, using 10.0.1.200 as the controller node):
+
+    route add 10.0.47.0 255.255.255.0 gw 10.0.1.200
 
 You can view the private network by querying nova:
 
@@ -236,7 +267,14 @@ Output should look like this:
     | 22aca431-14b3-43e0-a762-b02914770e6d | private | 10.0.1.224/28 |
     +--------------------------------------+---------+---------------+
 
-View the available floating pool addresses by querying nova again:
+#### Floating IP Setup (Controller Only)
+If you have a block of externally routed IP addresses (public IPs) you may create a floating IP entry for OpenStack:
+
+    nova-mange floating create 208.128.7.128/25
+    
+This example would allow a floating IP address to be assigned to instance from the range of **208.128.7.129 to 208.128.7.254**.
+
+If you added it, you can view the available floating pool addresses by querying nova again:
 
     nova floating-ip-bulk-list
     
@@ -249,7 +287,11 @@ Output should look like this (truncated for space):
     | None       | 208.128.7.130 | None          | nova | 10.0.2.15 |
     +------------+---------------+---------------+------+-----------+
 
-There will be additional guides posted on best practices for IPv6 allocation and IPv4 mapping and isolation.  Hold tight.
+Finally, edit the */etc/nova/nova.conf* file to enable assigning the floating IPs to newly launched instances:
+
+    auto_assign_floating_ip=true
+
+***Note: As with the private IP space added earlier, you'll need to configure your router to route the external addresses to the controller's IP address.  Your mileage will vary, depending on your current network setup.***
 
 #### Horizon Setup (Controller Only)
 Horizon provides OpenStack's managment interface.  Install Horizon by typing:
