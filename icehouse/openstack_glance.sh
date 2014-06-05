@@ -14,7 +14,8 @@ password=$SG_SERVICE_PASSWORD
 managementip=$SG_SERVICE_CONTROLLER_IP
 
 # get glance
-apt-get install python-glanceclient glance -y
+apt-get install python-glanceclient -y
+apt-get install glance -y
 
 # edit glance api conf files 
 if [ -f /etc/glance/glance-api.conf.orig ]
@@ -31,9 +32,11 @@ else
 
 # do not unindent!
 
+# TODO - need to delete the backend = sqlalchemy lines
+
 # we sed out the mysql connection here, but then tack on the flavor info later on...
 sed -e "
-/^sqlite_db =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$managementip\/glance/
+/^#sqlite_db =.*$/s/^.*$/connection = mysql:\/\/glance:$password@$managementip\/glance/
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,glance,g;
 s,%SERVICE_PASSWORD%,$password,g;
@@ -45,7 +48,7 @@ flavor = keystone
 " >> /etc/glance/glance-registry.conf
 
 sed -e "
-/^sqlite_db =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$managementip\/glance/
+/^sqlite_db =.*$/s/^.*$/connection = mysql:\/\/glance:$password@$managementip\/glance/
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,glance,g;
 s,%SERVICE_PASSWORD%,$password,g;
