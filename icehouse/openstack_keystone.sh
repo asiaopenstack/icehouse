@@ -91,7 +91,7 @@ keystone user-role-add --user=admin --role=admin --tenant=admin
 keystone user-role-add --user=demo --role=_member_ --tenant=demo
 
 # keystone 
-KEYSTONE=$(get_id keystone service-create --name keystone --type identity --description "OpenStack Identity" )
+KEYSTONE=$(get_id keystone service-create --name=keystone --type=identity --description="OpenStack Identity" )
 keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$KEYSTONE --publicurl='http://'"$managementip"':5000/v2.0' --adminurl='http://'"$managementip"':35357/v2.0' --internalurl='http://'"$managementip"':5000/v2.0'
 
 # glance
