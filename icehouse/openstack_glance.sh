@@ -33,7 +33,7 @@ else
 
 # we sed out the mysql connection here, but then tack on the flavor info later on...
 sed -e "
-/^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$managementip\/glance/
+/^sqlite_db =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$managementip\/glance/
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,glance,g;
 s,%SERVICE_PASSWORD%,$password,g;
@@ -45,7 +45,7 @@ flavor = keystone
 " >> /etc/glance/glance-registry.conf
 
 sed -e "
-/^sql_connection =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$managementip\/glance/
+/^sqlite_db =.*$/s/^.*$/sql_connection = mysql:\/\/glance:$password@$managementip\/glance/
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,glance,g;
 s,%SERVICE_PASSWORD%,$password,g;
