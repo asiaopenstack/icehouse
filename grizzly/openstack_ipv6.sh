@@ -41,20 +41,6 @@ echo;
 read -p "Enter a (global) IPv6 prefix for $rignic: " prefix
 read -p "Enter the router's IPv6 address to be used as a gateway: " routeripv6
 
-# create radvd conf file
-cat <<EOF > /etc/radvd.conf
-interface $rignic
-{
-    AdvSendAdvert             on;
- 
-    prefix $prefix::/64
-    {
-        AdvOnLink             on;
-        AdvAutonomous         on;
-    };
-};
-EOF
-
 cat <<EOF >> /etc/networking/interfaces
 auto br100
 iface br100 inet6 static
@@ -71,6 +57,11 @@ echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra
 echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra
 echo 0 > /proc/sys/net/ipv6/conf/br100/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/br100/accept_ra
+
+# default route + replace the bad ipv6 address on br100
+route -A inet6 add 2000::/3 gw $routeripv6
+ifconfig br100 inet6 del $prefix::/64
+ifconfig br100 inet6 add $prefix::1/64
 
 # build a file for reboot + janky patch for OpenStack networking foobaring things
 cat > /etc/init.d/ipv6-setup <<EOF
