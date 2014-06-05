@@ -39,6 +39,7 @@ echo;
 
 # grab our IPv6 prefix
 read -p "Enter a (global) IPv6 prefix for $rignic: " prefix
+read -p "Enter the router's IPv6 address to be used as a gateway: " routeripv6
 
 # create radvd conf file
 cat <<EOF > /etc/radvd.conf
@@ -46,7 +47,7 @@ interface $rignic
 {
     AdvSendAdvert             on;
  
-    prefix $PREFIX::/64
+    prefix $prefix::/64
     {
         AdvOnLink             on;
         AdvAutonomous         on;
@@ -54,11 +55,12 @@ interface $rignic
 };
 EOF
 
-# configure nova.conf
-cat <<EOF >> /etc/nova/nova.conf
- 
-# ipv6 setup
-use_ipv6=true
+cat <<EOF >> /etc/networking/interfaces
+auto br100
+iface br100 inet6 static
+  address $prefix::1
+  netmask 64
+  up ip -6 route add default dev br100
 EOF
 
 # set the routing flags correctly
@@ -70,7 +72,7 @@ echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra
 echo 0 > /proc/sys/net/ipv6/conf/br100/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/br100/accept_ra
 
-# build a file for reboot
+# build a file for reboot + janky patch for OpenStack networking foobaring things
 cat > /etc/init.d/ipv6-setup <<EOF
 echo 0 > /proc/sys/net/ipv6/conf/$rignic/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/$rignic/accept_ra
@@ -79,6 +81,9 @@ echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra
 echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra
 echo 0 > /proc/sys/net/ipv6/conf/br100/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/br100/accept_ra
+route -A inet6 add 2000::/3 gw $routeripv6
+ifconfig br100 inet6 del $prefix::/64
+ifconfig br100 inet6 add $prefix::1/64
 EOF
 
 # set to execute and run on boot
