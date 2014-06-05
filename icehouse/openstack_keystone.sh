@@ -116,7 +116,6 @@ keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$NOVA --publicur
 EC2=$(get_id keystone service-create --name=ec2 --type=ec2 --description=EC2 )
 keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$EC2 --publicurl='http://'"$managementip"':8773/services/Cloud' --adminurl='http://'"$managementip"':8773/services/Admin' --internalurl='http://'"$managementip"':8773/services/Cloud'
 
-exit
 # create ec2 creds and parse the secret and access key returned
 RESULT=$(keystone ec2-credentials-create --tenant-id=$ADMIN_TENANT --user-id=$ADMIN_USER)
 ADMIN_ACCESS=`echo "$RESULT" | grep access | awk '{print $4}'`
