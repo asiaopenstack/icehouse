@@ -48,12 +48,12 @@ else
   cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.orig
 fi
 
-exit
 sed -e "
 /^connection =.*$/s/^.*$/connection = mysql:\/\/keystone:$password@$managementip\/keystone/
 /^# admin_token =.*$/s/^.*$/admin_token = $token/
-/^#admin_token=.*$/s/^.*$/admin_token = $token/
 " -i /etc/keystone/keystone.conf
+
+exit
 
 # create db tables and restart
 keystone-manage db_sync
