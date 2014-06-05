@@ -92,29 +92,29 @@ keystone user-role-add --user=demo --role=_member_ --tenant=demo
 
 # keystone 
 KEYSTONE=$(get_id keystone service-create --name=keystone --type=identity --description=Identity )
-keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$KEYSTONE --publicurl='http://'"$managementip"':5000/v2.0' --adminurl='http://'"$managementip"':35357/v2.0' --internalurl='http://'"$managementip"':5000/v2.0'
+keystone endpoint-create --service-id=$KEYSTONE --publicurl='http://'"$managementip"':5000/v2.0' --adminurl='http://'"$managementip"':35357/v2.0' --internalurl='http://'"$managementip"':5000/v2.0'
 
 # glance
 keystone user-create --name=glance --pass="$SERVICE_PASSWORD" --email=$email
 keystone user-role-add --user=glance --tenant=service --role=admin
 GLANCE=$(get_id keystone service-create --name=glance --type=image --description=Image)
-keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$GLANCE --publicurl='http://'"$managementip"':9292' --adminurl='http://'"$managementip"':9292' --internalurl='http://'"$managementip"':9292'
+keystone endpoint-create --service-id=$GLANCE --publicurl='http://'"$managementip"':9292' --adminurl='http://'"$managementip"':9292' --internalurl='http://'"$managementip"':9292'
 
 # cinder
 keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --email=$email
 keystone user-role-add --tenant=service --user=cinder --role=admin
 CINDER=$(get_id keystone service-create --name=cinder --type=volumev2 --description=Volume )
-keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$CINDER --publicurl='http://'"$managementip"':8776/v1/$(tenant_id)s' --adminurl='http://'"$managementip"':8776/v1/$(tenant_id)s' --internalurl='http://'"$managementip"':8776/v1/$(tenant_id)s'
+keystone endpoint-create --service-id=$CINDER --publicurl='http://'"$managementip"':8776/v1/$(tenant_id)s' --adminurl='http://'"$managementip"':8776/v1/$(tenant_id)s' --internalurl='http://'"$managementip"':8776/v1/$(tenant_id)s'
 
 # nova
 keystone user-create --name=nova --pass="$SERVICE_PASSWORD" --email=$email
 keystone user-role-add --tenant=service --user=nova --role=admin
 NOVA=$(get_id keystone service-create --name=nova --type=compute --description=Compute )
-keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$NOVA --publicurl='http://'"$managementip"':8774/v2/$(tenant_id)s' --adminurl='http://'"$managementip"':8774/v2/$(tenant_id)s' --internalurl='http://'"$managementip"':8774/v2/$(tenant_id)s'
+keystone endpoint-create --service-id=$NOVA --publicurl='http://'"$managementip"':8774/v2/$(tenant_id)s' --adminurl='http://'"$managementip"':8774/v2/$(tenant_id)s' --internalurl='http://'"$managementip"':8774/v2/$(tenant_id)s'
 
 # ec2 compatability
 EC2=$(get_id keystone service-create --name=ec2 --type=ec2 --description=EC2 )
-keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$EC2 --publicurl='http://'"$managementip"':8773/services/Cloud' --adminurl='http://'"$managementip"':8773/services/Admin' --internalurl='http://'"$managementip"':8773/services/Cloud'
+keystone endpoint-create --service-id=$EC2 --publicurl='http://'"$managementip"':8773/services/Cloud' --adminurl='http://'"$managementip"':8773/services/Admin' --internalurl='http://'"$managementip"':8773/services/Cloud'
 
 echo "########################################################################################"
 echo;
