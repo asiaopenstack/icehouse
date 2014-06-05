@@ -73,6 +73,7 @@ export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=$password
 export OS_AUTH_URL="http://$rigip:5000/v2.0/"
+export OS_REGION_NAME=$region
 export SG_SERVICE_CONTROLLER_IP=$rigip
 export SG_SERVICE_CONTROLLER_NIC=$rignic
 export SG_SERVICE_TENANT_NAME=service
