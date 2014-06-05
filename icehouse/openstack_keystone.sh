@@ -53,7 +53,6 @@ sed -e "
 /^connection =.*$/s/^.*$/connection = mysql:\/\/keystone:$password@$managementip\/keystone/
 " -i /etc/keystone/keystone.conf
 
-exit
 # create db tables and restart
 keystone-manage db_sync
 service keystone restart
@@ -74,58 +73,48 @@ function get_id () {
 # keystone.  later on we do this twice for each role.  why on earth keystone itself doesn't do this is anyone's 
 # guess. consider me disgruntled. Kord 
 
+# Users
+keystone user-create --name=admin --pass="$ADMIN_PASSWORD" --email=$email
+keystone user-create --name=demo --pass="$ADMIN_PASSWORD" --email=$email
+
+# Roles
+ADMIN_ROLE=$(get_id keystone role-create --name=admin)
+
 # Tenants
 ADMIN_TENANT=$(get_id keystone tenant-create --name=admin)
 SERVICE_TENANT=$(get_id keystone tenant-create --name=service)
 DEMO_TENANT=$(get_id keystone tenant-create --name=demo)
-INVIS_TENANT=$(get_id keystone tenant-create --name=invisible_to_admin)
-STACKMONKEY_TENANT=$(get_id keystone tenant-create --name=StackMonkey)
-
-# Users
-ADMIN_USER=$(get_id keystone user-create --name=admin --pass="$ADMIN_PASSWORD" --email=$email)
-DEMO_USER=$(get_id keystone user-create --name=demo --pass="$ADMIN_PASSWORD" --email=$email)
-
-# Roles
-ADMIN_ROLE=$(get_id keystone role-create --name=admin)
-KEYSTONEADMIN_ROLE=$(get_id keystone role-create --name=KeystoneAdmin)
-KEYSTONESERVICE_ROLE=$(get_id keystone role-create --name=KeystoneServiceAdmin)
+STACKMONKEY_TENANT=$(get_id keystone tenant-create --name=stackmonkey)
 
 # Add Roles to Users in Tenants
-keystone user-role-add --user-id $ADMIN_USER --role-id $ADMIN_ROLE --tenant-id $ADMIN_TENANT
-keystone user-role-add --user-id $ADMIN_USER --role-id $ADMIN_ROLE --tenant-id $DEMO_TENANT
-keystone user-role-add --user-id $ADMIN_USER --role-id $KEYSTONEADMIN_ROLE --tenant-id $ADMIN_TENANT
-keystone user-role-add --user-id $ADMIN_USER --role-id $KEYSTONESERVICE_ROLE --tenant-id $ADMIN_TENANT
-
-# The Member role is used by Horizon and Swift
-MEMBER_ROLE=$(get_id keystone role-create --name=Member)
-keystone user-role-add --user-id $DEMO_USER --role-id $MEMBER_ROLE --tenant-id $DEMO_TENANT
-keystone user-role-add --user-id $DEMO_USER --role-id $MEMBER_ROLE --tenant-id $INVIS_TENANT
-
-# nova
-NOVA_USER=$(get_id keystone user-create --name=nova --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
-keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $NOVA_USER --role-id $ADMIN_ROLE
-NOVA=$(get_id keystone service-create --name nova --type compute --description Compute )
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $NOVA --publicurl 'http://'"$managementip"':8774/v2/$(tenant_id)s' --adminurl 'http://'"$managementip"':8774/v2/$(tenant_id)s' --internalurl 'http://'"$managementip"':8774/v2/$(tenant_id)s'
-
-# glance
-GLANCE_USER=$(get_id keystone user-create --name=glance --pass="$SERVICE_PASSWORD" --tenant_id $SERVICE_TENANT --email=$email)
-keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $GLANCE_USER --role-id $ADMIN_ROLE
-GLANCE=$(get_id keystone service-create --name glance --type image --description Image)
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $GLANCE --publicurl 'http://'"$managementip"':9292/' --adminurl 'http://'"$managementip"':9292/v2' --internalurl 'http://'"$managementip"':9292/v2'
-
-# cinder
-CINDER_USER=$(get_id keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email)
-keystone user-role-add --tenant-id $SERVICE_TENANT --user-id $CINDER_USER --role-id $ADMIN_ROLE
-CINDER=$(get_id keystone service-create --name cinder --type volume --description Volume )
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $CINDER --publicurl 'http://'"$managementip"':8776/v1/$(tenant_id)s' --adminurl 'http://'"$managementip"':8776/v1/$(tenant_id)s' --internalurl 'http://'"$managementip"':8776/v1/$(tenant_id)s'
+keystone user-role-add --user=admin --role=admin --tenant=admin
+keystone user-role-add --user=demo --role=_member_ --tenant=demo
 
 # keystone 
-KEYSTONE=$(get_id keystone service-create --name keystone --type identity --description Identity )
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $KEYSTONE --publicurl 'http://'"$managementip"':5000/v2.0' --adminurl 'http://'"$managementip"':35357/v2.0' --internalurl 'http://'"$managementip"':5000/v2.0'
+KEYSTONE=$(get_id keystone service-create --name keystone --type identity --description "OpenStack Identity" )
+keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$KEYSTONE --publicurl='http://'"$managementip"':5000/v2.0' --adminurl='http://'"$managementip"':35357/v2.0' --internalurl='http://'"$managementip"':5000/v2.0'
+
+# glance
+keystone user-create --name=glance --pass="$SERVICE_PASSWORD" --email=$email
+keystone user-role-add --user=glance --tenant=service --role=admin
+GLANCE=$(get_id keystone service-create --name=glance --type=image --description="OpenStack Image Service")
+keystone endpoint-create --region $KEYSTONE_REGION --service-id=$GLANCE --publicurl='http://'"$managementip"':9292' --adminurl='http://'"$managementip"':9292' --internalurl='http://'"$managementip"':9292'
+
+# cinder
+keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email
+keystone user-role-add --tenant=service --user=cinder --role=admin
+CINDER=$(get_id keystone service-create --name=cinder --type=volumev2 --description="OpenStack Volume Service v2" )
+keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$CINDER --publicurl='http://'"$managementip"':8776/v1/$(tenant_id)s' --adminurl='http://'"$managementip"':8776/v1/$(tenant_id)s' --internalurl='http://'"$managementip"':8776/v1/$(tenant_id)s'
+
+# nova
+get_id keystone user-create --name=nova --pass="$SERVICE_PASSWORD" --tenant$SERVICE_TENANT --email=$email
+keystone user-role-add --tenant=service --user=nova --role=admin
+NOVA=$(get_id keystone service-create --name nova --type compute --description "OpenStack Compute Service" )
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $NOVA --publicurl 'http://'"$managementip"':8774/v2/$(tenant_id)s' --adminurl 'http://'"$managementip"':8774/v2/$(tenant_id)s' --internalurl='http://'"$managementip"':8774/v2/$(tenant_id)s'
 
 # ec2 compatability
 EC2=$(get_id keystone service-create --name ec2 --type ec2 --description EC2 )
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $EC2 --publicurl 'http://'"$managementip"':8773/services/Cloud' --adminurl 'http://'"$managementip"':8773/services/Admin' --internalurl 'http://'"$managementip"':8773/services/Cloud'
+keystone endpoint-create --region $KEYSTONE_REGION --service-id $EC2 --publicurl 'http://'"$managementip"':8773/services/Cloud' --adminurl 'http://'"$managementip"':8773/services/Admin' --internalurl='http://'"$managementip"':8773/services/Cloud'
 
 # create ec2 creds and parse the secret and access key returned
 RESULT=$(keystone ec2-credentials-create --tenant-id=$ADMIN_TENANT --user-id=$ADMIN_USER)
