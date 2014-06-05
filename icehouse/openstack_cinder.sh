@@ -36,7 +36,7 @@ rabbit_userid = guest
 rabbit_password = guest
 
 [database]
-connection = mysql:\/\/cinder:$password@$managementip\/cinder/
+connection = mysql://cinder:$password@$managementip/cinder/
 
 [keystone_authtoken]
 auth_uri = http://$managementip:5000
@@ -54,6 +54,8 @@ cinder-manage db sync
 # restart cinder services
 service cinder-scheduler restart
 service cinder-api restart
+service cinder-volume restart
+service tgt restart
 
 echo;
 echo "#################################################################################################
