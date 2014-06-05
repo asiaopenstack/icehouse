@@ -100,6 +100,8 @@ keystone user-role-add --user=glance --tenant=service --role=admin
 GLANCE=$(get_id keystone service-create --name=glance --type=image --description="OpenStack Image Service")
 keystone endpoint-create --region $KEYSTONE_REGION --service-id=$GLANCE --publicurl='http://'"$managementip"':9292' --adminurl='http://'"$managementip"':9292' --internalurl='http://'"$managementip"':9292'
 
+exit
+
 # cinder
 keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email
 keystone user-role-add --tenant=service --user=cinder --role=admin
