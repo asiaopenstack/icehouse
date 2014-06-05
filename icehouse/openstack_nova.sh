@@ -21,16 +21,21 @@ password=$SG_SERVICE_PASSWORD
 managementip=$SG_SERVICE_CONTROLLER_IP
 
 # install packages
-apt-get install -y nova-novncproxy novnc nova-api nova-ajax-console-proxy nova-cert nova-conductor nova-consoleauth nova-doc nova-scheduler nova-network nova-compute
+apt-get install -y python-novaclient
+apt-get install -y nova-api nova-cert nova-conductor nova-consoleauth nova-novncproxy nova-scheduler
+apt-get install -y nova-network nova-compute-kvm python-guestfs
 
-# hack up the nova paste file
-sed -e "
-s,127.0.0.1,$managementip,g;
-s,%SERVICE_TENANT_NAME%,service,g;
-s,%SERVICE_USER%,nova,g;
-s,%SERVICE_PASSWORD%,$password,g;
-" -i /etc/nova/api-paste.ini
- 
+# make the kernel listen to us
+dpkg-statoverride  --update --add root root 0644 /boot/vmlinuz-$(uname -r)
+
+echo "
+#!/bin/sh
+version="$1"
+# passing the kernel version is required
+[ -z "${version}" ] && exit 0
+dpkg-statoverride --update --add root root 0644 /boot/vmlinuz-${version}
+" > /etc/kernel/postinst.d/statoverride
+
 # create the dnsmasq-nova.conf file
 echo "
 cache-size=0

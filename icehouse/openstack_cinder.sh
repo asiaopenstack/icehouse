@@ -36,7 +36,7 @@ rabbit_userid = guest
 rabbit_password = guest
 
 [database]
-connection = mysql://cinder:$password@$managementip/cinder/
+connection = mysql://cinder:$password@$managementip/cinder
 
 [keystone_authtoken]
 auth_uri = http://$managementip:5000

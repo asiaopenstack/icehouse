@@ -8,6 +8,7 @@ fi
 
 apt-get update -y
 apt-get install curl -y
+apt-get install python-pip -y
 
 echo "#################################################################################################
 

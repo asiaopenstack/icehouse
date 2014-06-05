@@ -32,6 +32,9 @@ service mysql restart
 # wait for restart
 sleep 4 
 
+# secure mysql
+mysql_secure_installation
+
 echo;
 echo "##############################################################################################"
 echo;
