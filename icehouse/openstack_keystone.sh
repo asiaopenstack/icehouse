@@ -116,20 +116,7 @@ keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$NOVA --publicur
 EC2=$(get_id keystone service-create --name=ec2 --type=ec2 --description=EC2 )
 keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$EC2 --publicurl='http://'"$managementip"':8773/services/Cloud' --adminurl='http://'"$managementip"':8773/services/Admin' --internalurl='http://'"$managementip"':8773/services/Cloud'
 
-# create ec2 creds and parse the secret and access key returned
-RESULT=$(keystone ec2-credentials-create --tenant-id=$ADMIN_TENANT --user-id=$ADMIN_USER)
-ADMIN_ACCESS=`echo "$RESULT" | grep access | awk '{print $4}'`
-ADMIN_SECRET=`echo "$RESULT" | grep secret | awk '{print $4}'`
-
-# write the secret and access to ec2rc
-cat > ec2rc <<EOF
-ADMIN_ACCESS=$ADMIN_ACCESS
-ADMIN_SECRET=$ADMIN_SECRET
-EOF
-
 echo "########################################################################################"
-echo;
-echo "Your EC2 credentials have been saved into ./ec2rc"
 echo;
 echo "Time to test keystone.  Do a '. ./stackrc' then a 'keystone user-list'."
 echo "Assuming you get a user list back, go on to install glance with './openstack_glance.sh'."
