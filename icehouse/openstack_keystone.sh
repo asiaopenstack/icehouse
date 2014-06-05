@@ -98,26 +98,25 @@ keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$KEYSTONE --publ
 keystone user-create --name=glance --pass="$SERVICE_PASSWORD" --email=$email
 keystone user-role-add --user=glance --tenant=service --role=admin
 GLANCE=$(get_id keystone service-create --name=glance --type=image --description=Image)
-keystone endpoint-create --region $KEYSTONE_REGION --service-id=$GLANCE --publicurl='http://'"$managementip"':9292' --adminurl='http://'"$managementip"':9292' --internalurl='http://'"$managementip"':9292'
-
-exit
+keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$GLANCE --publicurl='http://'"$managementip"':9292' --adminurl='http://'"$managementip"':9292' --internalurl='http://'"$managementip"':9292'
 
 # cinder
-keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --tenant-id $SERVICE_TENANT --email=$email
+keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --email=$email
 keystone user-role-add --tenant=service --user=cinder --role=admin
 CINDER=$(get_id keystone service-create --name=cinder --type=volumev2 --description=Volume )
 keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$CINDER --publicurl='http://'"$managementip"':8776/v1/$(tenant_id)s' --adminurl='http://'"$managementip"':8776/v1/$(tenant_id)s' --internalurl='http://'"$managementip"':8776/v1/$(tenant_id)s'
 
 # nova
-get_id keystone user-create --name=nova --pass="$SERVICE_PASSWORD" --tenant$SERVICE_TENANT --email=$email
+keystone user-create --name=nova --pass="$SERVICE_PASSWORD" --email=$email
 keystone user-role-add --tenant=service --user=nova --role=admin
 NOVA=$(get_id keystone service-create --name=nova --type=compute --description=Compute )
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $NOVA --publicurl 'http://'"$managementip"':8774/v2/$(tenant_id)s' --adminurl 'http://'"$managementip"':8774/v2/$(tenant_id)s' --internalurl='http://'"$managementip"':8774/v2/$(tenant_id)s'
+keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$NOVA --publicurl='http://'"$managementip"':8774/v2/$(tenant_id)s' --adminurl='http://'"$managementip"':8774/v2/$(tenant_id)s' --internalurl='http://'"$managementip"':8774/v2/$(tenant_id)s'
 
 # ec2 compatability
-EC2=$(get_id keystone service-create --name ec2 --type ec2 --description EC2 )
-keystone endpoint-create --region $KEYSTONE_REGION --service-id $EC2 --publicurl 'http://'"$managementip"':8773/services/Cloud' --adminurl 'http://'"$managementip"':8773/services/Admin' --internalurl='http://'"$managementip"':8773/services/Cloud'
+EC2=$(get_id keystone service-create --name=ec2 --type=ec2 --description=EC2 )
+keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$EC2 --publicurl='http://'"$managementip"':8773/services/Cloud' --adminurl='http://'"$managementip"':8773/services/Admin' --internalurl='http://'"$managementip"':8773/services/Cloud'
 
+exit
 # create ec2 creds and parse the secret and access key returned
 RESULT=$(keystone ec2-credentials-create --tenant-id=$ADMIN_TENANT --user-id=$ADMIN_USER)
 ADMIN_ACCESS=`echo "$RESULT" | grep access | awk '{print $4}'`
