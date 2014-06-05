@@ -22,6 +22,45 @@ else
 	rignic=$SG_SERVICE_CONTROLLER_NIC
 fi
 
+# get current IPv6 info
+echo;
+echo "##########################################################################################"
+echo;
+echo "These are your current IPv6 addresses: "
+echo;
+ip -f inet6 addr
+echo;
+echo "You'll want to copy the first 4 blocks of hex numbers from one address."
+echo;
+echo "An example would be: 2601:9:1380:960"
+echo;
+echo "##########################################################################################"
+echo;
+
+# grab our IPv6 prefix
+read -p "Enter a (global) IPv6 prefix for $rignic: " prefix
+
+# create radvd conf file
+cat <<EOF > /etc/radvd.conf
+interface $rignic
+{
+    AdvSendAdvert             on;
+ 
+    prefix $PREFIX::/64
+    {
+        AdvOnLink             on;
+        AdvAutonomous         on;
+    };
+};
+EOF
+
+# configure nova.conf
+cat <<EOF >> /etc/nova/nova.conf
+ 
+# ipv6 setup
+use_ipv6=true
+EOF
+
 # set the routing flags correctly
 echo 0 > /proc/sys/net/ipv6/conf/$rignic/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/$rignic/accept_ra
@@ -45,6 +84,14 @@ EOF
 # set to execute and run on boot
 chmod 755 /etc/init.d/ipv6-setup
 ln -s /etc/init.d/ipv6-setup /etc/rc2.d/S10ipv6-setup
+
+# start radvd
+service radvd restart
+ 
+# restart nova services
+for svc in api cert compute conductor network scheduler; do
+  service nova-$svc restart
+done
 
 echo;
 echo "##########################################################################################"
