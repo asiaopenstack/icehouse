@@ -49,12 +49,11 @@ else
 fi
 
 sed -e "
+/^#admin_token=.*$/s/^.*$/admin_token = $token/
 /^connection =.*$/s/^.*$/connection = mysql:\/\/keystone:$password@$managementip\/keystone/
-/^# admin_token =.*$/s/^.*$/admin_token = $token/
 " -i /etc/keystone/keystone.conf
 
 exit
-
 # create db tables and restart
 keystone-manage db_sync
 service keystone restart
