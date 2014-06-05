@@ -28,7 +28,8 @@ cat > stackrc <<EOF
 export OS_TENANT_NAME=admin
 export OS_USERNAME=admin
 export OS_PASSWORD=$password
-export OS_AUTH_URL="http://$managementip:5000/v2.0/" 
+export OS_AUTH_URL="http://$managementip:5000/v2.0/"
+export OS_REGION_NAM=$region
 export ADMIN_PASSWORD=$password
 export SERVICE_PASSWORD=$password
 export SERVICE_TOKEN=$token
