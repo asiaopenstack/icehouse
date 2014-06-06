@@ -7,8 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # get horizon
-apt-get install -y openstack-dashboard memcached
-
+apt-get install -y apache2 memcached libapache2-mod-wsgi openstack-dashboard
 
 # remove the ubuntu theme - seriously this is fucking stupid it's still broken
 apt-get remove -y --purge openstack-dashboard-ubuntu-theme
