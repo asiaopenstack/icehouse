@@ -41,7 +41,7 @@ echo "
 cache-size=0
 " > /etc/nova/dnsmasq-nova.conf
 
-
+exit
 # write out a new nova file
 echo "
 [DEFAULT]
@@ -53,7 +53,6 @@ logdir=/var/log/nova
 
 # STATE
 auth_strategy=keystone
-use_deprecated_auth=false
 state_path=/var/lib/nova
 lock_path=/run/lock/nova
 
@@ -153,7 +152,16 @@ ec2_host=$managmentip
 " > /etc/nova/nova.conf
 
 # restart
-cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
+# restart nova
+service nova-api restart
+service nova-cert restart
+service nova-api restart
+service nova-conductor restart
+service nova-consoleauth restart
+service nova-network restart
+service nova-compute restart
+service nova-novncproxy restart
+service nova-scheduler restart
 sleep 4
 
 # sync db
@@ -161,7 +169,15 @@ nova-manage db sync
 sleep 4
 
 # restart nova
-cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
+service nova-api restart
+service nova-cert restart
+service nova-api restart
+service nova-conductor restart
+service nova-consoleauth restart
+service nova-network restart
+service nova-compute restart
+service nova-novncproxy restart
+service nova-scheduler restart
 
 # create cinder volume type
 cinder type-create Storage
