@@ -36,14 +36,13 @@ else
 
 # we sed out the mysql connection here, but then tack on the flavor info later on...
 sed -e "
-/^rabbit_host =.*$/s/^.*$/rabbit_host = $managmentip/
-/rabbit_use_ssl = false/a rpc_backend = rabbit
-/^#sqlite_db =.*$/s/^.*$/connection = mysql:\/\/glance:$password@$managementip\/glance/
+/^sqlite_db =.*$/s/^.*$/connection = mysql:\/\/glance:$password@$managementip\/glance/
+/^backend = sqlalchemy/d
+/\[paste_deploy\]/a flavor = keystone
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,glance,g;
 s,%SERVICE_PASSWORD%,$password,g;
 " -i /etc/glance/glance-registry.conf
-sed -e "/^backend = sqlalchemy/d" -i /etc/glance/glance-registry.conf
 
 echo "
 [paste_deploy]
@@ -52,6 +51,8 @@ flavor = keystone
 
 sed -e "
 /^sqlite_db =.*$/s/^.*$/connection = mysql:\/\/glance:$password@$managementip\/glance/
+/^rabbit_host =.*$/s/^.*$/rabbit_host = $managmentip/
+/rabbit_use_ssl = false/a rpc_backend = rabbit
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,glance,g;
 s,%SERVICE_PASSWORD%,$password,g;
