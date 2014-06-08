@@ -84,7 +84,7 @@ dhcpbridge_flagfile=/etc/nova/nova.conf
 dhcpbridge=/usr/bin/nova-dhcpbridge
 libvirt_use_virtio_for_bridges=true
 dnsmasq_config_file=/etc/nova/dnsmasq-nova.conf
-use_ipv6=true
+#use_ipv6=true
 
 # GLANCE
 image_service=nova.image.glance.GlanceImageService
