@@ -57,10 +57,6 @@ service cinder-api restart
 service cinder-volume restart
 service tgt restart
 
-# create storage type
-sleep 2
-cinder type-create Storage
-
 echo;
 echo "#################################################################################################
 
