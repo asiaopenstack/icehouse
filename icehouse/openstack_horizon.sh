@@ -20,6 +20,8 @@ service apache2 restart; service memcached restart
 managementip=$SG_SERVICE_CONTROLLER_IP
 password=$SG_SERVICE_PASSWORD
 
+# patch nova.conf files - TODO
+
 echo "#######################################################################################"
 echo;
 echo "The horizon dashboard should be at http://$managementip/horizon.  Login with admin/$password"
