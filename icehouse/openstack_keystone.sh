@@ -104,7 +104,7 @@ keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$GLANCE --public
 # cinder
 keystone user-create --name=cinder --pass="$SERVICE_PASSWORD" --email=$email
 keystone user-role-add --tenant=service --user=cinder --role=admin
-CINDER=$(get_id keystone service-create --name=cinder --type=volumev --description=Volume )
+CINDER=$(get_id keystone service-create --name=cinder --type=volume --description=Volume )
 keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$CINDER --publicurl='http://'"$managementip"':8776/v1/$(tenant_id)s' --adminurl='http://'"$managementip"':8776/v1/$(tenant_id)s' --internalurl='http://'"$managementip"':8776/v1/$(tenant_id)s'
 CINDER2=$(get_id keystone service-create --name=cinder --type=volumev2 --description=Volume2 )
 keystone endpoint-create --region=$KEYSTONE_REGION --service-id=$CINDER2 --publicurl='http://'"$managementip"':8776/v2/$(tenant_id)s' --adminurl='http://'"$managementip"':8776/v2/$(tenant_id)s' --internalurl='http://'"$managementip"':8776/v2/$(tenant_id)s'

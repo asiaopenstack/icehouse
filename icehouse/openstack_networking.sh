@@ -7,10 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # bridge stuff
-apt-get install vlan bridge-utils -y
-
-# kvm
-apt-get install kvm libvirt-bin pm-utils -y
+apt-get install vlan qemu-kvm libvirt-bin ubuntu-vm-builder bridge-utils -y
 
 # install time server
 apt-get install ntp -y
@@ -47,6 +44,14 @@ iface eth0 inet static
 
 # ipv6 configuration
 iface eth0 inet6 auto
+
+Now edit your /etc/hosts file to look like this:
+
+127.0.0.1	localhost
+10.0.1.100	hanoman
+10.0.1.101	ravana
+
+Be sure to put each machine in the cluster's IP then name in the /etc/hosts file.
 
 After you are done, do a '/etc/init.d/networking restart'.
 

@@ -26,6 +26,11 @@ echo "##########################################################################
 
 Your system isn't configured to run KVM properly.  Investigate this before continuing.
 
+You can still modify /etc/nova/nova.conf (once nova is installed) to emulate acceleration:
+
+[libvirt]
+virt_type = qemu
+
 #################################################################################################
 "
 fi
