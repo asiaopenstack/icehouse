@@ -63,7 +63,7 @@ followTail = 0
 [monitor:///var/log/libvirt]
 disabled = false
 followTail = 0
-" > /opt/splunk/etc/apps/launcher/local/inputs.conf
+" >> /opt/splunk/etc/apps/launcher/default/inputs.conf
 
 # start splunk
 /opt/splunk/bin/splunk start --accept-license

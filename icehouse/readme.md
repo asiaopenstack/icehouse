@@ -1,25 +1,17 @@
-## Installing OpenStack Grizzly on Ubuntu 12.04 LTS
-Before beginning this guide, be sure you read the introduction README in the [directory above this one](https://github.com/stackgeek/openstackgeek/).  Information on the project, goals, support channels and other versions is available there.
+## Installing OpenStack Icehouse on Ubuntu 14.04 LTS
+Before beginning this guide, be sure you read the introduction README in the [directory above this one](https://github.com/stackgeek/openstackgeek/).  Information on the project, goals, support channels and installs for other versions of OpenStack are available there.
 
 #### Video Guide
 The video for this guide is [located on Vimeo](https://vimeo.com/87528023).
 
-[![OpenStack Video](https://raw.github.com/StackGeek/openstackgeek/master/grizzly/openstack_grizzly.png)](https://vimeo.com/87528023)
+[![OpenStack Video](https://raw.github.com/StackGeek/openstackgeek/master/icehouse/openstack_icehouse.png)](https://vimeo.com/87528023)
 
 ### Installation
-Assuming a fresh install of Ubuntu Desktop, you'll need to locally login to each rig and install the *openssh-server* to allow remote *ssh* access:
+Assuming a [fresh install of Ubuntu 14.04 LTS Desktop](http://www.ubuntu.com/download/desktop), you'll need to locally login to each rig and install the *openssh-server* to allow remote *ssh* access:
 
     sudo apt-get install openssh-server
-    
-You may now login remotely to your rig via *ssh* and do an upgrade:
-    
-    echo '# STACKGEEK ADDED THIS' >> /etc/apt/sources.list
-  	echo 'deb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-updates/grizzly main' >> /etc/apt/sources.list
-	apt-get install ubuntu-cloud-keyring -y
-	apt-get update -y
-	apt-get upgrade -y
-	
-The upgrade will take a while.  When it is done, install *git* with *aptitude*:
+
+Remotely log into your new server and install *git* with *aptitude*:
 
     sudo su
     apt-get -y install git
@@ -27,10 +19,10 @@ The upgrade will take a while.  When it is done, install *git* with *aptitude*:
 Checkout the StackGeek OpenStack setup scripts from Github:
 
     git clone git://github.com/StackGeek/openstackgeek.git
-    cd openstackgeek/grizzly
+    cd openstackgeek/icehouse
 
 #### Network Interfaces
-You need to manually configure your ethernet interface to support a non-routable static IPv4 address and an auto configured IPv6 address.  Externally routed IPv4 addresses will be added in a later section. To start, run the following script:
+You need to manually configure your ethernet interface to support a non-routable static IPv4 address and an auto configured IPv6 address.
 
     ./openstack_networking.sh
     
@@ -60,8 +52,6 @@ You may run the following script if you would like to disable the tracking pings
 
     ./openstack_disable_tracking.sh
 
-*Note: These scripts are provided free of charge and serve to assist users in setting up OpenStack to participate in a highly distributed cloud.  The intent is to bring trust and transparency to the Internet's infrastructure.  The compute rigs you are installing already call into several other services, including Ubuntu's hosted repos and various OpenStack cloud image hosting servers.  The impact of these tracking scripts to your privacy is minimal, at the worst.  Your participation in tracking your install is appreciated.*
-
 *Another Note: Please also be aware that the openstack_setup.sh script below sends your configuration file to a pastebin knockoff hosted on stackgeek.com and keeps it until you delete it (instructions below).  If you don't want this functionality, please edit the openstack_setup.sh script to your liking.*
 
 #### Test and Update
@@ -90,12 +80,23 @@ If you indicated the rig is not a controller node, you will be prompted for the 
 
 ***Note: If you are installing a compute rig, you may skip to the Cinder Setup section below.***
 
+#### Install Splunk (Controller Only)
+If you would like to use Splunk for debugging and monitoring purposes, install it now:
+
+    ./openstack_splunk.sh
+
+Splunk will be configured to monitor the OpenStack packages logfiles.  You may access splunk through the following URL (assuming you use the controller's correct IP address):
+
+    http://10.0.1.100:8000
+
 #### Database Setup (Controller Only)
 The next part of the setup installs MySQL and RabbitMQ.  **This is only required for the controller rig. Skip this step if you are setting up a compute rig for your cluster.** Start the install on the controller rig by typing:
 
     ./openstack_mysql.sh
     
 The install script will install Rabbit and MySQL.  During the MySQL install you will be prompted for the MySQL password you entered earlier to set a password for the MySQL root user.  You'll be prompted again toward the end of the script when it creates the databases.
+
+***The MySQL install script now runs the command 'mysql_secure_installation' to secure your MySQL install.  Answer the questions this script presents to you to secure your install properly.***
 
 #### Keystone Setup (Controller Only)
 Keystone is used by OpenStack to provide central authentication across all installed services.  Start the install of Keystone by typing the following:
@@ -144,15 +145,15 @@ Cinder is used to provide additional volume attachments to running instances and
 
     ./openstack_cinder.sh
     
-Once the install of Cinder is complete, determine your space requirements and run the loopback volume creation script:
+Once the install of Cinder is complete, determine your space requirements and run the loopback volume creation script (keep in mind you have to create a loopback file that is at least 1GB in size):
 
     ./openstack_loop.sh
 
-Keep in mind you have to create a loopback file that is at least 1GB in size.  After you complete the Nova setup for the controller below, you should be able to query installed storage types:
+You should now be able to query installed storage types:
 
     cinder type-list
     
-You may then create a new volume to test (again, this requires running the Nova setup for the controller below):
+You may then create a new volume to test:
 
     cinder create --volume-type Storage --display-name test 1
 
@@ -311,7 +312,7 @@ Your user/pass combination will be *'admin'* and whatever you entered for a pass
 ***Note: If you log into the dashboard and get errors regarding quotas, log out of the UI by clicking on 'sign out' at the top right and then reboot the rig.  The errors should go away when you log back in.***
 
 #### Install the StackMonkey Virtual Appliance
-StackMonkey is a pool instance of the xov.io highly distributed cloud framework.  If you elect to install the appliance, this OpenStack node will provide a small portion of its compute power to help build a highly distributed cloud.  You will earn Bitcoin doing this.
+StackMonkey is a pool instance of a highly distributed cloud framework.  If you elect to install the appliance, this OpenStack node will provide a small portion of its compute power to help build a highly distributed cloud.  You will earn Bitcoin doing this.
 
 The virtual appliance setup can be run by typing the following command:
 
