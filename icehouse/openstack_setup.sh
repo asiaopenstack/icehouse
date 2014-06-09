@@ -126,5 +126,7 @@ echo "##########################################################################
 echo;
 echo "Setup configuration complete.  Continue the setup by doing a './openstack_mysql.sh'."
 echo;
+echo "If you would like to install Splunk, do a './openstack_splunk.sh' before continuing."
+echo;
 echo "##########################################################################################"
 echo;
