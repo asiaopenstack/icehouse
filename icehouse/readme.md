@@ -2,9 +2,9 @@
 Before beginning this guide, be sure you read the introduction README in the [directory above this one](https://github.com/stackgeek/openstackgeek/).  Information on the project, goals, support channels and installs for other versions of OpenStack are available there.
 
 #### Video Guide
-The video for this guide is [located on Vimeo](https://vimeo.com/87528023).
+The video for this guide is [located on Vimeo](https://vimeo.com/97757352).
 
-[![OpenStack Video](https://raw.github.com/StackGeek/openstackgeek/master/icehouse/openstack_icehouse.png)](https://vimeo.com/87528023)
+[![OpenStack Video](https://raw.github.com/StackGeek/openstackgeek/master/icehouse/openstack_icehouse.png)](https://vimeo.com/97757352)
 
 ### Installation
 Assuming a [fresh install of Ubuntu 14.04 LTS Desktop](http://www.ubuntu.com/download/desktop), you'll need to locally login to each rig and install the *openssh-server* to allow remote *ssh* access:
