@@ -19,6 +19,7 @@ clear
 # some vars from the SG setup file getting locally reassigned 
 password=$SG_SERVICE_PASSWORD    
 managementip=$SG_SERVICE_CONTROLLER_IP
+rignic=$SG_SERVICE_CONTROLLER_NIC
 
 # install packages
 apt-get install -y python-novaclient
@@ -54,6 +55,7 @@ logdir=/var/log/nova
 auth_strategy=keystone
 state_path=/var/lib/nova
 lock_path=/run/lock/nova
+rootwrap_config=/etc/nova/rootwrap.conf
 
 # PASTE FILE
 api_paste_config=/etc/nova/api-paste.ini
@@ -61,36 +63,25 @@ api_paste_config=/etc/nova/api-paste.ini
 # RABBIT
 rabbit_host=$managementip
 rabbit_port=5672
-rpc_backend = rabbit
-rabbit_password = guest
+rpc_backend = nova.openstack.common.rpc.impl_kombu
+rabbit_userid=guest
+rabbit_password=guest
 
 # SCHEDULER
-compute_scheduler_driver=nova.scheduler.simple.SimpleScheduler
-scheduler_available_filters=nova.scheduler.filters.standard_filters
-scheduler_max_attempts=3
-scheduler_default_filters=AvailabilityZoneFilter,RamFilter,ComputeFilter,CoreFilter,SameHostFilter,DifferentHostFilter,RetryFilter
-least_cost_functions=nova.scheduler.least_cost.compute_fill_first_cost_fn
-default_availability_zone=nova
-default_schedule_zone=nova
+compute_scheduler_driver=nova.scheduler.filter_scheduler.FilterScheduler
 
 # NETWORK
 network_manager=nova.network.manager.FlatDHCPManager
-network_api_class = nova.network.api.API
-security_group_api = nova
-firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
-multi_host=True
-public_interface=br100
-fixed_range=10.0.47.0/24
-dmz_cidr=10.128.0.0/24
 force_dhcp_release=True
-dns_server=8.8.8.8
-send_arp_for_ha=True
-auto_assign_floating_ip=False
 dhcpbridge_flagfile=/etc/nova/nova.conf
 dhcpbridge=/usr/bin/nova-dhcpbridge
-libvirt_use_virtio_for_bridges=True
+firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
+my_ip=$managementip
+public_interface=br100
+vlan_interface=$rignic
+flat_network_bridge=br100
+flat_interface=$rignic
 dnsmasq_config_file=/etc/nova/dnsmasq-nova.conf
-use_ipv6=true
 
 # GLANCE
 image_service=nova.image.glance.GlanceImageService
@@ -104,13 +95,13 @@ snapshot_image_format=qcow2
 iscsi_helper=tgtadm
 
 # COMPUTE
+network_api_class = nova.network.api.API
+security_group_api = nova
 compute_manager=nova.compute.manager.ComputeManager
-sql_connection=mysql://nova:$password@$managementip/nova
 connection_type=libvirt
 compute_driver=libvirt.LibvirtDriver
 libvirt_type=kvm
 libvirt_inject_key=false
-rootwrap_config=/etc/nova/rootwrap.conf
 root_helper=sudo nova-rootwrap /etc/nova/rootwrap.conf
 remove_unused_base_images=true
 remove_unused_resized_minimum_age_seconds=3600
@@ -132,17 +123,21 @@ ram_allocation_ratio=1.5
 keystone_ec2_url=http://$managementip:5000/v2.0/ec2tokens
 
 # VNC CONFIG
-my_ip=$managementip
-vnc_enabled=True
+my_ip=10.0.1.100
+novnc_enabled=true
+novncproxy_base_url=http://$managementip:6080/vnc_auto.html
+xvpvncproxy_base_url=http://$managementip:6081/console
+novncproxy_host=$managementip
+novncproxy_port=6080
 vncserver_listen=$managementip
 vncserver_proxyclient_address=$managementip
-novncproxy_base_url = http://$managmentip:6080/vnc_auto.html
 
 # OTHER
 osapi_max_limit=1000
 
 # APIs
 enabled_apis=ec2,osapi_compute,metadata
+osapi_compute_extension = nova.api.openstack.compute.contrib.standard_extensions
 ec2_workers=4
 osapi_compute_workers=4
 metadata_workers=4
@@ -151,7 +146,7 @@ osapi_compute_listen=$managementip
 osapi_compute_listen_port=8774
 ec2_listen=$managementip
 ec2_listen_port=8773
-ec2_host=$managmentip
+ec2_host=$managementip
 ec2_private_dns_show_ip=True
 
 [database]
@@ -165,11 +160,8 @@ auth_protocol = http
 admin_tenant_name = service
 admin_user = nova
 admin_password = $password
-
-
 " > /etc/nova/nova.conf
 
-# restart
 # restart nova
 service nova-api restart
 service nova-cert restart
