@@ -163,7 +163,9 @@ admin_password = $password
 " > /etc/nova/nova.conf
 
 # restart
-cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done
+service nova-network restart
+service nova-compute restart
+service nova-novncproxy restart
 
 echo "###################################################################################################"
 echo;
