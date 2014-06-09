@@ -1,9 +1,7 @@
 ## Installing OpenStack on Ubuntu 12.04 LTS
 OpenStack's technology stack consists of a series of interrelated projects which controls a given deployment of hardware providing processing, storage, and networking.  Deployments are managed using a simple UI and a flexible API which can be used by third party software.
 
-Infrastructure is meant to be [open, trustworthy and secure](http://www.stackgeek.com/blog/kordless/post/a-code-of-trust). The best way to ensure trust in infrastructure is the use of Open Source software and [hardware](http://en.wikipedia.org/wiki/Open_Compute_Project) exclusively at the infrastructure level.  
-
-This guide is dedicated to helping individuals deploy OpenStack for use with the [xov.io](https://github.com/stackmonkey/xovio-pool) project.  Xov.io's goal is to create a highly a highly distributed cloud backed by a simple cryptocurrency payment system.  Participation in a xov.io enabled compute pool provides resource and revenue sharing among participants.
+Infrastructure is meant to be [open, trustworthy and secure](http://www.stackgeek.com/blog/kordless/post/a-code-of-trust). The best way to ensure trust in infrastructure is the use of Open Source software and [hardware](http://en.wikipedia.org/wiki/Open_Compute_Project) exclusively at the infrastructure level.
 
 This guide and the software it contains are released under the MIT Open Source license. Anyone is welcome to use these scripts to install OpenStack for evaluation or production use. 
 
@@ -16,7 +14,7 @@ Corporations who produce infrastructure components and software using closed sou
 
 Centralization of power hampers innovation, limits progress, and causes goal misalignment.  Simply put, most large corporation's interests don't align with the goals of high decentrilization and open infrastructure.  It is left to individuals to take up the charge of improving the OpenStack project to meet these goals.
 
-It is my hope this project contributes to the improvement of the OpenStack install experience.  You can help by testing, opening tickets, and contributing to the project.
+It is my hope this project contributes to the improvement of the OpenStack install experience and by extension, the establishment of a globally open infrastructure.  You can help by testing, opening tickets, and contributing to the project.
 
 ### Getting Started
 StackGeek provides [these scripts](https://github.com/StackGeek/openstackgeek) and this guide to enable you to get a working installation of OpenStack Grizzly going in about 10 minutes. This author is the source of the **'10 Minute OpenStack Install'** craze and is reportedly responsible for coining the term **'cloud'** back in 1999 while working on the [Grub project]().
@@ -51,7 +49,7 @@ Proceed to the following directories to start installing a given version of Open
 
 * [Installing OpenStack Essex](https://github.com/StackGeek/openstackgeek/tree/master/essex)
 * [Installing OpenStack Grizzly](https://github.com/StackGeek/openstackgeek/tree/master/grizzly)
-* Installing OpenStack Havana
+* [Installing OpenStack Icehouse](https://github.com/StackGeek/openstackgeek/tree/master/icehouse)
 
 If you have any questions, issues or concerns, please feel free to join IRC, post on the forum, or create a ticket!
 
