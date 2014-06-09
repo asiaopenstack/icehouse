@@ -24,7 +24,17 @@ echo;
 apt-get install -y mysql-server python-mysqldb
 
 # make mysql listen on 0.0.0.0
-sudo sed -i '/^bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.cnf
+sed -i '/^bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.cnf
+
+# setup mysql to support utf8 and innodb
+echo "
+[mysqld]
+default-storage-engine = innodb
+innodb_file_per_table
+collation-server = utf8_general_ci
+init-connect = 'SET NAMES utf8'
+character-set-server = utf8
+" >> /etc/mysql/conf.d/openstack.cnf
 
 # restart
 service mysql restart
