@@ -43,6 +43,12 @@ The script will output a short configuration block which should be placed manual
     # ipv6 configuration
     iface eth0 inet6 auto
 
+You will also need to edit your /etc/hosts file to contain an entry for your controller and any compute rigs.  Here's an example:
+
+    127.0.0.1   localhost
+    10.0.1.100  hanoman
+    10.0.1.101  ravana
+
 Reboot the rig after saving the file.
 
 #### Privacy and Tracking Notice
