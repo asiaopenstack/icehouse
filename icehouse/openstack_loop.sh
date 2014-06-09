@@ -31,6 +31,10 @@ ln -s /etc/init.d/cinder-setup-backing-file /etc/rc2.d/S10cinder-setup-backing-f
 sudo pvcreate /dev/loop2
 sudo vgcreate cinder-volumes /dev/loop2
 
+# create storage type
+sleep 2
+cinder type-create Storage
+
 if [[ -z $SG_SERVICE_CONTROLLER ]]; then
 echo "#################################################################################################
 
