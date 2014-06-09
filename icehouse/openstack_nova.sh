@@ -189,9 +189,6 @@ service nova-compute restart
 service nova-novncproxy restart
 service nova-scheduler restart
 
-# create cinder volume type
-cinder type-create Storage
-
 echo;
 echo "###################################################################################################"
 echo;
