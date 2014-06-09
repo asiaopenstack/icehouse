@@ -35,6 +35,12 @@ sudo vgcreate cinder-volumes /dev/loop2
 sleep 2
 cinder type-create Storage
 
+# restart cinder services
+service cinder-scheduler restart
+service cinder-api restart
+service cinder-volume restart
+service tgt restart
+
 if [[ -z $SG_SERVICE_CONTROLLER ]]; then
 echo "#################################################################################################
 
