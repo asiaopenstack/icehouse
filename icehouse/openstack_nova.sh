@@ -82,6 +82,7 @@ vlan_interface=$rignic
 flat_network_bridge=br100
 flat_interface=$rignic
 dnsmasq_config_file=/etc/nova/dnsmasq-nova.conf
+enable_ipv6=False
 
 # GLANCE
 image_service=nova.image.glance.GlanceImageService
@@ -123,7 +124,7 @@ ram_allocation_ratio=1.5
 keystone_ec2_url=http://$managementip:5000/v2.0/ec2tokens
 
 # VNC CONFIG
-my_ip=10.0.1.100
+my_ip=$managementip
 novnc_enabled=true
 novncproxy_base_url=http://$managementip:6080/vnc_auto.html
 xvpvncproxy_base_url=http://$managementip:6081/console

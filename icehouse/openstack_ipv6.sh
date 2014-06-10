@@ -15,31 +15,10 @@ clear
 apt-get install -y python-netaddr
 apt-get install -y radvd
 
-# variables
-if [[ -z $SG_SERVICE_CONTROLLER ]]; then
-	rignic=$SG_SERVICE_COMPUTE_NIC
-else
-	rignic=$SG_SERVICE_CONTROLLER_NIC
-fi
-
-# get current IPv6 info
-echo;
-echo "##########################################################################################"
-echo;
-echo "These are your current IPv6 addresses: "
-echo;
-ip -f inet6 addr
-echo;
-echo "You'll want to copy the first 4 blocks of hex numbers from one address."
-echo;
-echo "An example would be: 2601:9:1380:960"
-echo;
-echo "##########################################################################################"
-echo;
-
-# grab our IPv6 prefix
-read -p "Enter a (global) IPv6 prefix for $rignic: " prefix
-read -p "Enter the router's IPv6 address to be used as a gateway: " routeripv6
+# hack up the nova.conf file
+sed -e "
+/^use_ipv6=.*$/s/^.*$/enable_ipv6=True/
+" -i /etc/nova/nova.conf
 
 # set the routing flags correctly
 echo 0 > /proc/sys/net/ipv6/conf/$rignic/forwarding
@@ -49,11 +28,6 @@ echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra
 echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra
 echo 0 > /proc/sys/net/ipv6/conf/br100/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/br100/accept_ra
-
-# default route + replace the bad ipv6 address on br100
-route -A inet6 add 2000::/3 gw $routeripv6
-ifconfig br100 inet6 del $prefix::/64
-ifconfig br100 inet6 add $prefix::1/64
 
 # build a file for reboot + janky patch for OpenStack networking foobaring things
 cat > /etc/init.d/ipv6-setup <<EOF

@@ -82,6 +82,7 @@ vlan_interface=$computenic
 flat_network_bridge=br100
 flat_interface=$computenic
 dnsmasq_config_file=/etc/nova/dnsmasq-nova.conf
+enable_ipv6=False
 
 # GLANCE
 image_service=nova.image.glance.GlanceImageService
