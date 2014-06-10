@@ -11,8 +11,12 @@ clear
 # source the setup file
 . ./setuprc
 
-# variables
-rignic=$SG_SERVICE_CONTROLLER_NIC
+# variables based on rig type
+if [[ -z $SG_SERVICE_CONTROLLER ]]; then
+  rignic=$SG_SERVICE_COMPUTE_NIC
+else
+  rignic=$SG_SERVICE_CONTROLLER_NIC
+fi
 
 # install netaddr and radvd
 apt-get install -y python-netaddr
