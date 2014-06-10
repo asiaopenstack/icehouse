@@ -13,7 +13,6 @@ if [[ $REPLY =~ ^[Dd]$ ]]
 then
 
 echo;
-echo;
 
 # kill them.  kill them all.
 mysql -u root -p <<EOF
@@ -25,5 +24,4 @@ EOF
 
 fi
 
-echo;
 echo;
