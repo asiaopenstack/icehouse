@@ -12,7 +12,7 @@ clear
 . ./setuprc
 
 # variables
-rignic=$SG_SERVICE_CONTROLLER_IP
+rignic=$SG_SERVICE_CONTROLLER_NIC
 
 # install netaddr and radvd
 apt-get install -y python-netaddr
