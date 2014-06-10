@@ -11,6 +11,9 @@ clear
 # source the setup file
 . ./setuprc
 
+# variables
+rignic=$SG_SERVICE_CONTROLLER_IP
+
 # install netaddr and radvd
 apt-get install -y python-netaddr
 apt-get install -y radvd
@@ -21,8 +24,8 @@ sed -e "
 " -i /etc/nova/nova.conf
 
 # set the routing flags correctly
-echo 0 > /proc/sys/net/ipv6/conf/$rignic/forwarding
-echo 1 > /proc/sys/net/ipv6/conf/$rignic/accept_ra
+echo 0 > /proc/sys/net/ipv6/conf/$rignic/forwarding # default value is 1
+echo 1 > /proc/sys/net/ipv6/conf/$rignic/accept_ra # default value is 2
 echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 echo 1 > /proc/sys/net/ipv6/conf/all/accept_ra
 echo 1 > /proc/sys/net/ipv6/conf/default/accept_ra
