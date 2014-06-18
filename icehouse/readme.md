@@ -65,7 +65,13 @@ After editing the network, you'll need to test your rig for virtualization suppo
 
     ./openstack_server_test.sh
     
-If your rig doesn't support virtualization, you will need to check your virtualization settings in bios or upgrade your hardware.  If it does support virtualization, you'll be prompted to update your Ubuntu install:
+If your rig doesn't support virtualization, you will need to check your virtualization settings in bios or upgrade your hardware.  There are some systems, like DigitalOcean instances, that will come back as supporting hardware (kvm) virtualization, but do not.  In that case, you'll need to edit your **/etc/nova/nova.conf** file to use qemu:
+
+    libvirt_type=qemu
+
+***Note: If you need to run qemu virtualization, be sure to do this step AFTER finishing the entire guide.  You will need to restart services to enable the change.***
+
+Moving on, you'll need to update your Ubuntu install next:
 
     ./openstack_system_update.sh
     
