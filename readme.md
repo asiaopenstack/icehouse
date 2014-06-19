@@ -23,7 +23,7 @@ Before you start your OpenStack setup, please read the following requirements ca
 
 #### Requirements
 1. You need a **minimum** of one rig with at least 8GB of RAM, 4 cores, (1) SSD drive, and one ethernet card.
-2. You need a clean [install of Ubuntu 114.04 LTS](http://www.ubuntu.com/download/desktop) 64-bit Linux on your box.  You can also install this on the server version of 14.04.x.
+2. You need a clean [install of Ubuntu 14.04 LTS](http://www.ubuntu.com/download/desktop) 64-bit Linux on your box.  You can also install this on the server version of 14.04.x.
 3. You'll need a router which supports IPv6. Ideally, your router is also configured for a small group of publicly routable IPv4 addresses.
 3. Optionally, you should have an account on a xov.io pool. If you aren't a member of a pool, you may join [StackMonkey's](http://stackmonkey.com/) pool for free. *Please note, the pool software is not complete at this time.*
 4. Optionally, fire up a [good music track](https://soundcloud.com/skeewiff/sets/skeewiff-greatest-wiffs) to listen to while you watch the bytes scroll by.
