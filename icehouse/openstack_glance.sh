@@ -51,7 +51,7 @@ flavor = keystone
 
 sed -e "
 /^sqlite_db =.*$/s/^.*$/connection = mysql:\/\/glance:$password@$managementip\/glance/
-/^rabbit_host =.*$/s/^.*$/rabbit_host = $managmentip/
+/^rabbit_host =.*$/s/^.*$/rabbit_host = $managementip/
 /rabbit_use_ssl = false/a rpc_backend = rabbit
 s,%SERVICE_TENANT_NAME%,service,g;
 s,%SERVICE_USER%,glance,g;
