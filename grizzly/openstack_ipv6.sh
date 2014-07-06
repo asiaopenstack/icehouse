@@ -41,6 +41,21 @@ echo;
 read -p "Enter a (global) IPv6 prefix for $rignic: " prefix
 read -p "Enter the router's IPv6 address to be used as a gateway: " routeripv6
 
+# create radvd conf file
+cat <<EOF > /etc/radvd.conf
+interface $INTERFACE
+{
+    AdvSendAdvert             on;
+ 
+    prefix $PREFIX::/64
+    {
+        AdvOnLink             on;
+        AdvAutonomous         on;
+    };
+};
+EOF
+
+# hack network interfaces
 cat <<EOF >> /etc/networking/interfaces
 auto br100
 iface br100 inet6 static

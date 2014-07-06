@@ -47,15 +47,15 @@ echo "
 [DEFAULT]
 
 # LOGS
-verbose=true
-debug=false
+verbose=True
+debug=False
 logdir=/var/log/nova
 
 # STATE
 auth_strategy=keystone
-use_deprecated_auth=false
 state_path=/var/lib/nova
 lock_path=/run/lock/nova
+rootwrap_config=/etc/nova/rootwrap.conf
 
 # PASTE FILE
 api_paste_config=/etc/nova/api-paste.ini
@@ -77,7 +77,7 @@ dhcpbridge_flagfile=/etc/nova/nova.conf
 dhcpbridge=/usr/bin/nova-dhcpbridge
 firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
 my_ip=$computeip
-public_interface=br100
+public_interface=$computenic
 vlan_interface=$computenic
 flat_network_bridge=br100
 flat_interface=$computenic
