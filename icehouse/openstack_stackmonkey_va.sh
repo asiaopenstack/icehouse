@@ -64,29 +64,26 @@ STACKMONKEY_USER=$(get_id keystone user-create --name=stackmonkey --pass="$monke
 STACKMONKEY_ROLE=$(get_id keystone role-create --name=monkey)
 keystone user-role-add --user-id $STACKMONKEY_USER --role-id $STACKMONKEY_ROLE --tenant-id $STACKMONKEY_TENANT
 
-# the following steps are run using the admin user and tenant
-# instance managment of the virtual appliance is done in horizon using the admin user/pass
+# source configuration for the new user
+. ./stackmonkeyrc
 
 # create and add keypairs
 ssh-keygen -f stackmonkey-id -N ""
 nova keypair-add --pub_key stackmonkey-id.pub stackmonkey
 
-# configure default security group to allow port 80 and 22, plus pings
-nova secgroup-add-rule default tcp 80 80 0.0.0.0/0
-nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
+# configure default security group to allow all tcp and udp ports, plus pings
+nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0
+nova secgroup-add-rule default udp 1 65535 0.0.0.0/0
 nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0 
 
 # create a new flavor for the va w/ 8GB drive space
-nova-manage instance_type create va.xovo 512 1 8
+nova-manage flavor create m512.v1.d8 512 1 8
 
 # boot va with key, post boot data, flavor, image, instance name
-nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor va.xovio --image "Ubuntu Precise 12.04 LTS" "StackMonkey VA"
+nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor m512.v1.d8 --image "Ubuntu Precise 12.04 LTS" "StackMonkey VA"
 
 # grab the IP address for display to the user
 APPLIANCE_IP=`nova list | grep "private*=[^=]" | cut -d= -f2 | cut -d, -f1`
-
-# source the stackmonkeyrc file for user/pass
-. ./stackmonkeyrc
 
 # instruction bonanza
 echo "#####################################################################################################
