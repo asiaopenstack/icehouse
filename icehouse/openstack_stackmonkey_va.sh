@@ -58,11 +58,10 @@ function get_id () {
     echo `$@ | awk '/ id / { print $4 }'`
 }
 
-# create stackmonkey project, user and roles
-STACKMONKEY_TENANT=$(get_id keystone tenant-create --name=stackmonkey)
-STACKMONKEY_USER=$(get_id keystone user-create --name=stackmonkey --pass="$monkeypass" --email=$SG_SERVICE_EMAIL)
-STACKMONKEY_ROLE=$(get_id keystone role-create --name=monkey)
-keystone user-role-add --user-id $STACKMONKEY_USER --role-id $STACKMONKEY_ROLE --tenant-id $STACKMONKEY_TENANT
+# project, user, roles for stackmonkey
+keystone tenant-create --name=stackmonkey
+keystone user-create --name=stackmonkey --pass="$monkeypass" --email=$SG_SERVICE_EMAIL
+keystone user-role-add --user=stackmonkey --role=admin --tenant=stackmonkey
 
 # source configuration for the new user
 . ./stackmonkeyrc
