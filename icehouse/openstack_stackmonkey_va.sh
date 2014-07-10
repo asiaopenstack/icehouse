@@ -87,14 +87,18 @@ APPLIANCE_IP=`nova list | grep "private*=[^=]" | cut -d= -f2 | cut -d, -f1`
 # instruction bonanza
 echo "#####################################################################################################
 
-The StackMonkey appliance is being built and a private key called 'stackmonkey.pem' has been created.
+The StackMonkey appliance will take about 10 minutes to build.  
 
-The username/password for the OpenStack Horizon account is $OS_USERNAME/$OS_PASSWORD.
+A private key called 'stackmonkey.pem' has been created and placed in this directory.  You will be 
+able to use this key to ssh into the appliance.  Copy it somwhere safe and then use it like this:
 
-Log into your OpenStack cluster with this user/pass to download your credentials file to your local
-machine.  You will need to upload this file when you configure the appliance.
+    ssh -i stackmonkey.pem ubuntu@$APPLIANCE_IP
 
-You may now configure the appliance at: http://$APPLIANCE_IP/
+A new OpenStack account has been created: $OS_USERNAME/$OS_PASSWORD.  Use this account to login and
+download the API credentials file to your local machine.  You will need to upload this file to the
+appliance once it is done building.
+
+Use a web browser to see if the appliance is ready: http://$APPLIANCE_IP/
 
 #####################################################################################################
 "
