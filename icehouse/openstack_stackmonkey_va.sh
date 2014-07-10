@@ -70,7 +70,13 @@ keystone user-role-add --user=stackmonkey --role=admin --tenant=stackmonkey
 ssh-keygen -f stackmonkey-id -N ""
 nova keypair-add --pub_key stackmonkey-id.pub stackmonkey
 
-# configure default security group to allow all tcp and udp ports, plus pings
+# configure the appliance security group
+nova secgroup-create appliance "Appliance security group."
+nova secgroup-add-rule appliance tcp 80 80 0.0.0.0/0
+nova secgroup-add-rule appliance tcp 22 22 0.0.0.0/0
+nova secgroup-add-rule appliance icmp -1 -1 0.0.0.0/0 
+
+# configure default security group to allow all tcp and udp ports to instances, plus pings
 nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0
 nova secgroup-add-rule default udp 1 65535 0.0.0.0/0
 nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0 
@@ -79,7 +85,7 @@ nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
 nova-manage flavor create m512.v1.d8 512 1 8
 
 # boot va with key, post boot data, flavor, image, instance name
-nova boot --poll --key_name stackmonkey --user-data postcreation.sh --flavor m512.v1.d8 --image "Ubuntu Precise 12.04 LTS" "StackMonkey VA"
+nova boot --poll --key_name stackmonkey --user-data postcreation.sh --security-groups appliance --flavor m512.v1.d8 --image "Ubuntu Precise 12.04 LTS" "StackMonkey VA"
 
 # grab the IP address for display to the user
 APPLIANCE_IP=`nova list | grep "private*=[^=]" | cut -d= -f2 | cut -d, -f1`
