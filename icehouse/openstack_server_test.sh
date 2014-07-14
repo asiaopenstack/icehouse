@@ -17,7 +17,12 @@ if /usr/sbin/kvm-ok
 then echo;
 echo "#################################################################################################
 
-Your CPU seems to support KVM extensions.  Run './openstack_system_update.sh' to continue setup. 
+Your CPU seems to support KVM extensions.  If you are installing OpenStack on a virtual machine,
+you will need to add 'virt_type=qemu' to your nova.conf file in /etc/nova/ and then restart all
+nova services once you've finished running through the installation.  You DO NOT need to do this 
+on a bare metal box.
+
+Run './openstack_system_update.sh' to continue setup.
 
 #################################################################################################
 "
