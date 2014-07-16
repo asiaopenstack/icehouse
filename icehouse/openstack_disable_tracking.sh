@@ -27,7 +27,7 @@ EOF
 
 echo "######################################################################################################
 
-Tracking of the scripts has been diabled.  Thank you for installing OpenStack using these scripts!
+Tracking of the scripts has been disabled.  Thank you for installing OpenStack using these scripts!
 
 ######################################################################################################
 "
