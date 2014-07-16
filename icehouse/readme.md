@@ -283,7 +283,7 @@ Output should look like this:
 #### Floating IP Setup (Controller Only)
 If you have a block of externally routed IP addresses (public IPs) you may create a floating IP entry for OpenStack:
 
-    nova-mange floating create 208.128.7.128/25
+    nova-manage floating create 208.128.7.128/25
     
 This example would allow a floating IP address to be assigned to instance from the range of **208.128.7.129 to 208.128.7.254**.
 
