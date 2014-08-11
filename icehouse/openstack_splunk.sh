@@ -23,12 +23,12 @@ http://$SG_SERVICE_CONTROLLER_IP:8000/
 echo;
 
 # download
-wget -O splunk-6.1.1-207789-Linux-x86_64.tgz 'http://www.splunk.com/page/download_track?file=6.1.1/splunk/linux/splunk-6.1.1-207789-Linux-x86_64.tgz&ac=&wget=true&name=wget&platform=Linux&architecture=x86_64&version=6.1.1&product=splunk&typed=release'
+wget -O splunk-6.1.3-220630-Linux-x86_64.tgz 'http://www.splunk.com/page/download_track?file=6.1.3/splunk/linux/splunk-6.1.3-220630-Linux-x86_64.tgz&ac=&wget=true&name=wget&platform=Linux&architecture=x86_64&version=6.1.3&product=splunk&typed=release'
 
 # extract, move, cleanup
-tar xvfz splunk-6.1.1-207789-Linux-x86_64.tgz
+tar xvfz splunk-6.1.3-220630-Linux-x86_64.tgz
 mv splunk /opt/splunk
-rm splunk-6.1.1-207789-Linux-x86_64.tgz
+rm splunk-6.1.3-220630-Linux-x86_64.tgz
 
 # whack on inputs.conf file
 echo "
@@ -67,3 +67,11 @@ followTail = 0
 
 # start splunk
 /opt/splunk/bin/splunk start --accept-license
+
+echo;
+echo "##########################################################################################"
+echo;
+echo "Splunk setup complete.  Continue the setup by doing a './openstack_mysql.sh'."
+echo;
+echo "##########################################################################################"
+echo;
