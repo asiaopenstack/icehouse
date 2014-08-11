@@ -85,7 +85,6 @@ ADMIN_ROLE=$(get_id keystone role-create --name=admin)
 ADMIN_TENANT=$(get_id keystone tenant-create --name=admin)
 SERVICE_TENANT=$(get_id keystone tenant-create --name=service)
 DEMO_TENANT=$(get_id keystone tenant-create --name=demo)
-STACKMONKEY_TENANT=$(get_id keystone tenant-create --name=stackmonkey)
 
 # Add Roles to Users in Tenants
 keystone user-role-add --user=admin --role=admin --tenant=admin

@@ -83,7 +83,7 @@ sleep 3
 . ./setuprc
 
 # add cirros image
-glance image-create --name="Cirros 0.3.0"  --is-public=true --container-format=bare --disk-format=qcow2 --location=https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+glance image-create --name="Cirros 0.3.0"  --is-public=true --container-format=bare --disk-format=qcow2 --location=http://download.cirros-cloud.net/0.3.2/cirros-0.3.2-x86_64-disk.img
 
 # add ubuntu image
 glance image-create --name="Ubuntu Precise 12.04 LTS" --is-public=true --container-format=bare --disk-format=qcow2 --location=http://cloud-images.ubuntu.com/precise/current/precise-server-cloudimg-amd64-disk1.img
