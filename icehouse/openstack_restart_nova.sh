@@ -7,6 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # restart nova
+service nova-api restart
 service nova-api-metadata restart
 service nova-cert restart
 service nova-conductor restart
