@@ -152,7 +152,7 @@ The output should be something like this:
     | df53bace-b5a0-49ba-9b7f-4d43f249e3f3 | Cirros 0.3.0 | qcow2       | bare   | 9761280 | active |
     +--------------------------------------+--------------+-------------+--------+---------+--------+
 
-#### Cinder Setup
+#### Cinder Setup (Any Rig)
 Cinder is used to provide additional volume attachments to running instances and snapshot space.  Start the install of Cinder by typing:
 
     ./openstack_cinder.sh
@@ -172,7 +172,7 @@ You may then create a new volume to test:
 ***Note: If you are installing a compute rig, you may skip to the *Nova Compute Setup* section below.***
 
 #### Nova Setup (Controller Only)
-Nova provides multiple services to OpenStack for controlling networking, imaging and starting and stopping instances.  If you are installing a compute rig, please skip to the following section to install the base *nova-compute* methods needed for running a compute rig.
+Nova provides multiple services to OpenStack for controlling networking, imaging and starting and stopping instances.  This script should be run on the *controller rig* only. If you are installing an additional *compute rig*, please skip to the following section to install the base *nova-compute* methods only.
 
 Start the controller's nova install by typing the following:
 
@@ -195,7 +195,7 @@ You should see output that looks similar to this:
     +------------------+--------+----------+---------+-------+----------------------------+
 
 #### Nova Compute Setup (Compute Rigs Only)
-If you are installing a controller, this step has already been completed using the **Nova Setup** section above.  You may skip this if you are installing a controller rig.
+This step is similar to the *Nova Setup* section above, except it is intended for *compute rigs* only. You should skip this step if you are working on the controller rig.
 
 You may run this on any number of compute rigs.  Start the Nova Compute setup on a given compute rig by typing the following:
 
