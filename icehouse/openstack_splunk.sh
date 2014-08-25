@@ -65,6 +65,9 @@ disabled = false
 followTail = 0
 " >> /opt/splunk/etc/apps/launcher/default/inputs.conf
 
+# Auto start Splunk on boot
+ /opt/splunk/bin/splunk enable boot-start
+ 
 # start splunk
 /opt/splunk/bin/splunk start --accept-license
 
