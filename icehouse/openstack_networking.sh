@@ -53,7 +53,7 @@ Now edit your /etc/hosts file to look like this:
 
 Be sure to put each machine in the cluster's IP then name in the /etc/hosts file.
 
-After you are done, do a '/etc/init.d/networking restart'.
+After you are done, do a 'ifdown --exclude=lo -a && sudo ifup --exclude=lo -a'.
 
 To start the virtualization test, run './openstack_server_test.sh'
 
