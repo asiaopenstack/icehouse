@@ -55,7 +55,7 @@ read -p "Enter the device name for this rig's NIC (eth0, em1, etc.) : " rignic
 rigip=$(/sbin/ifconfig $rignic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 # Grab our controller's name
-read -p "Enter the device name for the rig's exernal NIC (ETH1, p2p1, etc.) : " extnic
+read -p "Enter the device name for the rig's exernal NIC (eth1, p2p1, etc.) : " extnic
 
 # Grab our controller's name
 read -p "Enter of the controller rig (controller, controller-01, etc.) : " ctrl_name
@@ -65,9 +65,7 @@ read -p "Please enter the password for MySQL on the controller rig : " password
 
 # Grab our compute's name
 read -p "Enter the name for this compute rig (compute1, compute-01, etc.) : " cmpt_name
-
-# Admin email
-read -p "Please enter an administrative email address : " email
+il
 
 # Upgrade your rig
 apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y
@@ -76,10 +74,10 @@ apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y
 apt-get install -y ntp
 
 # Install MySQL
-apt-get install python-mysqldb
+apt-get install -y python-mysqldb
 
 # Install nova
-apt-get install nova-compute-kvm
+apt-get install -y nova-compute-kvm
 
 # Edit the /etc/nova/nova.conf:
 echo "
