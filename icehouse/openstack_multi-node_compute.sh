@@ -50,21 +50,21 @@ After you are done, do a 'ifdown --exclude=lo -a && sudo ifup --exclude=lo -a'.
 
 read -p "Make sure you have your rig name and networking configured properly before pressng ENTER to continue: "
 
-# making a unique token for this install
-	token=`cat /dev/urandom | head -c2048 | md5sum | cut -d' ' -f1`
-
 # grab our IP 
-read -p "Enter the device name for this rig's NIC (eth0, etc.) : " rignic
+read -p "Enter the device name for this rig's NIC (eth0, em1, etc.) : " rignic
 rigip=$(/sbin/ifconfig $rignic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 # Grab our controller's name
-read -p "Enter the name for this rig (controller, controller-01, etc.) : " ctrl_name
+read -p "Enter the device name for the rig's exernal NIC (ETH1, p2p1, etc.) : " extnic
 
-# Grab our compute's name
-read -p "Enter the name for this rig (compute1, compute-01, etc.) : " cmpt_name
+# Grab our controller's name
+read -p "Enter of the controller rig (controller, controller-01, etc.) : " ctrl_name
 
 # Give your password
-read -p "Please enter a password for MySQL : " password
+read -p "Please enter the password for MySQL on the controller rig : " password
+
+# Grab our compute's name
+read -p "Enter the name for this compute rig (compute1, compute-01, etc.) : " cmpt_name
 
 # Admin email
 read -p "Please enter an administrative email address : " email
@@ -100,6 +100,36 @@ api_paste_config=/etc/nova/api-paste.ini
 volumes_path=/var/lib/nova/volumes
 enabled_apis=ec2,osapi_compute,metadata
 
+#RABBIT
+rpc_backend = rabbit
+rabbit_host = $ctrl_name
+rabbit_password = $password
+
+#VNC
+my_ip = $rigip
+vnc_enabled = True
+vncserver_listen = 0.0.0.0
+vncserver_proxyclient_address = $rigip
+novncproxy_base_url = http://$ctrl_name:6080/vnc_auto.html
+
+#GLANCE
+glance_host = $ctrl_name
+
+#NETWORKING
+network_api_class = nova.network.api.API
+security_group_api = nova
+firewall_driver = nova.virt.libvirt.firewall.IptablesFirewallDriver
+network_manager = nova.network.manager.FlatDHCPManager
+network_size = 254
+allow_same_net_traffic = False
+multi_host = True
+send_arp_for_ha = True
+share_dhcp_address = True
+force_dhcp_release = True
+flat_network_bridge = br100
+flat_interface = $extnic
+public_interface = $extnic
+
 [database]
 connection = mysql://nova:$password@$ctrl_name/nova
 
@@ -112,3 +142,14 @@ admin_tenant_name = service
 admin_user = nova
 admin_password = $password
 " > /etc/nova/nova.conf
+
+# Remove Nova SQLite database:
+rm /var/lib/nova/nova.sqlite
+
+# Restart the Compute service:
+service nova-compute restart
+sleep 4
+service nova-network restart
+sleep 4
+service nova-api-metadata restart
+sleep 4
