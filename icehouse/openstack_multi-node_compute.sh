@@ -16,22 +16,24 @@ auto lo
 iface lo inet loopback
 iface lo inet6 loopback
 
-# primary interface
+# The external network interface
 auto eth0
-iface eth0 inet static
-  address 192.168.1.101
+iface eth0 inet manual
+address 192.168.1.101
   netmask 255.255.255.0
   gateway 192.168.1.1
   dns-nameservers 8.8.8.8
+  
+# primary interface
+auto eth1
+iface eth1 inet static
+  address 10.0.0.11
+  netmask 255.255.255.0
 
 # ipv6 configuration
 iface eth0 inet6 auto
 
-# The external network interface
-auto eth1
-iface eth1 inet manual
-        up ip link set dev $IFACE up
-        down ip link set dev $IFACE down
+
 
 Now edit your /etc/hosts file to look like this:
 
@@ -126,7 +128,7 @@ share_dhcp_address = True
 force_dhcp_release = True
 flat_network_bridge = br100
 flat_interface = $extnic
-public_interface = $extnic
+public_interface = br100
 
 [database]
 connection = mysql://nova:$password@$ctrl_name/nova
