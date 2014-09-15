@@ -412,7 +412,7 @@ sed -e "
 " -i /etc/openstack-dashboard/local_settings.py
 
 sed -e '
-/^OPENSTACK_HOST =.*$/s/^.*$/OPENSTACK_HOST = "$ctrl_name"/
+/^OPENSTACK_HOST =.*$/s/^.*$/OPENSTACK_HOST = "'$ctrl_name'"/
 ' -i /etc/openstack-dashboard/local_settings.py
 
 
