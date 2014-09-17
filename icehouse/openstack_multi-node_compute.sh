@@ -53,11 +53,11 @@ After you are done, do a 'ifdown --exclude=lo -a && sudo ifup --exclude=lo -a'.
 read -p "Make sure you have your rig name and networking configured properly before pressng ENTER to continue: "
 
 # grab our IP 
-read -p "Enter the device name for this rig's NIC (eth1, p2p1, etc.) : " rignic
+read -p "Enter the device name for this rig's NIC (eth0, em1, etc.) : " rignic
 rigip=$(/sbin/ifconfig $rignic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 # Grab our controller's name
-read -p "Enter the device name for the rig's exernal NIC (eth0, em1, etc.) : " extnic
+read -p "Enter the device name for the rig's exernal NIC (eth1, p2p1, etc.) : " extnic
 
 # Grab our controller's name
 read -p "Enter of the controller rig (controller, controller-01, etc.) : " ctrl_name
@@ -89,7 +89,6 @@ apt-get install -y nova-compute-kvm python-guestfs
 dpkg-statoverride  --update --add root root 0644 /boot/vmlinuz-$(uname -r)
 
 # make the kernel listen to us
-dpkg-statoverride  --update --add root root 0644 /boot/vmlinuz-$(uname -r)
 
 echo "
 #!/bin/sh
@@ -100,10 +99,10 @@ dpkg-statoverride --update --add root root 0644 /boot/vmlinuz-${version}
 " > /etc/kernel/postinst.d/statoverride
 
 # Install MySQL
-apt-get install -y python-mysqldb
+#apt-get install -y python-mysqldb
 
 # Install nova
-apt-get install -y nova-compute-kvm
+#apt-get install -y nova-compute-kvm
 
 # Edit the /etc/nova/nova.conf:
 echo "
@@ -152,7 +151,7 @@ send_arp_for_ha = True
 share_dhcp_address = True
 force_dhcp_release = True
 flat_network_bridge = br100
-flat_interface = $extnic
+flat_interface = $rignic
 public_interface = br100
 
 [database]
@@ -171,6 +170,10 @@ admin_password = $password
 # Remove Nova SQLite database:
 rm /var/lib/nova/nova.sqlite
 
+# turn on forwarding
+echo 1 > /proc/sys/net/ipv4/ip_forward
+sysctl net.ipv4.ip_forward=1
+
 #Install legacy networking components:
 apt-get install -y nova-network nova-api-metadata
 
@@ -181,3 +184,5 @@ service nova-network restart
 sleep 4
 service nova-api-metadata restart
 sleep 4
+
+nova-manage service list
