@@ -6,11 +6,56 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
+echo;
+echo "##############################################################################################################
+
+Go and edit your /etc/network/interfaces file to look something like this:
+
+# loopback
+auto lo
+iface lo inet loopback
+iface lo inet6 loopback
+
+# The management network interface
+auto eth0
+iface eth0 inet static
+  address 10.0.0.11
+  netmask 255.255.255.0
+  
+# The external network interface  
+auto eth1
+iface eth1 inet manual
+address 192.168.1.100
+  netmask 255.255.255.0
+  gateway 192.168.1.1
+  dns-nameservers 8.8.8.8
+
+# ipv6 configuration
+iface eth0 inet6 auto
+
+#########################################################################
+
+Now edit your /etc/hosts file to look like this:
+
+127.0.0.1   localhost
+# 127.0.1.1 compute1
+10.0.0.11   controller
+10.0.0.31   compute1
+10.0.0.32   compute2
+
+Be sure to put each machine in the cluster's IP then name in the /etc/hosts file.
+
+Make sure you check that the 127.0.1.1 number is commented out of your /etc/hosts file.
+
+After you are done, do a 'ifdown --exclude=lo -a && sudo ifup --exclude=lo -a'.
+
+###############################################################################################################"
+
 # making a unique token for this install
 	token=`cat /dev/urandom | head -c2048 | md5sum | cut -d' ' -f1`
 
 # grab our IP 
-read -p "Enter the device name for this rig's NIC (eth0, etc.) : " rignic
+read -p "Enter the device name for this rig's management NIC (eth0, etc.) : " rignic
 rigip=$(/sbin/ifconfig $rignic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 # Grab our controller's name
