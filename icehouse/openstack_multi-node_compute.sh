@@ -16,31 +16,32 @@ auto lo
 iface lo inet loopback
 iface lo inet6 loopback
 
-# The external network interface
+# The management network interface
 auto eth0
-iface eth0 inet manual
+iface eth0 inet static
+  address 10.0.0.31
+  netmask 255.255.255.0
+  
+# The external network interface  
+auto eth1
+iface eth1 inet manual
 address 192.168.1.101
   netmask 255.255.255.0
   gateway 192.168.1.1
   dns-nameservers 8.8.8.8
-  
-# The management network interface
-auto eth1
-iface eth1 inet static
-  address 10.0.0.31
-  netmask 255.255.255.0
 
 # ipv6 configuration
 iface eth0 inet6 auto
 
-
+#########################################################################
 
 Now edit your /etc/hosts file to look like this:
 
-127.0.0.1	localhost
+127.0.0.1   localhost
 # 127.0.1.1 compute1
-10.0.0.11	controller
+10.0.0.11   controller
 10.0.0.31   compute1
+10.0.0.32   compute2
 
 Be sure to put each machine in the cluster's IP then name in the /etc/hosts file.
 
@@ -56,18 +57,17 @@ read -p "Make sure you have your rig name and networking configured properly bef
 read -p "Enter the device name for this rig's NIC (eth0, em1, etc.) : " rignic
 rigip=$(/sbin/ifconfig $rignic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
-# Grab our controller's name
+# Grab our management interface name (the interface connected to the controller)
 read -p "Enter the device name for the rig's exernal NIC (eth1, p2p1, etc.) : " extnic
 
-# Grab our controller's name
+# Grab our controller's name (the one listed in the host file)
 read -p "Enter of the controller rig (controller, controller-01, etc.) : " ctrl_name
 
-# Give your password
-read -p "Please enter the password for MySQL on the controller rig : " password
-
-# Grab our compute's name
+# Grab our compute's name (the one listed in the host file)
 read -p "Enter the name for this compute rig (compute1, compute-01, etc.) : " cmpt_name
-il
+
+# Give your password (the one given for MySQL on teh controller)
+read -p "Please enter the password for MySQL on the controller rig : " password
 
 # Upgrade your rig
 apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y
@@ -152,7 +152,7 @@ share_dhcp_address = True
 force_dhcp_release = True
 flat_network_bridge = br100
 flat_interface = $rignic
-public_interface = br100
+public_interface = $extnic
 
 [database]
 connection = mysql://nova:$password@$ctrl_name/nova
