@@ -67,6 +67,9 @@ read -p "Please enter a password for MySQL : " password
 # Admin email
 read -p "Please enter an administrative email address : " email
 
+# Get external IP range	
+read -p "Please enter an IP range on your local network for external access (example "192.168.1.128/26" will desigante 192.168.1.129-.190) :" extip
+
 # Upgrade your rig
 apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y
 
@@ -464,3 +467,8 @@ sed -e '
 # Reload Apache and memcached:
 service apache2 restart
 service memcached restart
+
+# Create internal network
+nova network-create private --bridge br100 --multi-host T  --dns1 8.8.8.8  --gateway 172.16.0.1 --fixed-range-v4 172.16.0.0/24
+sleep 4
+nova-manage floating create --pool=nova --ip_range=$extip
