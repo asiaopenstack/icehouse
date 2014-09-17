@@ -24,10 +24,10 @@ address 192.168.1.101
   gateway 192.168.1.1
   dns-nameservers 8.8.8.8
   
-# primary interface
+# The management network interface
 auto eth1
 iface eth1 inet static
-  address 10.0.0.11
+  address 10.0.0.31
   netmask 255.255.255.0
 
 # ipv6 configuration
@@ -37,10 +37,10 @@ iface eth0 inet6 auto
 
 Now edit your /etc/hosts file to look like this:
 
-127.0.0.1	    localhost
-# 127.0.1.1    compute1
-192.168.1.100	controller
-192.168.1.101	compute1
+127.0.0.1	localhost
+# 127.0.1.1 compute1
+10.0.0.11	controller
+10.0.0.31   compute1
 
 Be sure to put each machine in the cluster's IP then name in the /etc/hosts file.
 
@@ -53,11 +53,11 @@ After you are done, do a 'ifdown --exclude=lo -a && sudo ifup --exclude=lo -a'.
 read -p "Make sure you have your rig name and networking configured properly before pressng ENTER to continue: "
 
 # grab our IP 
-read -p "Enter the device name for this rig's NIC (eth0, em1, etc.) : " rignic
+read -p "Enter the device name for this rig's NIC (eth1, p2p1, etc.) : " rignic
 rigip=$(/sbin/ifconfig $rignic| sed -n 's/.*inet *addr:\([0-9\.]*\).*/\1/p')
 
 # Grab our controller's name
-read -p "Enter the device name for the rig's exernal NIC (eth1, p2p1, etc.) : " extnic
+read -p "Enter the device name for the rig's exernal NIC (eth0, em1, etc.) : " extnic
 
 # Grab our controller's name
 read -p "Enter of the controller rig (controller, controller-01, etc.) : " ctrl_name
@@ -75,6 +75,30 @@ apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y
 # Install Time Server
 apt-get install -y ntp
 
+# Check CPU
+apt-get install -y cpu-checker
+kvm-ok
+
+# Install and configure kvm:
+apt-get install -y kvm libvirt-bin pm-utils
+
+# Install the Compute packages:
+apt-get install -y nova-compute-kvm python-guestfs
+
+# Make the current kernel readable:
+dpkg-statoverride  --update --add root root 0644 /boot/vmlinuz-$(uname -r)
+
+# make the kernel listen to us
+dpkg-statoverride  --update --add root root 0644 /boot/vmlinuz-$(uname -r)
+
+echo "
+#!/bin/sh
+version="$1"
+# passing the kernel version is required
+[ -z "${version}" ] && exit 0
+dpkg-statoverride --update --add root root 0644 /boot/vmlinuz-${version}
+" > /etc/kernel/postinst.d/statoverride
+
 # Install MySQL
 apt-get install -y python-mysqldb
 
@@ -84,6 +108,7 @@ apt-get install -y nova-compute-kvm
 # Edit the /etc/nova/nova.conf:
 echo "
 [DEFAULT]
+auth_strategy = keystone
 dhcpbridge_flagfile=/etc/nova/nova.conf
 dhcpbridge=/usr/bin/nova-dhcpbridge
 logdir=/var/log/nova
@@ -145,6 +170,9 @@ admin_password = $password
 
 # Remove Nova SQLite database:
 rm /var/lib/nova/nova.sqlite
+
+#Install legacy networking components:
+apt-get install -y nova-network nova-api-metadata
 
 # Restart the Compute service:
 service nova-compute restart
