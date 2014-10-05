@@ -17,7 +17,7 @@ service ntp restart
 sed -e "
 /^server ntp.ubuntu.com/i server 127.127.1.0
 /^server ntp.ubuntu.com/i fudge 127.127.1.0 stratum 10
-/^server ntp.ubuntu.com/s/^.*$/server ntp.ubutu.com iburst/;
+/^server ntp.ubuntu.com/s/^.*$/server ntp.ubuntu.com iburst/;
 " -i /etc/ntp.conf
 
 # turn on forwarding
