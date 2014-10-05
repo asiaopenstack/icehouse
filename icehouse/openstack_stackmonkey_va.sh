@@ -82,7 +82,7 @@ nova secgroup-add-rule default udp 1 65535 0.0.0.0/0
 nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0 
 
 # create a new flavor for the va w/ 8GB drive space
-nova-manage flavor create m512.v1.d8 512 1 8
+nova flavor-create m512.v1.d20 m512.v1.d20 512 1 20
 
 # create an image to use to boot the appliance (Ubuntu 14.04LTS)
 glance image-create --name="Ubuntu Trusty 14.04 LTS" --is-public=true --container-format=bare --disk-format=qcow2 --location=https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
