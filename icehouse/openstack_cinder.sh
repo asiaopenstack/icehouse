@@ -17,7 +17,7 @@ managementip=$SG_SERVICE_CONTROLLER_IP
 
 # install packages
 apt-get install -y lvm2
-apt-get install -y python-cinderclient
+apt-get install -y python-cinderclient python-mysqldb
 apt-get install -y cinder-api cinder-scheduler cinder-volume 
 
 # edit keystone conf file to use templates and mysql
