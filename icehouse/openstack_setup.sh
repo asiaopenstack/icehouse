@@ -91,13 +91,13 @@ EOF
 		echo "The following URL will be used for configuring the other rigs in this cluster.  Copy it."
 		echo;
 		cat setuprc | curl -F 'geek=<-' https://sgsprunge.appspot.com 
-
+	fi
+	
 # again, don't unindent!
 # tack on an indicator we're the controller
 cat >> setuprc <<EOF
 export SG_SERVICE_CONTROLLER=1
 EOF
-	fi
 
 else
 	echo;
