@@ -24,7 +24,7 @@ sed -e "
 " -i /etc/mongodb.conf
 
 # restart mongo
-servcie mongodb restart
+service mongodb restart
 
 # create database
 mongo --host $managementip --eval '
